@@ -44,7 +44,7 @@
         "dotenv": "^8.2.0",
         "formik": "^1.5.2",
         "history": "^4.9.0",
-        "jquery": "^3.2",
+        "jquery": "^3.5",
         "lodash": "^4.17.5",
         "moment": "^2.24.0",
         "popper.js": "^1.12",
