@@ -1,0 +1,29 @@
+.btn-success {
+  color: $primary;
+}
+
+.btn {
+  white-space: nowrap;
+}
+
+.fixed-button {
+  position: fixed;
+  bottom: 15px;
+  .btn {
+    border-radius: 5px;
+  }
+  &.left {
+    left: 20%;
+  }
+  &.right {
+    right: 20%;
+  }
+  @include media-breakpoint-down('md') {
+    &.left {
+      left: 5%;
+    }
+    &.right {
+      right: 5%;
+    }  
+  }
+}

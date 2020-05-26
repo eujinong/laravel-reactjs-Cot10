@@ -1,0 +1,20 @@
+.nav-tabs {
+  .nav-item {
+    cursor: pointer;
+
+    .nav-link {
+      border: none;
+      text-align: center;
+      
+      &.active {
+        background-color: $info;
+        color: $white;
+      }
+    }
+  }
+}
+.tab-content {
+  border: 1px solid #dee2e6;
+  border-top: none;
+  padding: 0 15px 20px;
+}

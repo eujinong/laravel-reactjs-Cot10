@@ -1,0 +1,37 @@
+.table {
+  tbody {
+    tr {
+      td {
+        white-space: nowrap;
+        .actions {
+          margin-top: -5px;
+          .btn {
+            padding: 6px !important;
+            border-radius: 3px;
+          }
+        }
+      }
+    }
+  }
+}
+.setting {
+  .table {
+    tbody {
+      tr {
+        td {
+          .actions.save {
+            button {
+              margin-top: 12px;
+            }
+          }
+          input {
+            &.form-control
+            {
+              padding: 5px 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

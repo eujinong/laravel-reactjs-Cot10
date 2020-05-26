@@ -1,0 +1,107 @@
+.form-group {
+  .is-invalid {
+    background-image: none;
+  }
+  .input {
+    width: 100%;
+  }
+}
+
+.fields {
+  .input {
+    width: 100%;
+  }
+}
+
+.row-form {
+  form {
+    display: flex;
+    justify-content: center;
+
+    @include media-breakpoint-down('sm') {
+      display: block;
+
+      .form-group {
+        .sms-request {
+          border-radius: 3px !important;
+        }
+
+        input {
+          border-radius: 3px !important;
+        }
+
+        button {
+          border-radius: 3px !important;
+        }
+      }
+    }
+
+    .form-group {
+      margin-bottom: 0;
+
+      .sms-request {
+        padding: 16px;
+        height: 45px;
+        font-size: 15px;
+        font-weight: $font-weight-bolder;
+        background: $primary;
+        color: $success;
+        display: flex;
+        align-items: center;
+
+        i {
+          font-size: 18px;
+          font-weight: $font-weight-normal;
+          color: $white;
+          margin-right: 10px;
+          position: relative;
+          top: 0;
+          right: 0;
+        }
+
+        @include media-breakpoint-up('lg') {
+          width: calc((832px - 41px)/3);
+        }
+      }
+
+      input {
+        border-radius: 0;
+        padding: 12px 10px;
+        height: 45px;
+
+        @include media-breakpoint-up('lg') {
+          width: calc((832px - 41px)/3);
+        }
+      }
+    }
+
+    .form-group:first-child {
+      .sms-request {
+        border-radius: 3px 0 0 3px;
+      }
+
+      input {
+        border-radius: 3px 0 0 3px;
+      }
+    }
+
+    .form-group:last-child {
+      text-align: right;
+
+      button {
+        border-radius: 0 3px 3px 0;
+        width: 41px;
+        height: 45px;
+        padding: 14px 12px;
+        position: relative;
+
+        i {
+          color: $white;
+          position: absolute;
+          top: 15px;
+          left: 13px;
+        }
+      }
+    }
+  }
+}

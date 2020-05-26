@@ -1,0 +1,46 @@
+.site-intro {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .container {
+    padding: 100px 0;
+
+    .intro-box-form-field {
+      ul {
+        border: none;
+        list-style: none;
+        margin: 5px 0;
+        padding: 0;
+
+        li {
+          list-style: none;
+          padding: 5px 10px;
+
+          &:first-child {
+            padding-top: 10px;
+          }
+
+          &:last-child {
+            padding-bottom: 10px;
+          }
+        }
+      }
+    }
+
+    hr {
+      border-color: $yellow;
+      border-width: 2px;;
+    }
+
+    .link {
+      color: $success;
+      
+      &:hover {
+        color: $primary;
+        text-decoration: none;
+      }
+    }
+  }
+}

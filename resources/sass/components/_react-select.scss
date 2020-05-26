@@ -1,0 +1,483 @@
+
+// REACT SELECT START
+.react-select__control {
+  font-size: 14px;
+  border: 1px solid $input-border-color !important;
+  // height: 35px !important;
+  // min-height: 35px !important;
+}
+.react-select__control--is-focused {
+  border: 1px solid rgba($primary, .5) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(136, 177, 234, 0.5) !important;
+}
+.react-select__menu {
+  font-size: 14px;
+  min-width: 280px;
+}
+.react-select__value-container {
+  padding: 0 10px !important;
+}
+
+.react-select__placeholder {
+  color: $input-placeholder-color !important;
+}
+
+.react-select__indicator-separator {
+  background-color: transparent !important;
+}
+
+.react-select__indicators {
+  margin-right: 0;
+  .icon {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.react-select__clear-indicator {
+  padding: 4px;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.react-select__value-container {
+  // margin-left: 40px;
+}
+
+.react-select__multi-value {
+  background-color: $secondary !important;
+}
+
+.react-select__multi-value__label {
+  cursor: pointer;
+  color: $white !important;
+}
+.react-select__multi-value__remove {
+  cursor: pointer;
+  &:hover {
+    background-color: $secondary !important
+  }
+  svg {
+    fill: $white !important;
+  }
+}
+
+.react-select__option--is-focused {
+  background-color: $silver !important;
+}
+
+.react-select__option--is-selected {
+  background-color: $secondary !important;
+}
+
+// REACT SELECT END
+
+
+// REACT SELECT LARGE START
+.react-select-lg__control {
+  font-size: 14px;
+  border: 1px solid $input-border-color !important;
+  min-height: 48px !important;
+}
+.react-select-lg__control--is-focused {
+  border: 1px solid rgba($primary, .5) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(136, 177, 234, 0.5) !important;
+}
+.react-select-lg__menu {
+  font-size: 14px;
+}
+.react-select-lg__value-container {
+  padding: 0 10px !important;
+}
+
+.react-select-lg__placeholder {
+  color: $input-placeholder-color !important;
+}
+
+.react-select-lg__indicator-separator {
+  background-color: transparent !important;
+}
+
+.react-select-lg__indicators {
+  margin-right: 0;
+  .icon {
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.react-select-lg__clear-indicator {
+  padding: 4px;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.react-select-lg__value-container {
+  // margin-left: 40px;
+}
+
+.react-select-lg__multi-value {
+  background-color: $secondary !important;
+}
+
+.react-select-lg__multi-value__label {
+  cursor: pointer;
+  color: $white !important;
+}
+.react-select-lg__multi-value__remove {
+  cursor: pointer;
+  &:hover {
+    background-color: $secondary !important
+  }
+  svg {
+    fill: $white !important;
+  }
+}
+.react-select-lg__menu {
+  font-size: 14px;
+}
+
+.react-select-lg__option--is-focused {
+  background-color: $silver !important;
+}
+
+.react-select-lg__option--is-selected {
+  background-color: $secondary !important;
+}
+
+// REACT SELECT LARGE END
+
+// SELECT USER START
+.react-select-user__control {
+  font-size: 14px;
+  border: 1px solid $input-border-color !important;
+  min-height: 36px !important;
+  .avatar {
+    // border: 2px solid transparent;
+  }
+}
+.react-select-user__control--is-focused {
+  border: 1px solid rgba($primary, .5) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(136, 177, 234, 0.5) !important;
+}
+
+.react-select-user__value-container {
+  padding: 0 3px !important;
+}
+
+.react-select-user__placeholder, .react-select-user__value-container {
+  color: $input-placeholder-color !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-height: 28px;
+  & > div {
+    font-weight: $font-weight-medium;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0;
+    .text {
+      flex: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .name {
+      margin-left: 6px;
+      color: $input-placeholder-color;
+    }
+    .title {
+      color: $secondary;
+    }
+  }
+}
+
+.react-select-user__placeholder {
+  max-width: 100%;
+  & > div {
+    overflow: inherit;
+    white-space: inherit;
+    text-overflow: inherit;
+  }
+}
+
+.react-select-user__value-container {
+  & > div {
+    margin-left: 4px;
+  }
+}
+
+.react-select-user__input {
+  z-index: 1;
+  top: 3px !important;
+  left: 6px;
+}
+
+.react-select-user__menu {
+  min-width: 240px;
+}
+
+.react-select-user__menu-list {
+  > div {
+    font-weight: $font-weight-medium;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    .text {
+      flex: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .name {
+      margin-left: 10px;
+      color: $gray-800;
+    }
+    .title {
+      color: $secondary;
+    }
+    &.option-focused {
+      background-color: #E7E9ED;
+    }
+    &.option-selected {
+      background-color: $secondary;
+      .name {
+        color: $white;
+      }
+      .title {
+        color: $gray-500;
+      }
+    }
+  }
+}
+
+.react-select-user__indicator-separator {
+  background-color: transparent !important;
+}
+
+.react-select-user__indicators {
+  margin-right: 6px;
+  .icon {
+    line-height: 1;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.react-select-user__clear-indicator {
+  padding: 4px;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.react-select-user__multi-value {
+  background-color: $secondary !important;
+  
+}
+
+.react-select-user__multi-value__remove {
+  cursor: pointer;
+  &:hover {
+    background-color: $secondary !important
+  }
+  svg {
+    fill: $white !important;
+  }
+}
+
+.react-select-user__value-container {
+  .react-select-user__multi-value__label {
+    display: flex;
+    align-items: center;
+    padding: 6px !important;
+    font-weight: $font-weight-medium;
+    font-size: 13px !important;
+    display: flex;
+    align-items: center;
+    .text {
+      flex: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      color: $white;
+    }
+    .name {
+      margin-left: 10px;
+      color: $white;
+    }
+    .title {
+      color: $white;
+    }
+  }
+}
+
+.react-select-user__multi-value__remove {
+  svg {
+    width: 20px !important;
+    height: 20px !important;
+    path {
+      fill: $gray-500;
+    }
+  }
+}
+// SELECT USER END
+
+// SELECT USER LARGE START
+.react-select-user-lg__control {
+  font-size: 14px;
+  border: 1px solid $input-border-color !important;
+  min-height: 48px !important;
+}
+
+.react-select-user-lg__control--is-focused {
+  border: 1px solid rgba($primary, .5) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(136, 177, 234, 0.5) !important;
+}
+
+.react-select-user-lg__value-container {
+  padding: 0 3px !important;
+}
+
+.react-select-user-lg__placeholder, .react-select-user-lg__value-container {
+  color: $input-placeholder-color !important;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-height: 28px;
+  & > div {
+    font-weight: $font-weight-medium;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 0;
+    .text {
+      flex: 1;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .name {
+      margin-left: 6px;
+      color: $input-placeholder-color;
+    }
+    .title {
+      color: $secondary;
+    }
+  }
+}
+
+.react-select-user-lg__indicator-separator {
+  background-color: transparent !important;
+}
+
+.react-select-user-lg__indicators {
+  margin-right: 0;
+  .icon {
+    line-height: 1;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.react-select-user-lg__clear-indicator {
+  padding: 4px;
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.react-select-user-lg__value-container {
+  // margin-left: 40px;
+}
+
+.react-select-user-lg__multi-value {
+  background-color: $secondary !important;
+}
+
+.react-select-user-lg__multi-value__label {
+  cursor: pointer;
+  color: $white !important;
+}
+.react-select-user-lg__multi-value__remove {
+  cursor: pointer;
+  &:hover {
+    background-color: $secondary !important
+  }
+  svg {
+    fill: $white !important;
+  }
+}
+
+.react-select-user-lg__menu-list {
+  > div {
+    font-weight: $font-weight-medium;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    .name {
+      margin-left: 10px;
+    }
+    .title {
+      color: $secondary;
+    }
+  }
+  .option-focused {
+    background-color: #E7E9ED;
+  }
+  .option-selected {
+    background-color: $secondary;
+    color: $white;
+    .title {
+      color: $gray-500;
+    }
+  }
+}
+
+.react-select-user-lg__multi-value__label {
+  display: flex;
+  align-items: center;
+  padding: 6px !important;
+  font-weight: $font-weight-medium;
+  font-size: 13px !important;
+  .name {
+    margin-left: 10px;
+  }
+  .title {
+    color: $gray-500;
+  }
+}
+
+.react-select-user-lg__multi-value__remove {
+  svg {
+    width: 20px !important;
+    height: 20px !important;
+    path {
+      fill: $gray-500;
+    }
+  }
+}
+// SELECT USER LARGE END

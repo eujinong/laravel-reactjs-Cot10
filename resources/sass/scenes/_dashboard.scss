@@ -1,0 +1,184 @@
+body {
+  background-color: $white;
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  a.nav-link {
+    color: $black;
+  }
+
+  .topbar {
+    border-bottom: 2px solid $gray-400;
+    justify-content: space-between;
+
+    &.top-header {
+      .nav-logo {
+        margin-left: 25px;
+        width: 150px;
+
+        img {
+          width: 100%;
+        }
+      }
+    }
+
+    .right-nav-bar {
+      div {
+        i {
+          color: $gray-600;
+
+          &.fa-bell {
+            font-size: 18px;
+          }
+        }
+      }
+
+      >li {
+        background-color: #a0c3ff;
+        border-radius: 50%;
+        height: 35px;
+        width: 35px;
+
+        >a {
+          color: #4374e0;
+          font-size: 20px;
+          margin-top: 0px;
+          padding: 5px 0px;
+          text-align: center;
+          width: 35px;
+        }
+
+        .dropdown-menu {
+          .dropdown-item {
+            padding: 5px;
+
+            a {
+              color: inherit;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .menu {
+    margin-top: 30px;
+    ul.nav {
+      li.nav-item {
+        a.nav-link {
+          color: $steel;
+          font-size: 20px;
+
+          &.active {
+            color: $primary;
+            font-weight: bold;
+          }
+
+          &:hover {
+            color: $primary;
+          }
+        }
+      }
+    }
+  }
+
+  .dashboard {
+    margin-top: 60px;
+
+    .ui.list {
+      background-color: $silver;
+      padding: 10px;
+
+      .item {
+        margin: 10px;
+
+        .header {
+          font-size: 16px;
+        }
+
+        .list {
+          border: none;
+        }
+      }
+    }
+
+    .panel {
+      button {
+        border-radius: 0;
+        margin: 5px 0 5px 20px;
+        width: 100%;
+
+        &.active::before {
+          border-bottom: 10px solid transparent;
+          border-left: 20px solid $primary;
+          border-top: 10px solid transparent;
+          content: "";
+          height: 0;
+          left: 0;
+          position: absolute;
+          width: 0;
+        }
+
+        &:focus {
+          box-shadow: none !important;
+        }
+      }
+    }
+
+    .contest {
+      img {
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 5px;
+        width: 180px;
+      }
+
+      div.mx-3 {
+        .row {
+          div {
+            padding: 0 5px;
+
+            .process-link {
+              color: $primary;
+              text-decoration: underline;
+
+              &:hover {
+                cursor: pointer;
+              }
+            }
+          }
+        }
+        
+        &:not(:first-child) {
+          width: 100%;
+        }
+      }
+    }
+
+    .form-group {
+      .field {
+        width: 100%;
+
+        input {
+          height: 48px;
+        }
+      }
+
+      &.invalid {
+        .field {
+          input {
+            border: 1px solid #dc3545;
+          }
+        }
+      }
+    }
+  }
+}
