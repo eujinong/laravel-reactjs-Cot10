@@ -19,6 +19,7 @@ Route::namespace('Api')->group(function () {
 	Route::post('reset/{token}', 'ForgotPasswordController@reset');
 
 	Route::get('getConfig', 'AdminController@getConfig');
+	Route::get('categories', 'CategoryController@index');
 
 	Route::post('reg-user', 'UserController@store');
 	Route::post('reg-member', 'MemberController@store');
@@ -29,7 +30,6 @@ Route::namespace('Api')->group(function () {
 		Route::post('setConfig', 'AdminController@setConfig');
 
 		// Category APIs
-		Route::get('categories', 'CategoryController@index');
 		Route::post('create-category', 'CategoryController@store');
 
 		// Contest APIs

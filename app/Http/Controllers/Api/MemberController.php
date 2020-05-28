@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Member;
+use App\Interest;
 
 use JWTAuth;
 use Illuminate\Http\Request;
@@ -47,7 +48,6 @@ class MemberController extends Controller
       'firstname' => 'required|string|max:255',
       'lastname' => 'required|string|max:255',
       'gender' => 'required|integer',
-      'birthday' => 'required|date',
       'number' => 'required|string|max:255',
       'email' => 'required|string|email|max:255|unique:members',
       'country' => 'required|string|max:255',
@@ -112,12 +112,11 @@ class MemberController extends Controller
       }
     }
 
-    Member::create(array(
+    $member = Member::create(array(
       'firstname' => $data['firstname'],
       'lastname' => $data['lastname'],
       'profile_image' => $data['profile_image'],
       'gender' => $data['gender'],
-      'birthday' => $data['birthday'],
       'number' => $data['number'],
       'email' => $data['email'],
       'country' => $data['country'],
@@ -127,8 +126,17 @@ class MemberController extends Controller
       'zip_code' => $data['zip_code'],
       'street' => $data['street'],
       'building' => $data['building'],
-      'apartment' => $data['apartment'],
-      'join_date' => date('Y-m-d'),
+      'apartment' => $data['apartment']
+    ));
+
+    $major_ids = '';
+    foreach ($data['major_ids'] as $id) {
+      $major_ids .= $id . ',';
+    }
+
+    Interest::create(array(
+      'member_id' => $member->id,
+      'major_ids' => substr($major_ids, 0, strlen($major_ids) - 1)
     ));
 
     return response()->json([

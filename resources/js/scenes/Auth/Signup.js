@@ -9,7 +9,7 @@ import {
   Form, FormGroup, FormFeedback,
   Input, Label,
   UncontrolledAlert,
-  Alert
+  Alert, UncontrolledTooltip
 } from 'reactstrap';
 import Select from 'react-select';
 import SemanticDatepicker from 'react-semantic-ui-datepickers';
@@ -23,8 +23,8 @@ class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      majorcat: [],
       imagePreviewUrl: '',
-      birthday: null,
       fileKey: 1,
       alertVisible: false,
       messageStatus: false,
@@ -34,6 +34,25 @@ class Signup extends Component {
 
     this.fileRef = React.createRef();
     this.formikRef = React.createRef();
+  }
+
+  async componentDidMount() {
+    const categories = await Api.get('categories');
+    switch (categories.response.status) {
+      case 200:
+        let majorcat = [];
+
+        categories.body.major.map(item => {
+          majorcat.push({value: item.id, label: item.name});
+        });
+
+        this.setState({
+          majorcat
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   fileUpload(e) {
@@ -52,21 +71,19 @@ class Signup extends Component {
   }
 
   async handleSubmit(values, bags) {
-    if (!this.state.birthday) {
-      bags.setSubmitting(false);
-      return;
-    }
-
     let newData = {};
     const { imagePreviewUrl } = this.state;
+
+    let major_ids = [];
+    for (let i = 0; i < values.major.length; i++) {
+      major_ids.push(values.major[i].value)
+    }
     
     newData = {
       profile_image: imagePreviewUrl || '',
-      join_date: values.join_date,
       firstname: values.firstname,
       lastname: values.lastname,
       gender: values.gender.id,
-      birthday: this.state.birthday,
       email: values.email,
       number: values.number,
       country: values.country.code,
@@ -76,7 +93,8 @@ class Signup extends Component {
       zip_code: values.zip_code,
       street: values.street,
       building: values.building,
-      apartment: values.apartment
+      apartment: values.apartment,
+      major_ids
     };
 
     const data = await Api.post('reg-member', newData);
@@ -117,38 +135,10 @@ class Signup extends Component {
     bags.setSubmitting(false);
   }
 
-  onChangeBirth(event, data) {
-    if (data.value) {
-      let birthday = this.convertDate(data.value);
-
-      this.setState({
-        birthday
-      });
-    } else {
-      this.setState({
-        birthday: null
-      });
-    }
-  }
-
-  convertDate(d) {
-    let year = d.getFullYear();
-
-    let month = d.getMonth() + 1;
-    if (month < 10)
-      month = '0' + month;
-
-    let day = d.getDate();
-    if (day < 10)
-      day = '0' + day;
-
-    return (year + '-' + month + '-' + day);
-  }
-
   render() {
     const {
-      imagePreviewUrl,
-      birthday
+      majorcat,
+      imagePreviewUrl
     } = this.state;
 
     let $imagePreview = null;
@@ -157,16 +147,6 @@ class Signup extends Component {
     } else {
       $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
     }
-
-    var d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) 
-        month = '0' + month;
-    if (day.length < 2) 
-        day = '0' + day;
 
     return (
       <Fragment>
@@ -191,11 +171,9 @@ class Signup extends Component {
 
               initialValues={{
                 profile_image: null,
-                join_date: [year, month, day].join('-'),
                 firstname: '',
                 lastname: '',
                 gender: null,
-                birthday: null,
                 email: '',
                 number: '',
                 country: '',
@@ -205,7 +183,8 @@ class Signup extends Component {
                 zip_code: '',
                 street: '',
                 building: '',
-                apartment: ''
+                apartment: '',
+                major: null
               }}
 
               validationSchema={
@@ -223,7 +202,8 @@ class Signup extends Component {
                   zip_code: Yup.string().required('This field is required!'),
                   street: Yup.string().required('This field is required!'),
                   building: Yup.number().required('This field is required!').typeError('Building Number must be number type.'),
-                  apartment: Yup.number().required('This field is required!').typeError('Apartment Number must be number type.')
+                  apartment: Yup.number().required('This field is required!').typeError('Apartment Number must be number type.'),
+                  major: Yup.string().typeError('Major Category must be selected at least 1.')
                 })
               }
 
@@ -240,12 +220,20 @@ class Signup extends Component {
                 handleSubmit,
                 isSubmitting
               }) => (
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit} className="reg-member">
                   {status && <UncontrolledAlert {...status} />}
                   <Row>
-                    <Col xs="12" sm="6">
-                      <FormGroup className="reg-member">
-                        <Label for="profile_image">Profile Image</Label>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="profile_image">
+                        Profile Image:
+                        <span className="explain" id="profile_image">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="profile_image">
+                        Profile Image
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
                         <Input
                           ref="file"
                           type="file"
@@ -258,59 +246,67 @@ class Signup extends Component {
                         </div>
                       </FormGroup>
                     </Col>
-                    <Col xs="12" sm="6">
-                      <Row>
-                        <Col sm="12">
-                          <FormGroup>
-                            <Label for="join_date">Join Date</Label>
-                            <Input
-                              id="join_date"
-                              name="join_date"
-                              type="text"
-                              value={[year, month, day].join('-')}
-                              readOnly
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col sm="12">
-                          <FormGroup>
-                            <Label for="firstname">
-                              First Name
-                            </Label>
-                            <Input
-                              name="firstname"
-                              type="text"
-                              value={values.firstname || ''}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              invalid={!!errors.firstname && touched.firstname}
-                            />
-                            <FormFeedback>{errors.firstname}</FormFeedback>
-                          </FormGroup>
-                        </Col>
-                        <Col sm="12">
-                          <FormGroup>
-                            <Label for="lastname">
-                              Last Name
-                            </Label>
-                            <Input
-                              name="lastname"
-                              type="text"
-                              value={values.lastname || ''}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              invalid={!!errors.lastname && touched.lastname}
-                            />
-                            <FormFeedback>{errors.lastname}</FormFeedback>
-                          </FormGroup>
-                        </Col>
-                      </Row>
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="firstname" className="mt-2">
+                        First Name:
+                        <span className="explain" id="firstname">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="firstname">
+                        First Name
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
+                        <Input
+                          name="firstname"
+                          type="text"
+                          value={values.firstname || ''}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          invalid={!!errors.firstname && touched.firstname}
+                        />
+                        <FormFeedback>{errors.firstname}</FormFeedback>
+                      </FormGroup>
                     </Col>
                   </Row>
                   <Row>
-                    <Col md="3" sm="6" xs="12">
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="lastname" className="mt-2">
+                        Last Name:
+                        <span className="explain" id="lastname">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="lastname">
+                        Last Name
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="gender">Gender</Label>
+                        <Input
+                          name="lastname"
+                          type="text"
+                          value={values.lastname || ''}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          invalid={!!errors.lastname && touched.lastname}
+                        />
+                        <FormFeedback>{errors.lastname}</FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="gender" className="mt-2">
+                        Gender:
+                        <span className="explain" id="gender">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="gender">
+                        Gender
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
                         <Select
                           name="gender"
                           classNamePrefix={!!errors.gender && touched.gender ? 'invalid react-select-lg' : 'react-select-lg'}
@@ -329,52 +325,19 @@ class Signup extends Component {
                         )}
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
-                      <FormGroup className={!birthday && touched.birthday ? 'invalid calendar' : 'calendar'}>
-                        <Label for="birthday">Birthday</Label>
-                        <SemanticDatepicker
-                          name="birthday"
-                          placeholder="Birthday"
-                          onChange={this.onChangeBirth.bind(this)}
-                        />
-                        {!birthday && touched.birthday && (
-                          <FormFeedback className="d-block">This field is required!</FormFeedback>
-                        )}
-                      </FormGroup>
-                    </Col>
-                    <Col md="3" sm="6" xs="12">
-                      <FormGroup>
-                        <Label for="email">Email</Label>
-                        <Input
-                          name="email"
-                          type="email"
-                          value={values.email || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.email && touched.email}
-                        />
-                        <FormFeedback>{errors.email}</FormFeedback>
-                      </FormGroup>
-                    </Col>
-                    <Col md="3" sm="6" xs="12">
-                      <FormGroup>
-                        <Label for="number">Text Number</Label>
-                        <Input
-                          name="number"
-                          type="text"
-                          value={values.number || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.number && touched.number}
-                        />
-                        <FormFeedback>{errors.number}</FormFeedback>
-                      </FormGroup>
-                    </Col>
                   </Row>
                   <Row>
-                    <Col md="3" sm="6" xs="12">
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="country" className="mt-2">
+                        Country:
+                        <span className="explain" id="country">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="country">
+                        Country
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="country">Country</Label>
                         <Select
                           name="country"
                           classNamePrefix={!!errors.country && touched.country ? 'invalid react-select-lg' : 'react-select-lg'}
@@ -393,9 +356,19 @@ class Signup extends Component {
                         )}
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="state" className="mt-2">
+                        State:
+                        <span className="explain" id="state">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="state">
+                        State
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="state">State</Label>
                         <Input
                           name="state"
                           type="text"
@@ -407,9 +380,19 @@ class Signup extends Component {
                         <FormFeedback>{errors.state}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="county" className="mt-2">
+                        County:
+                        <span className="explain" id="county">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="county">
+                        County
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="county">County</Label>
                         <Input
                           name="county"
                           type="text"
@@ -421,9 +404,19 @@ class Signup extends Component {
                         <FormFeedback>{errors.county}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="city" className="mt-2">
+                        City:
+                        <span className="explain" id="city">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="city">
+                        City
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="city">City</Label>
                         <Input
                           name="city"
                           type="text"
@@ -437,9 +430,17 @@ class Signup extends Component {
                     </Col>
                   </Row>
                   <Row>
-                    <Col md="3" sm="6" xs="12">
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="zip_code" className="mt-2">
+                        Zip Code:
+                        <span className="explain" id="zip_code">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="zip_code">
+                        Zip Code
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="zip_code">Zip Code</Label>
                         <Input
                           name="zip_code"
                           type="text"
@@ -451,9 +452,19 @@ class Signup extends Component {
                         <FormFeedback>{errors.zip_code}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="street" className="mt-2">
+                        Street Name:
+                        <span className="explain" id="street">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="street">
+                        Street Name
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="street">Street Name</Label>
                         <Input
                           name="street"
                           type="text"
@@ -465,9 +476,19 @@ class Signup extends Component {
                         <FormFeedback>{errors.street}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="building" className="mt-2">
+                        House or Building Number:
+                        <span className="explain" id="building">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="building">
+                        House or Building Number
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="building">Building Number</Label>
                         <Input
                           name="building"
                           type="text"
@@ -479,9 +500,19 @@ class Signup extends Component {
                         <FormFeedback>{errors.building}</FormFeedback>
                       </FormGroup>
                     </Col>
-                    <Col md="3" sm="6" xs="12">
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="apartment" className="mt-2">
+                        Apartment or Unit Number:
+                        <span className="explain" id="apartment">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="apartment">
+                        Apartment or Unit Number
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
                       <FormGroup>
-                        <Label for="apartment">Apartment Number</Label>
                         <Input
                           name="apartment"
                           type="text"
@@ -494,24 +525,103 @@ class Signup extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
-                  <div className="w-100 d-flex justify-content-end">
-                    <div>
-                      <Button
-                        className="mr-5"
-                        disabled={isSubmitting}
-                        type="submit"
-                        color="primary"
-                      >
-                        Register
-                      </Button>
-                      <Button
-                        type="button"
-                        color="secondary"
-                        onClick={() => this.props.history.push('/')}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="email" className="mt-2">
+                        Email:
+                        <span className="explain" id="email">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="email">
+                        Email
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
+                        <Input
+                          name="email"
+                          type="email"
+                          value={values.email || ''}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          invalid={!!errors.email && touched.email}
+                        />
+                        <FormFeedback>{errors.email}</FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="number" className="mt-2">
+                        Text Number:
+                        <span className="explain" id="number">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="number">
+                        Text Number
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
+                        <Input
+                          name="number"
+                          type="text"
+                          value={values.number || ''}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          invalid={!!errors.number && touched.number}
+                        />
+                        <FormFeedback>{errors.number}</FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="major" className="mt-2">
+                        Interested in Major Category:
+                        <span className="explain" id="major">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="major">
+                        Interested in Major Category
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
+                        <Select
+                          name="major"
+                          isMulti
+                          menuPlacement="auto"
+                          classNamePrefix={!!errors.major && touched.major ? 'invalid react-select-lg' : 'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={majorcat}
+                          getOptionValue={option => option.value}
+                          getOptionLabel={option => option.label}
+                          value={values.major}
+                          onChange={(option) => {
+                            setFieldValue('major', option);
+                          }}
+                          onBlur={this.handleBlur}
+                        />
+                        {!!errors.major && touched.major && (
+                          <FormFeedback className="d-block">{errors.major}</FormFeedback>
+                        )}
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <div className="w-100 d-flex justify-content-center my-3">
+                    <Button
+                      className="mr-5"
+                      disabled={isSubmitting}
+                      type="submit"
+                      color="primary"
+                    >
+                      Register
+                    </Button>
+                    <Button
+                      type="button"
+                      color="secondary"
+                      onClick={() => this.props.history.push('/')}
+                    >
+                      Cancel
+                    </Button>
                   </div>
                 </Form>
               )}
