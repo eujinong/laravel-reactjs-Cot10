@@ -32,7 +32,8 @@ Route::namespace('Api')->group(function () {
 		Route::post('setConfig', 'AdminController@setConfig');
 
 		// Category APIs
-		Route::post('approve-category', 'CategoryController@update');
+		Route::put('category/{id}', 'CategoryController@update');
+		Route::delete('category/{id}', 'CategoryController@destroy');
 
 		// Contest APIs
 		Route::get('contests', 'ContestController@index');

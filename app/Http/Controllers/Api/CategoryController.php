@@ -102,11 +102,11 @@ class CategoryController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request)
+  public function update(Request $request, $id)
   {
     $data = $request->all();
     
-    Category::where('id', $data['id'])
+    Category::where('id', $id)
             ->update(array(
               'parent_id' => $data['parent_id'],
               'active' => 1
@@ -132,6 +132,17 @@ class CategoryController extends Controller
    */
   public function destroy($id)
   {
-    
+    Category::where('id', $id)->delete();
+
+    $cat = Category::where('parent_id', 0)->get();
+    $subcat = Category::where('parent_id', '!=', 0)
+                    ->orderBy('parent_id')
+                    ->get();
+
+    return response()->json([
+      'status' => 'success',
+      'major' => $cat,
+      'sub' => $subcat,
+    ], 200);
   }
 }

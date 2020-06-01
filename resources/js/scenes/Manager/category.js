@@ -117,6 +117,7 @@ class Category extends Component {
             parent,
             inactive,
             current: 0,
+            request_cat: null,
             cat_parent: null,
             cat_name: ''
           });
@@ -148,9 +149,47 @@ class Category extends Component {
     const params = [];
 
     params.parent_id = request_cat ? request_cat.value : 0;
-    params.id = request_id;
 
-    const data = await Api.post('approve-category', params);
+    const data = await Api.put(`category/${request_id}`, params);
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        let parent = [];
+        parent.push({
+          name: 'No select',
+          value: 0
+        });
+
+        for (let i in body.major) {
+          if (body.major[i].active) {
+            let cat = {
+              name: body.major[i].name,
+              value: body.major[i].id
+            }
+
+            parent.push(cat);
+          }
+        }
+
+        let inactive = body.major.filter(item => item.active == 0);
+        inactive = inactive.concat(body.sub.filter(item => item.active == 0));
+
+        this.setState({
+          major: body.major,
+          sub: body.sub,
+          parent,
+          inactive,
+          current: 0,
+          request_cat: null
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  async handleDeleteCategory(id) {
+    const data = await Api.delete(`category/${id}`);
     const { response, body } = data;
     switch (response.status) {
       case 200:
@@ -268,7 +307,16 @@ class Category extends Component {
                         <List.Item key={index}>
                           <List.Icon className={item.active ? '' : 'text-danger'} name="minus" />
                           <List.Content>
-                            <List.Header className={item.active ? '' : 'text-danger'}>{item.name}</List.Header>
+                            <List.Header className={item.active ? '' : 'text-danger'}>
+                              {item.name}
+                              {
+                                sub.filter(child => child.parent_id == item.id).length == 0 && (
+                                  <a onClick={this.handleDeleteCategory.bind(this, item.id)}>
+                                    <i className="fa fa-trash ml-3"></i>
+                                  </a>
+                                )
+                              }
+                            </List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
                                 <List.List>
@@ -277,7 +325,12 @@ class Category extends Component {
                                       <List.Item key={key}>
                                         <List.Icon className={subitem.active ? '' : 'text-danger'} name="minus" />
                                         <List.Content>
-                                          <List.Header className={subitem.active ? '' : 'text-danger'}>{subitem.name}</List.Header>
+                                          <List.Header className={subitem.active ? '' : 'text-danger'}>
+                                            {subitem.name}
+                                            <a onClick={this.handleDeleteCategory.bind(this, subitem.id)}>
+                                              <i className="fa fa-trash ml-3"></i>
+                                            </a>
+                                          </List.Header>
                                         </List.Content>
                                       </List.Item>
                                     ))
