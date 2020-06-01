@@ -12,6 +12,8 @@ import Menu from '../../components/Menu';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
+
+    this.props.history.push('/contest/categories');
   }
 
   render() {

@@ -22,9 +22,14 @@ class Category extends Component {
     super(props);
 
     this.state = {
+      parent: [],
       major: [],
       sub: [],
+      inactive: [],
+      current: 0,
+      request_id: '',
       cat_parent: null,
+      request_cat: null,
       cat_name: ''
     }
   }
@@ -41,18 +46,28 @@ class Category extends Component {
         });
 
         for (let i in body.major) {
-          let cat = {
-            name: body.major[i].name,
-            value: body.major[i].id
-          }
+          if (body.major[i].active) {
+            let cat = {
+              name: body.major[i].name,
+              value: body.major[i].id
+            }
 
-          parent.push(cat);
+            parent.push(cat);
+          }
         }
+
+        let inactive = body.major.filter(item => item.active == 0);
+        inactive = inactive.concat(body.sub.filter(item => item.active == 0));
       
         this.setState({
           major: body.major,
           sub: body.sub,
-          parent
+          parent,
+          inactive
+        });
+
+        this.setState({
+          request_id: inactive[this.state.current].id
         });
         break;
       default:
@@ -80,13 +95,18 @@ class Category extends Component {
           });
 
           for (let i in body.major) {
-            let cat = {
-              name: body.major[i].name,
-              value: body.major[i].id
+            if (body.major[i].active) {
+              let cat = {
+                name: body.major[i].name,
+                value: body.major[i].id
+              }
+  
+              parent.push(cat);
             }
-
-            parent.push(cat);
           }
+
+          let inactive = body.major.filter(item => item.active == 0);
+          inactive = inactive.concat(body.sub.filter(item => item.active == 0));
 
           this.setState({
             alertVisible: true,
@@ -95,6 +115,8 @@ class Category extends Component {
             major: body.major,
             sub: body.sub,
             parent,
+            inactive,
+            current: 0,
             cat_parent: null,
             cat_name: ''
           });
@@ -120,9 +142,56 @@ class Category extends Component {
     }
   }
 
+  async handleApproveCategory() {
+    const { request_cat, request_id } = this.state;
+    
+    const params = [];
+
+    params.parent_id = request_cat ? request_cat.value : 0;
+    params.id = request_id;
+
+    const data = await Api.post('approve-category', params);
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        let parent = [];
+        parent.push({
+          name: 'No select',
+          value: 0
+        });
+
+        for (let i in body.major) {
+          if (body.major[i].active) {
+            let cat = {
+              name: body.major[i].name,
+              value: body.major[i].id
+            }
+
+            parent.push(cat);
+          }
+        }
+
+        let inactive = body.major.filter(item => item.active == 0);
+        inactive = inactive.concat(body.sub.filter(item => item.active == 0));
+
+        this.setState({
+          major: body.major,
+          sub: body.sub,
+          parent,
+          inactive,
+          current: 0,
+          request_cat: null
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
   render() {
     const { 
-      major, sub, 
+      major, sub,
+      inactive, request_cat, current,
       parent, cat_parent, cat_name
     } = this.state;
 
@@ -134,7 +203,7 @@ class Category extends Component {
         
         <div className="dashboard container">
           <Row>
-            <Col sm="6">
+            <Col sm="12" md={{ size: 6, offset: 3 }}>
               {
                 this.state.alertVisible && (
                   <div className="w-100 mb-5">
@@ -166,16 +235,16 @@ class Category extends Component {
                 <Label for="name" sm="4" className="text-right">Category Name:</Label>
                 <Col sm="8">
                   <Input
-                      type="text"
-                      sm="8"
-                      placeholder="Category Name"
-                      value={cat_name}
-                      onChange={(name) => {
-                        this.setState({
-                          cat_name: name.target.value
-                        });
-                      }}
-                    />
+                    type="text"
+                    sm="8"
+                    placeholder="Category Name"
+                    value={cat_name}
+                    onChange={(name) => {
+                      this.setState({
+                        cat_name: name.target.value
+                      });
+                    }}
+                  />
                 </Col>
               </FormGroup>
               <FormGroup className="text-center">
@@ -188,6 +257,8 @@ class Category extends Component {
                 </Button>
               </FormGroup>
             </Col>
+          </Row>
+          <Row>
             <Col sm="6">
               {
                 major && major.length > 0 && (
@@ -195,18 +266,18 @@ class Category extends Component {
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
-                          <List.Icon name="minus" />
+                          <List.Icon className={item.active ? '' : 'text-danger'} name="minus" />
                           <List.Content>
-                            <List.Header>{item.name}</List.Header>
+                            <List.Header className={item.active ? '' : 'text-danger'}>{item.name}</List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
                                 <List.List>
                                   {
                                     sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
                                       <List.Item key={key}>
-                                        <List.Icon name="minus" />
+                                        <List.Icon className={subitem.active ? '' : 'text-danger'} name="minus" />
                                         <List.Content>
-                                          <List.Header>{subitem.name}</List.Header>
+                                          <List.Header className={subitem.active ? '' : 'text-danger'}>{subitem.name}</List.Header>
                                         </List.Content>
                                       </List.Item>
                                     ))
@@ -219,6 +290,83 @@ class Category extends Component {
                       ))
                     }
                   </List>
+                )
+              }
+            </Col>
+            <Col sm="6">
+              {
+                inactive.length > 0 && (
+                  <Fragment>
+                    <h3 className="text-center">Category Requests for Approval</h3>
+                    {
+                      inactive.map((item, index) => (
+                        <div className={index == current ? "requests active" : "requests"} key={index}>
+                          {
+                            item.parent_id == 0 ? (
+                              <h4 className="my-4">Major Category</h4>
+                            ) : (
+                              <h4 className="my-4">Sub Category</h4>
+                            )
+                          }
+                          <h5>Suggestion {index + 1}</h5>
+                          <h5 className="mb-3">Category Name: {item.name}</h5>
+                        </div>
+                      ))
+                    }
+                    <Select
+                      classNamePrefix="react-select-lg"
+                      options={parent}
+                      getOptionValue={option => option.value}
+                      getOptionLabel={option => option.name}
+                      value={request_cat}
+                      onChange={(option) => {
+                        this.setState({
+                          request_cat: option
+                        });
+                      }}
+                    />
+                    <div className="d-flex text-center mt-3">
+                      <Col sm="4" className="pt-2">
+                        <a
+                          className="prev"
+                          onClick={() => {
+                            let val = current > 0 ? current - 1 : 0;
+
+                            this.setState({
+                              current: val,
+                              request_id: inactive[val].id
+                            })
+                          }}
+                        >
+                          Prev
+                        </a>
+                      </Col>
+                      <Col sm="4" className="pt-2">
+                        <a
+                          className="next"
+                          onClick={() => {
+                            let val = current < inactive.length - 1 ? current + 1 : inactive.length - 1;
+
+                            this.setState({
+                              current: val,
+                              request_id: inactive[val].id
+                            })
+                          }}
+                        >
+                          Next
+                        </a>
+                      </Col>
+                      <Col sm="4">
+                        <Button
+                          className="btn-success"
+                          type="button"
+                          onClick={this.handleApproveCategory.bind(this)}
+                        >
+                          Save
+                        </Button>
+                      </Col>
+                    </div>
+                  </Fragment>
                 )
               }
             </Col>

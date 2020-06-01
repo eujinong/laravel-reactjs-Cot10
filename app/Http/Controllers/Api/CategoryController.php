@@ -78,7 +78,8 @@ class CategoryController extends Controller
     Category::create(array(
       'parent_id' => $data['parent_id'],
       'name' => $data['name'],
-      'short_name' => $short
+      'short_name' => $short,
+      'active' => 0
     ));
 
     $cat = Category::where('parent_id', 0)->get();
@@ -101,9 +102,26 @@ class CategoryController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request)
   {
+    $data = $request->all();
     
+    Category::where('id', $data['id'])
+            ->update(array(
+              'parent_id' => $data['parent_id'],
+              'active' => 1
+            ));
+
+    $cat = Category::where('parent_id', 0)->get();
+    $subcat = Category::where('parent_id', '!=', 0)
+                    ->orderBy('parent_id')
+                    ->get();
+
+    return response()->json([
+      'status' => 'success',
+      'major' => $cat,
+      'sub' => $subcat,
+    ], 200);
   }
 
   /**

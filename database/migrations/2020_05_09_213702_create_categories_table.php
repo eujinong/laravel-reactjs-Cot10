@@ -19,6 +19,7 @@ class CreateCategoriesTable extends Migration
 
             $table->string('name');
             $table->string('short_name');
+            $table->boolean('active');
 
             $table->timestamps();
         });

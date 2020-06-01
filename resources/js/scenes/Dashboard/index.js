@@ -24,6 +24,9 @@ class Dashboard extends Component {
               <Col className="text-center mt-5" sm="12">
                 <a className="btn btn-success" href="/signup">Member Signup</a>
               </Col>
+              <Col className="text-center mt-5" sm="12">
+                <a className="btn btn-secondary" href="/request-category">Request Category</a>
+              </Col>
             </Row>
           </Container>
         </div>

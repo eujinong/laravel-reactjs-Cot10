@@ -9,12 +9,12 @@ import {
 
 import Admin from './Admin';
 
-import ManagerInterest from './Manager/interest';
 import ManagerCategory from './Manager/category';
 import ManagerContest from './Manager/contest';
 import ManagerCompleted from './Manager/completed';
 import Manager from './Manager';
 
+import ReqCategory from './Dashboard/category';
 import Contests from './Dashboard/contests'
 import Dashboard from './Dashboard';
 
@@ -33,12 +33,12 @@ class Main extends Component {
         <Switch>
           <AuthAdminRoute path="/web" name="Admin" component={Admin} />
           
-          <AuthManagerRoute path="/contest/interests" name="ManagerInterest" component={ManagerInterest} />
           <AuthManagerRoute path="/contest/categories" name="ManagerCategory" component={ManagerCategory} />
           <AuthManagerRoute path="/contest/contests" name="ManagerContest" component={ManagerContest} />
           <AuthManagerRoute path="/contest/completed" name="ManagerCompleted" component={ManagerCompleted} />
           <AuthManagerRoute path="/contest" name="Manager" component={Manager} />
           
+          <Route path="/request-category" name="ReqCategory" component={ReqCategory} />
           <Route path="/contests" name="contests" component={Contests} />
           <Route path="/" name="Dashboard" component={Dashboard} />
         </Switch>

@@ -71803,3 +71803,23 @@ body .dashboard .form-group.invalid .field input {
   border: 1px solid #dc3545;
 }
 
+body .dashboard .requests {
+  display: none;
+}
+
+body .dashboard .requests.active {
+  display: block;
+}
+
+body .dashboard .prev,
+body .dashboard .next {
+  color: #4183C4;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+body .dashboard .prev:hover,
+body .dashboard .next:hover {
+  text-decoration: underline;
+}
+

@@ -24,9 +24,6 @@ class Menu extends Component {
           type == 'contest' && (
             <Nav>
               <NavItem>
-                <NavLink tag={Link} to="/contest/interests">My Interests</NavLink>
-              </NavItem>
-              <NavItem>
                 <NavLink tag={Link} to="/contest/categories">Categories</NavLink>
               </NavItem>
               <NavItem>
