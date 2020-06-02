@@ -42,7 +42,7 @@ class Signup extends Component {
       case 200:
         let majorcat = [];
 
-        categories.body.major.map(item => {
+        categories.body.major.filter(cat => cat.active == 1).map(item => {
           majorcat.push({value: item.id, label: item.name});
         });
 

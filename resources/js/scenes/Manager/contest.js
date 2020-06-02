@@ -78,11 +78,11 @@ class Contest extends Component {
         let majorcat = [{value: 0, label: "All Available Contests"}];
         let subfull = [];
 
-        categories.body.major.map(item => {
+        categories.body.major.filter(cat => cat.active == 1).map(item => {
           majorcat.push({value: item.id, label: item.name});
         });
 
-        categories.body.sub.map(item => {
+        categories.body.sub.filter(cat => cat.active == 1).map(item => {
           subfull.push({parent_id:item.parent_id, value: item.id, label: item.name});
         });
 
