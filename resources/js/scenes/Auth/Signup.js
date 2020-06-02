@@ -201,8 +201,6 @@ class Signup extends Component {
                   city: Yup.string().required('This field is required!'),
                   zip_code: Yup.string().required('This field is required!'),
                   street: Yup.string().required('This field is required!'),
-                  building: Yup.number().required('This field is required!').typeError('Building Number must be number type.'),
-                  apartment: Yup.number().required('This field is required!').typeError('Apartment Number must be number type.'),
                   major: Yup.string().typeError('Major Category must be selected at least 1.')
                 })
               }
@@ -495,9 +493,7 @@ class Signup extends Component {
                           value={values.building || ''}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          invalid={!!errors.building && touched.building}
                         />
-                        <FormFeedback>{errors.building}</FormFeedback>
                       </FormGroup>
                     </Col>
                   </Row>
@@ -519,9 +515,7 @@ class Signup extends Component {
                           value={values.apartment || ''}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          invalid={!!errors.apartment && touched.apartment}
                         />
-                        <FormFeedback>{errors.apartment}</FormFeedback>
                       </FormGroup>
                     </Col>
                   </Row>

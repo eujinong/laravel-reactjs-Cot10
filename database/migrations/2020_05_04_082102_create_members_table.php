@@ -30,8 +30,8 @@ class CreateMembersTable extends Migration
             $table->string('city', 50);
             $table->string('zip_code', 20);
             $table->string('street', 50);
-            $table->integer('building');
-            $table->integer('apartment');
+            $table->string('building', 50)->nullable();
+            $table->string('apartment', 50)->nullable();
 
             $table->date('join_date', 0);
 

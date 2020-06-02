@@ -56,8 +56,6 @@ class MemberController extends Controller
       'city' => 'required|string|max:255',
       'zip_code' => 'required|string|max:255',
       'street' => 'required|string|max:255',
-      'building' => 'required|string|max:255',
-      'apartment' => 'required|string|max:255'
     ]);
 
     if ($validMember->fails()) {
