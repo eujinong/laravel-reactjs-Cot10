@@ -66,9 +66,11 @@ class Category extends Component {
           inactive
         });
 
-        this.setState({
-          request_id: inactive[this.state.current].id
-        });
+        if (inactive.length > 0) {
+          this.setState({
+            request_id: inactive[this.state.current].id
+          });
+        }
         break;
       default:
         break;
@@ -107,6 +109,12 @@ class Category extends Component {
 
           let inactive = body.major.filter(item => item.active == 0);
           inactive = inactive.concat(body.sub.filter(item => item.active == 0));
+
+          if (inactive.length > 0) {
+            this.setState({
+              request_id: inactive[this.state.current].id
+            });
+          }
 
           this.setState({
             alertVisible: true,
