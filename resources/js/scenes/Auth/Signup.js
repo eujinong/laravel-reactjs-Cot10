@@ -12,7 +12,6 @@ import {
   Alert, UncontrolledTooltip
 } from 'reactstrap';
 import Select from 'react-select';
-import SemanticDatepicker from 'react-semantic-ui-datepickers';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 import Api from '../../apis/app';
@@ -83,6 +82,7 @@ class Signup extends Component {
       profile_image: imagePreviewUrl || '',
       firstname: values.firstname,
       lastname: values.lastname,
+      password: values.password,
       gender: values.gender.id,
       email: values.email,
       number: values.number,
@@ -173,6 +173,8 @@ class Signup extends Component {
                 profile_image: null,
                 firstname: '',
                 lastname: '',
+                password: '',
+                confirm: '',
                 gender: null,
                 email: '',
                 number: '',
@@ -191,6 +193,14 @@ class Signup extends Component {
                 Yup.object().shape({
                   firstname: Yup.string().required('This field is required!'),
                   lastname: Yup.string().required('This field is required!'),
+                  password: Yup.string().min(6, 'Password has to be longer than 6 characters!').required('Password is required!'),
+                  confirm: Yup.string().required('Confirm Password is required!').when("password", {
+                    is: val => (val && val.length > 0 ? true : false),
+                    then: Yup.string().oneOf(
+                      [Yup.ref("password")],
+                      "Confirm Password need to be same with Password"
+                    )
+                  }),
                   gender: Yup.mixed().required('This field is required!'),
                   email: Yup.string().email('Email is not valid!').required('This field is required!'),
                   number: Yup.string().matches(/^\+?[0-9]\s?[-]\s|[0-9]$/, 'Text Number is incorrect!')
@@ -290,6 +300,54 @@ class Signup extends Component {
                           invalid={!!errors.lastname && touched.lastname}
                         />
                         <FormFeedback>{errors.lastname}</FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="password" className="mt-2">
+                        Password:
+                        <span className="explain" id="password">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="password">
+                        Password
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
+                        <Input
+                          name="password"
+                          type="password"
+                          value={values.password || ''}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          invalid={!!errors.password && touched.password}
+                        />
+                        <FormFeedback>{errors.password}</FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col xs="6" sm="4" className="text-right">
+                      <Label for="confirm" className="mt-2">
+                        Confirm Password:
+                        <span className="explain" id="confirm">?</span>
+                      </Label>
+                      <UncontrolledTooltip placement="right" target="confirm">
+                        Confirm Password
+                      </UncontrolledTooltip>
+                    </Col>
+                    <Col xs="6" sm="4">
+                      <FormGroup>
+                        <Input
+                          name="confirm"
+                          type="password"
+                          value={values.confirm || ''}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          invalid={!!errors.confirm && touched.confirm}
+                        />
+                        <FormFeedback>{errors.confirm}</FormFeedback>
                       </FormGroup>
                     </Col>
                   </Row>

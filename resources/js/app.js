@@ -13,6 +13,7 @@ import AdminSignin from './scenes/Admin/Signin';
 import ManagerSignin from './scenes/Manager/Signin';
 import ManagerSignup from './scenes/Manager/Signup';
 
+import Signin from './scenes/Auth/Signin';
 import Signup from './scenes/Auth/Signup';
 import Forgot from './scenes/Auth/Forgot';
 import Reset from './scenes/Auth/Reset';
@@ -55,6 +56,7 @@ class App extends Component {
             <Route path="/forgot" name="Forgot" component={Forgot} />
             <Route path="/reset/:token" name="Reset" component={Reset} />
 
+            <Route path="/signin" name="signin" component={Signin} />
             <Route path="/signup" name="signup" component={Signup} />
             <Route path="/" name="Main" component={Main} />
 

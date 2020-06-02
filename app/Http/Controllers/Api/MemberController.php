@@ -8,6 +8,7 @@ use App\Interest;
 use JWTAuth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
@@ -47,6 +48,7 @@ class MemberController extends Controller
     $validMember = Validator::make($data, [
       'firstname' => 'required|string|max:255',
       'lastname' => 'required|string|max:255',
+      'password' => 'required|string|max:255',
       'gender' => 'required|integer',
       'number' => 'required|string|max:255',
       'email' => 'required|string|email|max:255|unique:members',
@@ -113,6 +115,7 @@ class MemberController extends Controller
     $member = Member::create(array(
       'firstname' => $data['firstname'],
       'lastname' => $data['lastname'],
+      'password' => md5($data['password']),
       'profile_image' => $data['profile_image'],
       'gender' => $data['gender'],
       'number' => $data['number'],

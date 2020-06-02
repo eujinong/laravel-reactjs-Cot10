@@ -25,3 +25,15 @@ export const AuthManagerRoute = ({ component: Component, ...rest }) => {
     />
   );
 };
+
+export const UserRoute = ({ component: Component, ...rest }) => {
+  const { auth } = Store.getState().common;
+  return (
+    <Route
+      {...rest}
+      render={props => (auth || props.location.pathname == '/signup'
+        ? <Component {...props} />
+        : <Redirect to={{ pathname: '/signin', state: { from: props.location } }} />)}
+    />
+  );
+};

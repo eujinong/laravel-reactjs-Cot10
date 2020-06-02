@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Router, Route, Switch
+  Router, Switch
 } from 'react-router-dom';
 
 import {
-  AuthAdminRoute, AuthManagerRoute
+  AuthAdminRoute, AuthManagerRoute, UserRoute
 } from '../components/PrivateRoutes';
 
 import Admin from './Admin';
@@ -38,9 +38,9 @@ class Main extends Component {
           <AuthManagerRoute path="/contest/completed" name="ManagerCompleted" component={ManagerCompleted} />
           <AuthManagerRoute path="/contest" name="Manager" component={Manager} />
           
-          <Route path="/request-category" name="ReqCategory" component={ReqCategory} />
-          <Route path="/contests" name="contests" component={Contests} />
-          <Route path="/" name="Dashboard" component={Dashboard} />
+          <UserRoute path="/request-category" name="ReqCategory" component={ReqCategory} />
+          <UserRoute path="/contests" name="contests" component={Contests} />
+          <UserRoute path="/" name="Dashboard" component={Dashboard} />
         </Switch>
       </Router>
     );

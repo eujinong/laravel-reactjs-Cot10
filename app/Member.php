@@ -14,9 +14,9 @@ class Member extends Model
     protected $fillable = [
         'firstname',
         'lastname',
+        'password',
         'profile_image',
         'gender',
-        'birthday',
         'number',
         'email',
         'country',
@@ -26,7 +26,6 @@ class Member extends Model
         'zip_code',
         'street',
         'building',
-        'apartment',
-        'join_date'
+        'apartment'
     ];
 }

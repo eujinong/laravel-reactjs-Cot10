@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\User;
+use App\Member;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -31,43 +32,43 @@ class UserController extends Controller
 			);
 		}
 
-		$credentials = $request->only('email', 'password');
-		try {
-			if (!$token = JWTAuth::attempt($credentials)) {
-				return response()->json(
-					[
+		if ($request->usertype == 'admin' || $request->usertype == 'manager') {
+			$credentials = $request->only('email', 'password');
+
+			try {
+				if (!$token = JWTAuth::attempt($credentials)) {
+					return response()->json(
+						[
 							'status' => 'error',
 							'message'=> 'Invalid credentials.'
+						],
+						406
+					);
+				}
+			} catch (JWTException $e) {
+				return response()->json(
+					[
+						'status' => 'error',
+						'message' => 'Invalid credentials.'
 					],
 					406
 				);
 			}
-		} catch (JWTException $e) {
-			return response()->json(
-				[
-					'status' => 'error',
-					'message' => 'Invalid credentials.'
-				],
-				406
-			);
-		}
 
-		$user = User::where('email', $request->email)
-								->where('active', 1)
-								->first();
+			$user = User::where('email', $request->email)
+									->where('active', 1)
+									->first();
+	
+			if (is_null($user)) {
+				return response()->json(
+					[
+						'status' => 'error',
+						'message' => 'Your account is inactive now. Please contact to Site manager.'
+					],
+					406
+				);
+			}
 
-		if (is_null($user)) {
-			return response()->json(
-				[
-					'status' => 'error',
-					'message' => 'Your account is inactive now. Please contact to Site manager.'
-				],
-				406
-			);
-		}
-
-		if (($request->usertype == 'admin' && $user->admin == 1) ||
-				($request->usertype == 'manager' && $user->admin == 0)) {
 			return response()->json([
 				'status' => 'success',
 				'data' => [
@@ -78,13 +79,28 @@ class UserController extends Controller
 				]
 			], 200);
 		} else {
-			return response()->json(
-				[
-					'status' => 'error',
-					'message' => 'Invalid credentials.'
-				],
-				406
-			);
+			$user = Member::where('email', $request->email)
+										->where('password', md5($request->password))
+										->first();
+
+			if (!is_null($user)) {
+				return response()->json([
+					'status' => 'success',
+					'data' => [
+						'user' => [
+							'member_info' => $user
+						]
+					]
+				], 200);
+			} else {
+				return response()->json(
+					[
+						'status' => 'error',
+						'message' => 'Invalid credentials.'
+					],
+					406
+				);
+			}
 		}
 	}
 
