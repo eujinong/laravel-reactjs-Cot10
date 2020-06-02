@@ -200,18 +200,18 @@ class Category extends Component {
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
-                          <List.Icon className={item.active ? '' : 'text-danger'} name="minus" />
+                          <List.Icon className={item.active == 1 ? '' : 'text-danger'} name="minus" />
                           <List.Content>
-                            <List.Header className={item.active ? '' : 'text-danger'}>{item.name}</List.Header>
+                            <List.Header className={item.active == 1 ? '' : 'text-danger'}>{item.name}</List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
                                 <List.List>
                                   {
                                     sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
                                       <List.Item key={key}>
-                                        <List.Icon className={subitem.active ? '' : 'text-danger'} name="minus" />
+                                        <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
                                         <List.Content>
-                                          <List.Header className={subitem.active ? '' : 'text-danger'}>{subitem.name}</List.Header>
+                                          <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>{subitem.name}</List.Header>
                                         </List.Content>
                                       </List.Item>
                                     ))

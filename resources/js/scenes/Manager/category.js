@@ -305,9 +305,9 @@ class Category extends Component {
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
-                          <List.Icon className={item.active ? '' : 'text-danger'} name="minus" />
+                          <List.Icon className={item.active == 1 ? '' : 'text-danger'} name="minus" />
                           <List.Content>
-                            <List.Header className={item.active ? '' : 'text-danger'}>
+                            <List.Header className={item.active == 1 ? '' : 'text-danger'}>
                               {item.name}
                               {
                                 sub.filter(child => child.parent_id == item.id).length == 0 && (
@@ -323,9 +323,9 @@ class Category extends Component {
                                   {
                                     sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
                                       <List.Item key={key}>
-                                        <List.Icon className={subitem.active ? '' : 'text-danger'} name="minus" />
+                                        <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
                                         <List.Content>
-                                          <List.Header className={subitem.active ? '' : 'text-danger'}>
+                                          <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>
                                             {subitem.name}
                                             <a onClick={this.handleDeleteCategory.bind(this, subitem.id)}>
                                               <i className="fa fa-trash ml-3"></i>
