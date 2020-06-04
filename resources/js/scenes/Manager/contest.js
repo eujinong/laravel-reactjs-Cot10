@@ -440,20 +440,20 @@ class Contest extends Component {
                         <div className="mx-3 my-1">
                           <h4>{item.name}</h4>
                           <Row>
-                            <Col sm="8" className="text-right">Major Category:</Col>
-                            <Col sm="4">{item.major}</Col>
+                            <Col sm="6" className="text-right">Major Category:</Col>
+                            <Col sm="6">{item.major}</Col>
                           </Row>
                           <Row>
-                            <Col sm="8" className="text-right">Sub Category:</Col>
-                            <Col sm="4">{item.sub}</Col>
+                            <Col sm="6" className="text-right">Sub Category:</Col>
+                            <Col sm="6">{item.sub}</Col>
                           </Row>
                           <Row>
-                            <Col sm="8" className="text-right">Vote Before:</Col>
-                            <Col sm="4">{item.start_date}</Col>
+                            <Col sm="6" className="text-right">Start Date:</Col>
+                            <Col sm="6">{item.start_date}</Col>
                           </Row>
                           <Row>
-                            <Col sm="8" className="text-right"># of entries started/active:</Col>
-                            <Col sm="4"></Col>
+                            <Col sm="6" className="text-right"># of entries started/active:</Col>
+                            <Col sm="6"></Col>
                           </Row>
                         </div>
                       </Col>
