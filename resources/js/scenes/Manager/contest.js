@@ -48,6 +48,14 @@ class Contest extends Component {
       major: '',
       sub: '',
       start_date: null,
+      goles: [],
+      rules: [],
+      endings: [],
+      notes: [],
+      gole: '',
+      rule: '',
+      ending: '',
+      note: '',
       alertVisible: false,
       messageStatus: false,
       successMessage: '',
@@ -89,6 +97,68 @@ class Contest extends Component {
         this.setState({
           majorcat,
           subfull
+        });
+        break;
+      default:
+        break;
+    }
+
+    const texts = await Api.get('texts');
+    switch (texts.response.status) {
+      case 200:
+        let goles = [{
+          value: '',
+          label: 'Write New'
+        }];
+
+        for (var i in texts.body.gole) {
+          goles.push({
+            value: parseInt(i) + 1,
+            label: texts.body.gole[i].gole
+          });
+        }
+
+        let rules = [{
+          value: '',
+          label: 'Write New'
+        }];
+
+        for (var i in texts.body.rule) {
+          rules.push({
+            value: parseInt(i) + 1,
+            label: texts.body.rule[i].rule
+          });
+        }
+
+        let endings = [{
+          value: '',
+          label: 'Write New'
+        }];
+
+        for (var i in texts.body.ending) {
+          endings.push({
+            value: parseInt(i) + 1,
+            label: texts.body.ending[i].ending
+          });
+        }
+
+        let notes = [{
+          value: '',
+          label: 'Write New'
+        }];
+
+        for (var i in texts.body.note) {
+          notes.push({
+            value: parseInt(i) + 1,
+            label: texts.body.note[i].note
+          });
+        }
+
+        this.setState({
+          goles,
+          rules,
+          endings,
+          notes
         });
         break;
       default:
@@ -139,11 +209,18 @@ class Contest extends Component {
           initstarting: body.contests.filter(item => item.status == 'open'),
           starting: body.contests.filter(item => item.status == 'open'),
           initrunning: body.contests.filter(item => item.status == 'running'),
-          running: body.contests.filter(item => item.status == 'running')
+          running: body.contests.filter(item => item.status == 'running'),
+          gole: '',
+          rule: '',
+          ending: '',
+          note: '',
         });
 
         setTimeout(() => {
-          this.setState({ alertVisible: false });
+          this.setState({
+            alertVisible: false,
+            status: 'starting'
+          });
         }, 2000);
         break;
       default:
@@ -183,22 +260,14 @@ class Contest extends Component {
 
   render() { 
     const {
-      initstarting,
-      starting,
-      initrunning,
-      running,
+      initstarting, starting,
+      initrunning, running,
       members,
-      process,
-      status,
-      show,
-      sort,
-      majorcat,
-      subcat,
-      subfull,
-      name,
-      major,
-      sub,
-      start_date
+      process, status, show, sort,
+      majorcat, subcat, subfull,
+      name, major, sub, start_date,
+      goles, rules, endings, notes,
+      gole, rule, ending, note
     } = this.state;
 
     return (
@@ -209,7 +278,7 @@ class Contest extends Component {
         
         <div className="dashboard container">
           <Row>
-            <Col className="panel" sm="6">
+            <Col className="panel px-5" sm="12" md="6">
               <Button
                 className={status == 'starting' ? 'active' : ''}
                 outline
@@ -220,7 +289,12 @@ class Contest extends Component {
                     starting: initstarting,
                     name: '',
                     major: '',
+                    sub: '',
                     start_date: '',
+                    gole: '',
+                    rule: '',
+                    ending: '',
+                    note: '',
                     show: 0
                   })
                 }
@@ -245,6 +319,11 @@ class Contest extends Component {
                     running: initrunning,
                     name: '',
                     major: '',
+                    sub: '',
+                    gole: '',
+                    rule: '',
+                    ending: '',
+                    note: '',
                     start_date: '',
                     show: 0
                   })
@@ -253,7 +332,7 @@ class Contest extends Component {
                 Contests Running
               </Button>
             </Col>
-            <Col className="d-flex contest" sm="6">
+            <Col className="d-flex contest px-5" sm="12" md="6">
               {
                 status == 'new' ? (
                   <Fragment>
@@ -278,70 +357,70 @@ class Contest extends Component {
                   </Fragment>
                 ) : (
                   <Row className="w-100">
-                      <Col sm="4" className="text-right">
-                        <Label className="mt-2">Show</Label>
-                      </Col>
-                      <Col sm="8">
-                        <FormGroup>
-                          <Select
-                            classNamePrefix="react-select-lg"
-                            indicatorSeparator={null}
-                            options={majorcat}
-                            getOptionValue={option => option.value}
-                            getOptionLabel={option => option.label}
-                            value={majorcat.filter(item => item.value == show)[0]}
-                            onChange={(option) => {
-                              if (status == 'starting') {
-                                if (option.value == 0) {
-                                  this.setState({
-                                    starting: initstarting
-                                  });
-                                } else {
-                                  this.setState({
-                                    starting: initstarting.filter(item => item.parent_id == option.value)
-                                  });
-                                }
+                    <Col xs="4" className="text-right">
+                      <Label className="mt-2">Show</Label>
+                    </Col>
+                    <Col xs="8">
+                      <FormGroup>
+                        <Select
+                          classNamePrefix="react-select-lg"
+                          indicatorSeparator={null}
+                          options={majorcat}
+                          getOptionValue={option => option.value}
+                          getOptionLabel={option => option.label}
+                          value={majorcat.filter(item => item.value == show)[0]}
+                          onChange={(option) => {
+                            if (status == 'starting') {
+                              if (option.value == 0) {
+                                this.setState({
+                                  starting: initstarting
+                                });
+                              } else {
+                                this.setState({
+                                  starting: initstarting.filter(item => item.parent_id == option.value)
+                                });
                               }
+                            }
 
-                              if (status == 'running') {
-                                if (option.value == 0) {
-                                  this.setState({
-                                    running: initrunning
-                                  });
-                                } else {
-                                  this.setState({
-                                    running: initrunning.filter(item => item.parent_id == option.value)
-                                  });
-                                }
+                            if (status == 'running') {
+                              if (option.value == 0) {
+                                this.setState({
+                                  running: initrunning
+                                });
+                              } else {
+                                this.setState({
+                                  running: initrunning.filter(item => item.parent_id == option.value)
+                                });
                               }
+                            }
 
-                              this.setState({
-                                show: option.value
-                              });
-                            }}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col sm="4" className="text-right">
-                        <Label className="mt-2">Sort By</Label>
-                      </Col>
-                      <Col sm="8">
-                        <FormGroup>
-                          <Select
-                            classNamePrefix="react-select-lg"
-                            indicatorSeparator={null}
-                            options={Sort}
-                            getOptionValue={option => option.value}
-                            getOptionLabel={option => option.label}
-                            value={Sort.filter(item => item.value == sort)[0]}
-                            onChange={(option) => {
-                              this.setState({
-                                sort: option.value
-                              });
-                            }}
-                          />
-                        </FormGroup>
-                      </Col>
+                            this.setState({
+                              show: option.value
+                            });
+                          }}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col xs="4" className="text-right">
+                      <Label className="mt-2">Sort By</Label>
+                    </Col>
+                    <Col xs="8">
+                      <FormGroup>
+                        <Select
+                          classNamePrefix="react-select-lg"
+                          indicatorSeparator={null}
+                          options={Sort}
+                          getOptionValue={option => option.value}
+                          getOptionLabel={option => option.label}
+                          value={Sort.filter(item => item.value == sort)[0]}
+                          onChange={(option) => {
+                            this.setState({
+                              sort: option.value
+                            });
+                          }}
+                        />
+                      </FormGroup>
+                    </Col>
                   </Row>
                 )
               }
@@ -354,7 +433,7 @@ class Contest extends Component {
                 <Row>
                   {
                     starting.map((item, index) => (
-                      <Col className="d-flex contest" sm="6" key={index}>
+                      <Col className="d-flex contest" md="12" lg="6" key={index}>
                         <div className="mx-3 my-1">
                           <img src={Bitmaps.contest} />
                         </div>
@@ -440,208 +519,294 @@ class Contest extends Component {
                       {status && <UncontrolledAlert {...status} />}
 
                       <Row>
-                        <Col xs="12" sm="6">
-                          <Row>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="name">Contest Name:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Input
-                                  name="name"
-                                  type="text"
-                                  value={values.name || ''}
-                                  onChange={(value) => {
-                                    setFieldValue('name', value.target.value);
-                                    
-                                    this.setState({
-                                      name: value.target.value
-                                    });
-                                  }}
-                                  onBlur={handleBlur}
-                                  invalid={!!errors.name && touched.name}
-                                />
-                                <FormFeedback>{errors.name}</FormFeedback>
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="major">Major Category:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Select
-                                  name="major"
-                                  classNamePrefix={!!errors.major && touched.major ? 'invalid react-select-lg' : 'react-select-lg'}
-                                  indicatorSeparator={null}
-                                  options={majorcat.filter(item => item.value != 0)}
-                                  getOptionValue={option => option.value}
-                                  getOptionLabel={option => option.label}
-                                  value={values.major}
-                                  onChange={(option) => {
-                                    setFieldValue('major', option);
-
-                                    this.setState({
-                                      subcat: subfull.filter(item => item.parent_id == option.value),
-                                      major: option.label
-                                    });
-                                  }}
-                                  onBlur={this.handleBlur}
-                                />
-                                {!!errors.major && touched.major && (
-                                  <FormFeedback className="d-block">{errors.major}</FormFeedback>
-                                )}
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="sub">Sub Category:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Select
-                                  name="sub"
-                                  classNamePrefix={!!errors.sub && touched.sub ? 'invalid react-select-lg' : 'react-select-lg'}
-                                  indicatorSeparator={null}
-                                  options={subcat}
-                                  getOptionValue={option => option.value}
-                                  getOptionLabel={option => option.label}
-                                  value={values.sub}
-                                  onChange={(option) => {
-                                    setFieldValue('sub', option);
-
-                                    this.setState({
-                                      sub: option.label
-                                    });
-                                  }}
-                                  onBlur={this.handleBlur}
-                                />
-                                {!!errors.sub && touched.sub && (
-                                  <FormFeedback className="d-block">{errors.sub}</FormFeedback>
-                                )}
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="start_date">Start Date:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup className={!start_date && touched.start_date ? 'invalid calendar' : 'calendar'}>
-                                <SemanticDatepicker
-                                  name="start_date"
-                                  placeholder="Start Date"
-                                  onChange={this.onChangeStart.bind(this)}
-                                />
-                                {!start_date && touched.start_date && (
-                                  <FormFeedback className="d-block">This field is required!</FormFeedback>
-                                )}
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="round_days"># of Days between rounds:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Input
-                                  name="round_days"
-                                  type="text"
-                                  value={values.round_days || ''}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  invalid={!!errors.round_days && touched.round_days}
-                                />
-                                <FormFeedback>{errors.round_days}</FormFeedback>
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="allow_video">Allow for Video Link:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Select
-                                  name="allow_video"
-                                  classNamePrefix={!!errors.allow_video && touched.allow_video ? 'invalid react-select-lg' : 'react-select-lg'}
-                                  indicatorSeparator={null}
-                                  options={Flag}
-                                  getOptionValue={option => option.value}
-                                  getOptionLabel={option => option.label}
-                                  value={values.allow_video}
-                                  onChange={(option) => {
-                                    setFieldValue('allow_video', option);
-                                  }}
-                                />
-                                {!!errors.allow_video && touched.allow_video && (
-                                  <FormFeedback className="d-block">{errors.allow_video}</FormFeedback>
-                                )}
-                              </FormGroup>
-                            </Col>
-                          </Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="name">Contest Name:</Label>
                         </Col>
-                        <Col xs="12" sm="6">
-                          <Row>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="gole">Gole:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Input
-                                  name="gole"
-                                  type="textarea"
-                                  value={values.gole || ''}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  invalid={!!errors.gole && touched.gole}
-                                />
-                                <FormFeedback>{errors.gole}</FormFeedback>
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="rule">Rules:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Input
-                                  name="rule"
-                                  type="textarea"
-                                  value={values.rule || ''}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  invalid={!!errors.rule && touched.rule}
-                                />
-                                <FormFeedback>{errors.rule}</FormFeedback>
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="ending">Contest Ending:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Input
-                                  name="ending"
-                                  type="textarea"
-                                  value={values.ending || ''}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  invalid={!!errors.ending && touched.ending}
-                                />
-                                <FormFeedback>{errors.ending}</FormFeedback>
-                              </FormGroup>
-                            </Col>
-                            <Col sm="4" className="text-right">
-                              <Label className="mt-2" for="note">(optional)  Added Note:</Label>
-                            </Col>
-                            <Col sm="8">
-                              <FormGroup>
-                                <Input
-                                  name="note"
-                                  type="textarea"
-                                  value={values.note || ''}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Input
+                              name="name"
+                              type="text"
+                              value={values.name || ''}
+                              onChange={(value) => {
+                                setFieldValue('name', value.target.value);
+                                
+                                this.setState({
+                                  name: value.target.value
+                                });
+                              }}
+                              onBlur={handleBlur}
+                              invalid={!!errors.name && touched.name}
+                            />
+                            <FormFeedback>{errors.name}</FormFeedback>
+                          </FormGroup>
                         </Col>
                       </Row>
-                      <div className="w-100 text-center">
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="major">Major Category:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              name="major"
+                              classNamePrefix={!!errors.major && touched.major ? 'invalid react-select-lg' : 'react-select-lg'}
+                              indicatorSeparator={null}
+                              options={majorcat.filter(item => item.value != 0)}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={values.major}
+                              onChange={(option) => {
+                                setFieldValue('major', option);
+
+                                this.setState({
+                                  subcat: subfull.filter(item => item.parent_id == option.value),
+                                  major: option.label
+                                });
+                              }}
+                              onBlur={this.handleBlur}
+                            />
+                            {!!errors.major && touched.major && (
+                              <FormFeedback className="d-block">{errors.major}</FormFeedback>
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="sub">Sub Category:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              name="sub"
+                              classNamePrefix={!!errors.sub && touched.sub ? 'invalid react-select-lg' : 'react-select-lg'}
+                              indicatorSeparator={null}
+                              options={subcat}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={values.sub}
+                              onChange={(option) => {
+                                setFieldValue('sub', option);
+
+                                this.setState({
+                                  sub: option.label
+                                });
+                              }}
+                              onBlur={this.handleBlur}
+                            />
+                            {!!errors.sub && touched.sub && (
+                              <FormFeedback className="d-block">{errors.sub}</FormFeedback>
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="start_date">Start Date:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup className={!start_date && touched.start_date ? 'invalid calendar' : 'calendar'}>
+                            <SemanticDatepicker
+                              name="start_date"
+                              placeholder="Start Date"
+                              onChange={this.onChangeStart.bind(this)}
+                            />
+                            {!start_date && touched.start_date && (
+                              <FormFeedback className="d-block">This field is required!</FormFeedback>
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="round_days"># of Days between rounds:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Input
+                              name="round_days"
+                              type="text"
+                              value={values.round_days || ''}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              invalid={!!errors.round_days && touched.round_days}
+                            />
+                            <FormFeedback>{errors.round_days}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="allow_video">Allow for Video Link:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              name="allow_video"
+                              classNamePrefix={!!errors.allow_video && touched.allow_video ? 'invalid react-select-lg' : 'react-select-lg'}
+                              indicatorSeparator={null}
+                              options={Flag}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={values.allow_video}
+                              onChange={(option) => {
+                                setFieldValue('allow_video', option);
+                              }}
+                            />
+                            {!!errors.allow_video && touched.allow_video && (
+                              <FormFeedback className="d-block">{errors.allow_video}</FormFeedback>
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="gole">Gole:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              options={goles}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={goles.filter(item => item.value == gole)[0]}
+                              onChange={(option) => {
+                                option.value == '' ? (
+                                  setFieldValue('gole', '')
+                                ) : (
+                                  setFieldValue('gole', option.label)
+                                )
+
+                                this.setState({
+                                  gole: option.value
+                                });
+                              }}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Input
+                              name="gole"
+                              type="textarea"
+                              value={values.gole || gole}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              invalid={!!errors.gole && touched.gole}
+                            />
+                            <FormFeedback>{errors.gole}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="rule">Rules:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              options={rules}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={rules.filter(item => item.value == rule)[0]}
+                              onChange={(option) => {
+                                option.value == '' ? (
+                                  setFieldValue('rule', '')
+                                ) : (
+                                  setFieldValue('rule', option.label)
+                                )
+
+                                this.setState({
+                                  rule: option.value
+                                });
+                              }}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Input
+                              name="rule"
+                              type="textarea"
+                              value={values.rule || rule}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              invalid={!!errors.rule && touched.rule}
+                            />
+                            <FormFeedback>{errors.rule}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="ending">Contest Ending:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              options={endings}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={endings.filter(item => item.value == ending)[0]}
+                              onChange={(option) => {
+                                option.value == '' ? (
+                                  setFieldValue('ending', '')
+                                ) : (
+                                  setFieldValue('ending', option.label)
+                                )
+
+                                this.setState({
+                                  ending: option.value
+                                });
+                              }}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Input
+                              name="ending"
+                              type="textarea"
+                              value={values.ending || ending}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              invalid={!!errors.ending && touched.ending}
+                            />
+                            <FormFeedback>{errors.ending}</FormFeedback>
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col sm="4" className="text-right">
+                          <Label className="mt-2" for="note">(optional)  Added Note:</Label>
+                        </Col>
+                        <Col sm="6">
+                          <FormGroup>
+                            <Select
+                              options={notes}
+                              getOptionValue={option => option.value}
+                              getOptionLabel={option => option.label}
+                              value={notes.filter(item => item.value == note)[0]}
+                              onChange={(option) => {
+                                option.value == '' ? (
+                                  setFieldValue('note', '')
+                                ) : (
+                                  setFieldValue('note', option.label)
+                                )
+
+                                this.setState({
+                                  note: option.value
+                                });
+                              }}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <Input
+                              name="note"
+                              type="textarea"
+                              value={values.note || ''}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <div className="w-100 text-center mb-5">
                         <Button
                           disabled={isSubmitting}
                           type="submit"

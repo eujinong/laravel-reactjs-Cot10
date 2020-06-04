@@ -71758,7 +71758,7 @@ body .dashboard .panel button.active::before {
   border-top: 10px solid transparent;
   content: "";
   height: 0;
-  left: 0;
+  left: 40px;
   position: absolute;
   width: 0;
 }

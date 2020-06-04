@@ -12,6 +12,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
+use DB;
+
 class ContestController extends Controller
 {
   /**
@@ -139,10 +141,26 @@ class ContestController extends Controller
                       ->orderBy('contests.start_date')
                       ->get();
 
+    $gole = Contest::select(DB::raw('DISTINCT(gole) as gole'))
+                  ->orderBy('gole')->get();
+
+    $rule = Contest::select(DB::raw('DISTINCT(rule) as rule'))
+                  ->orderBy('rule')->get();
+
+    $ending = Contest::select(DB::raw('DISTINCT(ending) as ending'))
+                  ->orderBy('ending')->get();
+
+    $note = Contest::whereNotNull('note')->select(DB::raw('DISTINCT(note) as note'))
+                  ->orderBy('note')->get();
+
     return response()->json([
       'status' => 'success',
       'message' => 'The contest "' . $data['name'] . '" is created successfully.',
-      'contests' => $contests
+      'contests' => $contests,
+      'gole' => $gole,
+      'rule' => $rule,
+      'ending' => $ending,
+      'note' => $note
     ], 200);
   }
 
@@ -172,5 +190,28 @@ class ContestController extends Controller
   public function open(Request $request)
   {
     $data = $request->all();
+  }
+
+  public function text()
+  {
+    $gole = Contest::select(DB::raw('DISTINCT(gole) as gole'))
+                  ->orderBy('gole')->get();
+
+    $rule = Contest::select(DB::raw('DISTINCT(rule) as rule'))
+                  ->orderBy('rule')->get();
+
+    $ending = Contest::select(DB::raw('DISTINCT(ending) as ending'))
+                  ->orderBy('ending')->get();
+
+    $note = Contest::whereNotNull('note')->select(DB::raw('DISTINCT(note) as note'))
+                  ->orderBy('note')->get();
+
+    return response()->json([
+      'status' => 'success',
+      'gole' => $gole,
+      'rule' => $rule,
+      'ending' => $ending,
+      'note' => $note
+    ], 200);
   }
 }

@@ -23,9 +23,11 @@ class CategoryController extends Controller
    */
   public function index()
   {
-    $cat = Category::where('parent_id', 0)->get();
+    $cat = Category::where('parent_id', 0)
+                    ->orderBy('name')
+                    ->get();
     $subcat = Category::where('parent_id', '!=', 0)
-                    ->orderBy('parent_id')
+                    ->orderBy('name')
                     ->get();
 
     $open = Contest::select(DB::raw('count(*) as open, category_id'))
@@ -97,9 +99,11 @@ class CategoryController extends Controller
       'active' => 0
     ));
 
-    $cat = Category::where('parent_id', 0)->get();
+    $cat = Category::where('parent_id', 0)
+                    ->orderBy('name')
+                    ->get();
     $subcat = Category::where('parent_id', '!=', 0)
-                    ->orderBy('parent_id')
+                    ->orderBy('name')
                     ->get();
 
     $open = Contest::select(DB::raw('count(*) as open, category_id'))
@@ -139,10 +143,12 @@ class CategoryController extends Controller
               'active' => 1
             ));
 
-    $cat = Category::where('parent_id', 0)->get();
+    $cat = Category::where('parent_id', 0)
+            ->orderBy('name')
+            ->get();
     $subcat = Category::where('parent_id', '!=', 0)
-                    ->orderBy('parent_id')
-                    ->get();
+            ->orderBy('name')
+            ->get();
 
     $open = Contest::select(DB::raw('count(*) as open, category_id'))
                     ->where('status', 'open')
@@ -173,9 +179,11 @@ class CategoryController extends Controller
   {
     Category::where('id', $id)->delete();
 
-    $cat = Category::where('parent_id', 0)->get();
+    $cat = Category::where('parent_id', 0)
+                    ->orderBy('name')
+                    ->get();
     $subcat = Category::where('parent_id', '!=', 0)
-                    ->orderBy('parent_id')
+                    ->orderBy('name')
                     ->get();
 
     $open = Contest::select(DB::raw('count(*) as open, category_id'))

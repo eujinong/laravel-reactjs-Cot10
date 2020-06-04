@@ -40,6 +40,7 @@ Route::namespace('Api')->group(function () {
 		Route::get('contest/{id}', 'ContestController@show');
 		Route::post('create-contest', 'ContestController@store');
 		Route::post('open-contests', 'ContestController@open');
+		Route::get('texts', 'ContestController@text');
 	
 		// Participant APIs
 		Route::post('contest-participants', 'ParticipantController@contest');
