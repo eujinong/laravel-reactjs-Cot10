@@ -218,6 +218,9 @@ class Contest extends Component {
                   this.setState({
                     status: 'starting',
                     starting: initstarting,
+                    name: '',
+                    major: '',
+                    start_date: '',
                     show: 0
                   })
                 }
@@ -240,6 +243,9 @@ class Contest extends Component {
                   this.setState({
                     status: 'running',
                     running: initrunning,
+                    name: '',
+                    major: '',
+                    start_date: '',
                     show: 0
                   })
                 }
@@ -265,7 +271,7 @@ class Contest extends Component {
                         <Col sm="6">{sub}</Col>
                       </Row>
                       <Row>
-                        <Col sm="6" className="text-right">Vote Before:</Col>
+                        <Col sm="6" className="text-right">Start Date:</Col>
                         <Col sm="6">{start_date}</Col>
                       </Row>
                     </div>
