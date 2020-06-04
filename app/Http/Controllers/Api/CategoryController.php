@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Category;
+use App\Contest;
 
 use JWTAuth;
 use Illuminate\Http\Request;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+
+use DB;
 
 class CategoryController extends Controller
 {
@@ -25,10 +28,22 @@ class CategoryController extends Controller
                     ->orderBy('parent_id')
                     ->get();
 
+    $open = Contest::select(DB::raw('count(*) as open, category_id'))
+                    ->where('status', 'open')
+                    ->groupBy('category_id')
+                    ->get();
+
+    $running = Contest::select(DB::raw('count(*) as running, category_id'))
+                    ->where('status', 'running')
+                    ->groupBy('category_id')
+                    ->get();
+
     return response()->json([
       'status' => 'success',
       'major' => $cat,
       'sub' => $subcat,
+      'open' => $open,
+      'running' => $running
     ], 200);
   }
 
@@ -87,10 +102,22 @@ class CategoryController extends Controller
                     ->orderBy('parent_id')
                     ->get();
 
+    $open = Contest::select(DB::raw('count(*) as open, category_id'))
+                    ->where('status', 'open')
+                    ->groupBy('category_id')
+                    ->get();
+
+    $running = Contest::select(DB::raw('count(*) as running, category_id'))
+                    ->where('status', 'running')
+                    ->groupBy('category_id')
+                    ->get();
+
     return response()->json([
       'status' => 'success',
       'major' => $cat,
       'sub' => $subcat,
+      'open' => $open,
+      'running' => $running,
       'message' => 'New category "' . $data['name'] . '" is created successfully.'
     ], 200);
   }
@@ -117,10 +144,22 @@ class CategoryController extends Controller
                     ->orderBy('parent_id')
                     ->get();
 
+    $open = Contest::select(DB::raw('count(*) as open, category_id'))
+                    ->where('status', 'open')
+                    ->groupBy('category_id')
+                    ->get();
+
+    $running = Contest::select(DB::raw('count(*) as running, category_id'))
+                    ->where('status', 'running')
+                    ->groupBy('category_id')
+                    ->get();
+
     return response()->json([
       'status' => 'success',
       'major' => $cat,
       'sub' => $subcat,
+      'open' => $open,
+      'running' => $running
     ], 200);
   }
 
@@ -139,10 +178,22 @@ class CategoryController extends Controller
                     ->orderBy('parent_id')
                     ->get();
 
+    $open = Contest::select(DB::raw('count(*) as open, category_id'))
+                    ->where('status', 'open')
+                    ->groupBy('category_id')
+                    ->get();
+
+    $running = Contest::select(DB::raw('count(*) as running, category_id'))
+                    ->where('status', 'running')
+                    ->groupBy('category_id')
+                    ->get();
+
     return response()->json([
       'status' => 'success',
       'major' => $cat,
       'sub' => $subcat,
+      'open' => $open,
+      'running' => $running
     ], 200);
   }
 }
