@@ -31,6 +31,7 @@ class Attend extends Component {
       major: '',
       sub: '',
       name: '',
+      title: '',
       files: [null, null, null, null, null, null, null, null, null, null],
       uploads: [null, null, null, null, null, null, null, null, null, null],
       urls: [null, null, null, null, null, null, null, null, null, null]
@@ -43,23 +44,27 @@ class Attend extends Component {
     const user = JSON.parse(localStorage.getItem('auth'));
     const contest_id = this.props.location.state;
 
-    this.setState({
-      member_id: user.user.member_info.id,
-      contest_id
-    });
+    if (contest_id === undefined) {
+      this.props.history.push('/contests');
+    } else {
+      this.setState({
+        member_id: user.user.member_info.id,
+        contest_id
+      });
 
-    const data = await Api.get(`get-contest/${contest_id}`);
-    const { response, body } = data;
-    switch (response.status) {
-      case 200:
-        this.setState({
-          major: body.major,
-          sub: body.sub,
-          name: body.name
-        });
-        break;
-      default:
-        break;
+      const data = await Api.get(`get-contest/${contest_id}`);
+      const { response, body } = data;
+      switch (response.status) {
+        case 200:
+          this.setState({
+            major: body.major,
+            sub: body.sub,
+            name: body.name
+          });
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -67,6 +72,7 @@ class Attend extends Component {
     const {
       member_id,
       contest_id,
+      title,
       files,
       uploads,
       urls
@@ -101,6 +107,7 @@ class Attend extends Component {
     newData = {
       member_id,
       contest_id,
+      title,
       files,
       uploads,
       urls
@@ -203,6 +210,22 @@ class Attend extends Component {
             }) => (
               <Form onSubmit={handleSubmit}>
                 {status && <UncontrolledAlert {...status} />}
+                <Row>
+                  <Col sm="12">
+                    <FormGroup>
+                      <Label>Title</Label>
+                      <Input
+                        type="text"
+                        name="title"
+                        onChange={value => {
+                          this.setState({
+                            title: value.currentTarget.value
+                          });
+                        }}
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 {
                   media.map(index => (
                     <Row key={index}>
@@ -271,7 +294,7 @@ class Attend extends Component {
                     type="submit"
                     color="primary"
                   >
-                    Accept Event
+                    Accept Contest
                   </Button>
                 </div>
               </Form>

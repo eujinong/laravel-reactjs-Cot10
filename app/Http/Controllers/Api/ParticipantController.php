@@ -78,6 +78,7 @@ class ParticipantController extends Controller
     Participant::create(array(
       'member_id' => $data['member_id'],
       'contest_id' => $data['contest_id'],
+      'title' => $data['title'],
       'group_code' => NULL,
       'round_votes' => 0,
       'all_votes' => 0,
