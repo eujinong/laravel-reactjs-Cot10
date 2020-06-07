@@ -32,6 +32,7 @@ class Contest extends Component {
     super(props);
 
     this.state = {
+      parts: [],
       initstarting: [],
       starting: [],
       initrunning: [],
@@ -70,6 +71,7 @@ class Contest extends Component {
     switch (contests.response.status) {
       case 200:
         this.setState({
+          parts: contests.body.participants,
           initstarting: contests.body.contests.filter(item => item.status == 'open'),
           starting: contests.body.contests.filter(item => item.status == 'open'),
           initrunning: contests.body.contests.filter(item => item.status == 'running'),
@@ -260,6 +262,7 @@ class Contest extends Component {
 
   render() { 
     const {
+      parts,
       initstarting, starting,
       initrunning, running,
       members,
@@ -453,7 +456,13 @@ class Contest extends Component {
                           </Row>
                           <Row>
                             <Col sm="6" className="text-right"># of entries started/active:</Col>
-                            <Col sm="6"></Col>
+                            <Col sm="6">
+                              {
+                                parts.filter(part => part.contest_id == item.id).length > 0
+                                  ? parts.filter(part => part.contest_id == item.id)[0]['parts']
+                                  : 0
+                              }
+                            </Col>
                           </Row>
                         </div>
                       </Col>
@@ -861,7 +870,13 @@ class Contest extends Component {
                             </Row>
                             <Row>
                               <Col sm="3" className="text-right"># of entries started/active:</Col>
-                              <Col sm="3"></Col>
+                              <Col sm="3">
+                                {
+                                parts.filter(part => part.contest_id == item.id).length > 0
+                                  ? parts.filter(part => part.contest_id == item.id)[0]['parts']
+                                  : 0
+                                }
+                              </Col>
                               <Col sm="3" className="text-right">Message:</Col>
                               <Col sm="3">
                                 Still In

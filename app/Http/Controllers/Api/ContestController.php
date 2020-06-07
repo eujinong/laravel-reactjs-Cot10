@@ -26,6 +26,12 @@ class ContestController extends Controller
   public function index()
   {
     $user = JWTAuth::parseToken()->authenticate();
+
+    $participants = Participant::leftJoin('contests', 'contests.id', '=', 'participants.contest_id')
+                      ->where('contests.creator_id', $user->id)
+                      ->select(DB::raw('COUNT(participants.id) as parts'), 'participants.contest_id')
+                      ->groupBy('participants.contest_id')
+                      ->get();
     
     $contests = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
                       ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
@@ -37,6 +43,7 @@ class ContestController extends Controller
 
     return response()->json([
       'status' => 'success',
+      'participants' => $participants,
       'contests' => $contests
     ], 200);
   }
