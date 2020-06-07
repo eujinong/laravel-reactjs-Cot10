@@ -7,16 +7,17 @@ import {
   Row, Col,
   Button,
   Form, FormGroup, FormFeedback,
-  Input, Label,
+  Input, Label, CustomInput,
   UncontrolledAlert,
   Alert, UncontrolledTooltip
 } from 'reactstrap';
+import NumberFormat from 'react-number-format';
 import Select from 'react-select';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 import Api from '../../apis/app';
 import Bitmaps from '../../theme/Bitmaps';
-import { Genders, countries } from '../../configs/data';
+import { countries, counties, cities } from '../../configs/data';
 
 class Signup extends Component {
   constructor(props) {
@@ -74,8 +75,10 @@ class Signup extends Component {
     const { imagePreviewUrl } = this.state;
 
     let major_ids = [];
-    for (let i = 0; i < values.major.length; i++) {
-      major_ids.push(values.major[i].value)
+    if (values.major !== null) {
+      for (let i = 0; i < values.major.length; i++) {
+        major_ids.push(values.major[i].value)
+      }
     }
     
     newData = {
@@ -83,14 +86,14 @@ class Signup extends Component {
       firstname: values.firstname,
       lastname: values.lastname,
       password: values.password,
-      gender: values.gender.id,
+      gender: values.gender,
       email: values.email,
       number: values.number,
-      country: values.country.code,
-      state: values.state,
-      county: values.county,
-      city: values.city,
-      zip_code: values.zip_code,
+      country: values.country.name,
+      state: values.state.label,
+      county: values.county.name,
+      city: values.city.name,
+      zip_code: values.zip_code.code,
       street: values.street,
       building: values.building,
       apartment: values.apartment,
@@ -148,6 +151,21 @@ class Signup extends Component {
       $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
     }
 
+    let states = [
+      { value: 'il', label: 'Illinois (IL)'},
+      { value: 'in', label: 'Indiana (IN)'},
+    ];
+
+    let zip_codes = [];
+
+    for (var i = 60001; i < 63000; i++) {
+      zip_codes.push({ code: i, label: i, state: 'il' });
+    }
+
+    for (var i = 46001; i < 48000; i++) {
+      zip_codes.push({ code: i, label: i, state: 'in' });
+    }
+
     return (
       <Fragment>
         <div className="top-header tile-top-bar">
@@ -178,8 +196,8 @@ class Signup extends Component {
                 gender: null,
                 email: '',
                 number: '',
-                country: '',
-                state: '',
+                country: countries.filter(country => country.code == 'USA')[0],
+                state: states.filter(state => state.value == 'il')[0],
                 county: '',
                 city: '',
                 zip_code: '',
@@ -205,13 +223,10 @@ class Signup extends Component {
                   email: Yup.string().email('Email is not valid!').required('This field is required!'),
                   number: Yup.string().matches(/^\+?[0-9]\s?[-]\s|[0-9]$/, 'Text Number is incorrect!')
                                       .required('This field is required!'),
-                  country: Yup.mixed().required('This field is required!'),
-                  state: Yup.string().required('This field is required!'),
                   county: Yup.mixed().required('This field is required!'),
                   city: Yup.string().required('This field is required!'),
                   zip_code: Yup.string().required('This field is required!'),
-                  street: Yup.string().required('This field is required!'),
-                  major: Yup.string().typeError('Major Category must be selected at least 1.')
+                  street: Yup.string().required('This field is required!')
                 })
               }
 
@@ -363,19 +378,28 @@ class Signup extends Component {
                     </Col>
                     <Col xs="6" sm="4">
                       <FormGroup>
-                        <Select
-                          name="gender"
-                          classNamePrefix={!!errors.gender && touched.gender ? 'invalid react-select-lg' : 'react-select-lg'}
-                          indicatorSeparator={null}
-                          options={Genders}
-                          getOptionValue={option => option.id}
-                          getOptionLabel={option => option.name}
-                          value={values.gender}
-                          onChange={(value) => {
-                            setFieldValue('gender', value);
-                          }}
-                          onBlur={this.handleBlur}
-                        />
+                        <div className="mt-2">
+                          <CustomInput 
+                            type="radio"
+                            name="gender"
+                            id="male"
+                            label="Male"
+                            onClick={() => {
+                              setFieldValue('gender', 1)
+                            }}
+                            inline
+                          />
+                          <CustomInput
+                            type="radio"
+                            name="gender"
+                            id="female" 
+                            label="Female"
+                            onClick={() => {
+                              setFieldValue('gender', 2)
+                            }}
+                            inline
+                          />
+                        </div>
                         {!!errors.gender && touched.gender && (
                           <FormFeedback className="d-block">{errors.gender}</FormFeedback>
                         )}
@@ -407,9 +431,6 @@ class Signup extends Component {
                           }}
                           onBlur={this.handleBlur}
                         />
-                        {!!errors.country && touched.country && (
-                          <FormFeedback className="d-block">{errors.country}</FormFeedback>
-                        )}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -425,15 +446,22 @@ class Signup extends Component {
                     </Col>
                     <Col xs="6" sm="4">
                       <FormGroup>
-                        <Input
+                        <Select
                           name="state"
-                          type="text"
-                          value={values.state || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.state && touched.state}
+                          classNamePrefix={!!errors.state && touched.state ? 'invalid react-select-lg' : 'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={states}
+                          getOptionValue={option => option.value}
+                          getOptionLabel={option => option.label}
+                          value={values.state}
+                          onChange={(option) => {
+                            setFieldValue('state', option);
+                          }}
+                          onBlur={this.handleBlur}
                         />
-                        <FormFeedback>{errors.state}</FormFeedback>
+                        {!!errors.state && touched.state && (
+                          <FormFeedback className="d-block">{errors.state}</FormFeedback>
+                        )}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -449,15 +477,22 @@ class Signup extends Component {
                     </Col>
                     <Col xs="6" sm="4">
                       <FormGroup>
-                        <Input
+                        <Select
                           name="county"
-                          type="text"
-                          value={values.county || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.county && touched.county}
+                          classNamePrefix={!!errors.county && touched.county ? 'invalid react-select-lg' : 'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={counties.filter(county => county.state == values.state.value)}
+                          getOptionValue={option => option.code}
+                          getOptionLabel={option => option.name}
+                          value={values.county}
+                          onChange={(option) => {
+                            setFieldValue('county', option);
+                          }}
+                          onBlur={this.handleBlur}
                         />
-                        <FormFeedback>{errors.county}</FormFeedback>
+                        {!!errors.county && touched.county && (
+                          <FormFeedback className="d-block">{errors.county}</FormFeedback>
+                        )}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -473,15 +508,22 @@ class Signup extends Component {
                     </Col>
                     <Col xs="6" sm="4">
                       <FormGroup>
-                        <Input
+                        <Select
                           name="city"
-                          type="text"
-                          value={values.city || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.city && touched.city}
+                          classNamePrefix={!!errors.city && touched.city ? 'invalid react-select-lg' : 'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={cities.filter(city => city.state == values.state.value)}
+                          getOptionValue={option => option.code}
+                          getOptionLabel={option => option.name}
+                          value={values.city}
+                          onChange={(option) => {
+                            setFieldValue('city', option);
+                          }}
+                          onBlur={this.handleBlur}
                         />
-                        <FormFeedback>{errors.city}</FormFeedback>
+                        {!!errors.city && touched.city && (
+                          <FormFeedback className="d-block">{errors.city}</FormFeedback>
+                        )}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -497,26 +539,33 @@ class Signup extends Component {
                     </Col>
                     <Col xs="6" sm="4">
                       <FormGroup>
-                        <Input
+                        <Select
                           name="zip_code"
-                          type="text"
-                          value={values.zip_code || ''}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          invalid={!!errors.zip_code && touched.zip_code}
+                          classNamePrefix={!!errors.zip_code && touched.zip_code ? 'invalid react-select-lg' : 'react-select-lg'}
+                          indicatorSeparator={null}
+                          options={zip_codes.filter(zip_code => zip_code.state == values.state.value)}
+                          getOptionValue={option => option.code}
+                          getOptionLabel={option => option.label}
+                          value={values.zip_code}
+                          onChange={(option) => {
+                            setFieldValue('zip_code', option);
+                          }}
+                          onBlur={this.handleBlur}
                         />
-                        <FormFeedback>{errors.zip_code}</FormFeedback>
+                        {!!errors.zip_code && touched.zip_code && (
+                          <FormFeedback className="d-block">{errors.zip_code}</FormFeedback>
+                        )}
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
                     <Col xs="6" sm="4" className="text-right">
                       <Label for="street" className="mt-2">
-                        Street Name:
+                        (without house or building number) Street Name:
                         <span className="explain" id="street">?</span>
                       </Label>
                       <UncontrolledTooltip placement="right" target="street">
-                        Street Name
+                        (without house or building number) Street Name
                       </UncontrolledTooltip>
                     </Col>
                     <Col xs="6" sm="4">
@@ -604,35 +653,38 @@ class Signup extends Component {
                   <Row>
                     <Col xs="6" sm="4" className="text-right">
                       <Label for="number" className="mt-2">
-                        Text Number:
+                        Text/Phone Number:
                         <span className="explain" id="number">?</span>
                       </Label>
                       <UncontrolledTooltip placement="right" target="number">
-                        Text Number
+                        Text/Phone Number
                       </UncontrolledTooltip>
                     </Col>
                     <Col xs="6" sm="4">
                       <FormGroup>
-                        <Input
+                        <NumberFormat
                           name="number"
-                          type="text"
+                          className={!!errors.number && touched.number ? 'is-invalid form-control' : 'form-control'}
+                          format="(###) ###-####"
+                          allowEmptyFormatting mask="_"
                           value={values.number || ''}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          invalid={!!errors.number && touched.number}
                         />
-                        <FormFeedback>{errors.number}</FormFeedback>
+                        {!!errors.number && touched.number && (
+                          <FormFeedback className="d-block">{errors.number}</FormFeedback>
+                        )}
                       </FormGroup>
                     </Col>
                   </Row>
                   <Row>
                     <Col xs="6" sm="4" className="text-right">
                       <Label for="major" className="mt-2">
-                        Interested in Major Category:
+                        My Interests:
                         <span className="explain" id="major">?</span>
                       </Label>
                       <UncontrolledTooltip placement="right" target="major">
-                        Interested in Major Category
+                        My Interests
                       </UncontrolledTooltip>
                     </Col>
                     <Col xs="6" sm="4">
@@ -641,7 +693,6 @@ class Signup extends Component {
                           name="major"
                           isMulti
                           menuPlacement="auto"
-                          classNamePrefix={!!errors.major && touched.major ? 'invalid react-select-lg' : 'react-select-lg'}
                           indicatorSeparator={null}
                           options={majorcat}
                           getOptionValue={option => option.value}
@@ -652,10 +703,12 @@ class Signup extends Component {
                           }}
                           onBlur={this.handleBlur}
                         />
-                        {!!errors.major && touched.major && (
-                          <FormFeedback className="d-block">{errors.major}</FormFeedback>
-                        )}
                       </FormGroup>
+                      <Label>
+                        Please check the following Areas of Interest in
+                        which you would like us to notify you of contests created and/or starting soon.
+                        You may update these anytime by reviewing your profile page.
+                      </Label>
                     </Col>
                   </Row>
                   <div className="w-100 d-flex justify-content-center my-3">

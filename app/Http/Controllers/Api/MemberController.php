@@ -131,8 +131,11 @@ class MemberController extends Controller
     ));
 
     $major_ids = '';
-    foreach ($data['major_ids'] as $id) {
-      $major_ids .= $id . ',';
+
+    if (array_key_exists('major_ids', $data)) {
+      foreach ($data['major_ids'] as $id) {
+        $major_ids .= $id . ',';
+      }
     }
 
     Interest::create(array(
