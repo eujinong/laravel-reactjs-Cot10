@@ -432,9 +432,47 @@ class Contest extends Component {
                           getOptionLabel={option => option.label}
                           value={Sort.filter(item => item.value == sort)[0]}
                           onChange={(option) => {
-                            this.setState({
-                              sort: option.value
-                            });
+                            let key = '';
+
+                            switch (option.value) {
+                              case 'starting':
+                                key = 'start_date';
+                                break;
+                              case 'popular':
+                                key = 'id';
+                                break;
+                              case 'alpha':
+                                key = 'name'
+                                break;
+                            }
+
+                            if (status == 'starting') {
+                              let arr =  starting.sort(function(a, b) {
+                                let x = a[key];
+                                let y = b[key];
+
+                                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                              });
+
+                              this.setState({
+                                starting: arr,
+                                sort: option.value
+                              });
+                            }
+
+                            if (status == 'running') {
+                              let arr =  running.sort(function(a, b) {
+                                let x = a[key];
+                                let y = b[key];
+
+                                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                              });
+
+                              this.setState({
+                                running: arr,
+                                sort: option.value
+                              });
+                            }
                           }}
                         />
                       </FormGroup>
