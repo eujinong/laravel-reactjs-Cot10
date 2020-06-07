@@ -14,6 +14,8 @@ import { List } from 'semantic-ui-react';
 
 import Bitmaps from '../../theme/Bitmaps';
 
+import Menu from '../../components/Menu';
+
 import Api from '../../apis/app';
 
 class Category extends Component {
@@ -123,6 +125,12 @@ class Category extends Component {
     }
   }
 
+  handleSignout() {
+    localStorage.removeItem('auth');
+
+    this.props.history.push('/signin');
+  }
+
   render() {
     const { 
       major, sub, 
@@ -135,7 +143,16 @@ class Category extends Component {
           <a href="/">
             <img src={Bitmaps.logo} alt="Cot10" />
           </a>
+          <a
+            className="mt-3 mr-5"
+            style={{float:"right",cursor:"pointer"}}
+            onClick={this.handleSignout.bind(this)}
+          >
+            <i className="fa fa-user"></i> Sign Out
+          </a>
         </div>
+
+        <Menu type="member" />
 
         <div className="dashboard container">
           <Row>

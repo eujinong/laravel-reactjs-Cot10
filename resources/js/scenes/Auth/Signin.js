@@ -72,7 +72,7 @@ class Signin extends Component {
   async login(auth) {
     await this.props.login(auth);
 
-    this.props.history.push('/');
+    this.props.history.push('/dashboard');
   }
 
   render() {

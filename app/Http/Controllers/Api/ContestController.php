@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Contest;
 use App\Participant;
+use App\Category;
+use App\Interest;
 
 use JWTAuth;
 use Illuminate\Http\Request;
@@ -212,6 +214,39 @@ class ContestController extends Controller
       'rule' => $rule,
       'ending' => $ending,
       'note' => $note
+    ], 200);
+  }
+
+  public function getcontests(Request $request)
+  {
+    $data = $request->all();
+
+    $member_id = $data['member_id'];
+
+    $interests = Interest::where('member_id', $member_id)->get();
+
+    $contests = array();
+
+    if ($interests[0]->major_ids != '') {
+      $sub = array();
+
+      $ids = explode(',', $interests[0]->major_ids);
+
+      $cats = Category::whereIn('parent_id', $ids)->get();
+
+      foreach ($cats as $cat) {
+        array_push($sub, $cat->id);
+      }
+
+      $contests = Contest::whereIn('category_id', $sub)
+                        ->where('status', 'open')
+                        ->orderBy('start_date')
+                        ->get();
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'contests' => $contests
     ], 200);
   }
 }

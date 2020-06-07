@@ -35,6 +35,21 @@ class Menu extends Component {
             </Nav>
           )
         }
+        {
+          type == 'member' && (
+            <Nav>
+              <NavItem>
+                <NavLink tag={Link} to="/dashboard">My Interests</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/request-category">Request Category</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/contests">Contests</NavLink>
+              </NavItem>
+            </Nav>
+          )
+        }
       </div>
     );
   }

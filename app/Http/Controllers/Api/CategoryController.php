@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Category;
 use App\Contest;
+use App\Interest;
 
 use JWTAuth;
 use Illuminate\Http\Request;
@@ -202,6 +203,32 @@ class CategoryController extends Controller
       'sub' => $subcat,
       'open' => $open,
       'running' => $running
+    ], 200);
+  }
+
+  public function interests(Request $request)
+  {
+    $data = $request->all();
+
+    $member_id = $data['member_id'];
+
+    $interests = Interest::where('member_id', $member_id)->get();
+
+    $major = array();
+    $sub = array();
+
+    if ($interests[0]->major_ids != '') {
+      $ids = explode(',', $interests[0]->major_ids);
+
+      $major = Category::whereIn('id', $ids)->get();
+
+      $sub = Category::whereIn('parent_id', $ids)->get();
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'major' => $major,
+      'sub' => $sub
     ], 200);
   }
 }
