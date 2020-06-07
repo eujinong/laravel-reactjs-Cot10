@@ -929,8 +929,13 @@ class Contest extends Component {
                             <Col sm="4">
                               <FormGroup>
                                 <Input
-                                  name="votes"
+                                  name="archive"
                                   type="text"
+                                  onChange={value => {
+                                    this.setState({
+                                      archive: value.currentTarget.value
+                                    });
+                                  }}
                                 />
                               </FormGroup>
                             </Col>
@@ -946,6 +951,11 @@ class Contest extends Component {
                                 <Input
                                   name="group"
                                   type="text"
+                                  onChange={value => {
+                                    this.setState({
+                                      archive: value.currentTarget.value
+                                    });
+                                  }}
                                 />
                               </FormGroup>
                             </Col>

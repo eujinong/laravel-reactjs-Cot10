@@ -22,7 +22,9 @@ class Detail extends Component {
 
     this.state = {
       contest: [],
-      members: []
+      members: [],
+      archive: 0,
+      group: 0
     }
   }
 
@@ -68,7 +70,12 @@ class Detail extends Component {
   }
 
   render() {
-    const { contest, members } = this.state;
+    const {
+      contest,
+      members,
+      archive,
+      group
+    } = this.state;
 
     return (
       <Fragment>
@@ -137,13 +144,18 @@ class Detail extends Component {
                     <Col sm="4">
                       <Row>
                         <Col sm="8" className="text-right">
-                          <Label className="mt-2" for="votes">Archive Entries with less than</Label>
+                          <Label className="mt-2" for="archive">Archive Entries with less than</Label>
                         </Col>
                         <Col sm="4">
                           <FormGroup>
                             <Input
-                              name="votes"
+                              name="archive"
                               type="text"
+                              onChange={value => {
+                                this.setState({
+                                  archive: value.currentTarget.value
+                                });
+                              }}
                             />
                           </FormGroup>
                         </Col>
@@ -159,6 +171,11 @@ class Detail extends Component {
                             <Input
                               name="group"
                               type="text"
+                              onChange={value => {
+                                this.setState({
+                                  group: value.currentTarget.value
+                                });
+                              }}
                             />
                           </FormGroup>
                         </Col>
@@ -170,6 +187,8 @@ class Detail extends Component {
                     <Col className="mt-2" sm="12">
                       <ParticipantTable
                         items={members}
+                        archive={archive}
+                        group={group}
                       />
                     </Col>
                   </Row>
