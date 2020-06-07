@@ -125,5 +125,27 @@ class ParticipantController extends Controller
   public function contest(Request $request)
   {
     $data = $request->all();
+
+    $contest_id = $data['id'];
+    $review = $data['review'];
+
+    $participants = Participant::leftJoin('members', 'members.id', '=', 'participants.member_id')
+                          ->where('participants.contest_id', $contest_id);
+
+    if ($review == 'active') {
+
+    }
+
+    $participants = $participants->select('members.firstname', 'members.lastname', 'members.gender',
+                                    'participants.title', 'participants.round_votes', 'participants.all_votes',
+                                    'participants.media1 as media[0]', 'participants.media2 as media[1]',
+                                    'participants.media3 as media[2]', 'participants.media4 as media[3]',
+                                    'participants.media5 as media[4]', 'participants.media6 as media[5]',
+                                    'participants.media7 as media[6]', 'participants.media8 as media[7]',
+                                    'participants.media9 as media[8]', 'participants.media10 as media[9]')
+                                ->orderBy('members.firstname')
+                                ->get();
+
+    return $participants;
   }
 }

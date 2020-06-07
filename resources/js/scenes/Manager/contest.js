@@ -182,6 +182,14 @@ class Contest extends Component {
     }
   }
 
+  handleReviewAll(id) {
+    this.props.history.push('/contest/allreview', {id, review: 'all'});
+  }
+
+  handleReviewActive(id) {
+    this.props.history.push('/contest/activereview', {id, review: 'active'});
+  }
+
   async handleSubmit(values, bags) {
     const user = JSON.parse(localStorage.getItem('auth'));
 
@@ -853,7 +861,20 @@ class Contest extends Component {
                               <Col sm="3" className="text-right">Sub Category:</Col>
                               <Col sm="3">{item.sub}</Col>
                               <Col sm="3" className="text-right">Review Entries:</Col>
-                              <Col sm="3">All</Col>
+                              <Col sm="3">
+                                <a
+                                  className="process-link mr-2"
+                                  onClick={this.handleReviewAll.bind(this, item.id)}
+                                >
+                                  All
+                                </a>
+                                <a
+                                  className="process-link"
+                                  onClick={this.handleReviewActive.bind(this, item.id)}
+                                >
+                                  Active
+                                </a>
+                              </Col>
                             </Row>
                             <Row>
                               <Col sm="3" className="text-right">Vote Before:</Col>

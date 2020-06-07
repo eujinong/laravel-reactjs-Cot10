@@ -17,6 +17,7 @@ class CreateParticipantsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('member_id');
             $table->integer('contest_id');
+            $table->string('title');
             $table->integer('group_code')->nullable();
 
             $table->integer('round_votes');

@@ -71746,6 +71746,30 @@ body .dashboard .ui.list .item .list {
   border: none;
 }
 
+body .dashboard .ui.styled.accordion .row {
+  margin: 0;
+}
+
+body .dashboard .ui.styled.accordion .row .title {
+  border-top: 1px solid rgba(34, 36, 38, 0.15);
+  color: #000;
+}
+
+body .dashboard .ui.styled.accordion .row .title.active {
+  color: #36539C;
+}
+
+body .dashboard .ui.styled.accordion .row .content a {
+  color: #1E1B52;
+  display: flex;
+  margin-right: 12px;
+}
+
+body .dashboard .ui.styled.accordion .row:first-child .title,
+body .dashboard .ui.styled.accordion .row:first-child .vote {
+  border-top: none;
+}
+
 body .dashboard .panel button {
   border-radius: 0;
   margin: 5px 0 5px 20px;

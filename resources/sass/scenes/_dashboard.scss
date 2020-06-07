@@ -110,6 +110,35 @@ body {
       }
     }
 
+    .ui.styled.accordion {
+      .row {
+        margin: 0;
+
+        .title {
+          border-top: 1px solid rgba(34, 36, 38, 0.15);
+          color: $black;
+          
+          &.active {
+            color: $steel;
+          }
+        }
+  
+        .content {
+          a {
+            color: $blue;
+            display: flex;
+            margin-right: 12px;
+          }
+        }
+
+        &:first-child {
+          .title, .vote {
+            border-top: none;
+          }
+        }
+      }
+    }
+
     .panel {
       button {
         border-radius: 0;

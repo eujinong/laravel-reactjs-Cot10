@@ -14,6 +14,7 @@ class Participant extends Model
     protected $fillable = [
       'member_id',
       'contest_id',
+      'title',
       'group_code',
       'round_votes',
       'all_votes',
