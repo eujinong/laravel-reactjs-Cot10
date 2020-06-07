@@ -184,7 +184,9 @@ class ParticipantTable extends Component {
                 <Table.Row
                   key={index}
                 >
-                  <Table.Cell className="text-center">{index + 1}</Table.Cell>
+                  <Table.Cell className="text-center">
+                    {("000" + (index + 1)).slice(-4)}
+                  </Table.Cell>
                   <Table.Cell className="text-center"></Table.Cell>
                   <Table.Cell>{item.title}</Table.Cell>
                   <Table.Cell className="text-center">{item.round_votes}</Table.Cell>

@@ -73,6 +73,8 @@ class ContestController extends Controller
                         'participants.media5 as media[4]', 'participants.media6 as media[5]',
                         'participants.media7 as media[6]', 'participants.media8 as media[7]',
                         'participants.media9 as media[8]', 'participants.media10 as media[9]')
+                ->orderBy('participants.all_votes', 'DESC')
+                ->orderBy('participants.round_votes', 'DESC')
                 ->get();
 
     for ($i = 0; $i < sizeof($members); $i++) {
