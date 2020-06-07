@@ -42,7 +42,7 @@ class ParticipantTable extends Component {
             items && items.length > 0 && (
               items.map((item, index) => (
                 <Table.Row
-                  disabled={item.all_votes > archive ? false : true}
+                  disabled={parseInt(item.all_votes) > archive ? false : true}
                   key={index}
                 >
                   <Table.Cell className="text-center">
@@ -50,7 +50,7 @@ class ParticipantTable extends Component {
                   </Table.Cell>
                   <Table.Cell className="text-center">
                     {
-                      item.all_votes > archive && group > 0 && (
+                      parseInt(item.all_votes) > archive && group > 0 && (
                         ("000" + ((index - index % group) / group + 1)).slice(-4)
                       )
                     }
