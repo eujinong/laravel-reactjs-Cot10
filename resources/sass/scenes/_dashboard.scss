@@ -117,7 +117,12 @@ body {
         .title {
           border-top: 1px solid rgba(34, 36, 38, 0.15);
           color: $black;
-          
+  
+          &>span:last-child {
+            float: right;
+            margin-top: 5px;
+          }
+  
           &.active {
             color: $steel;
           }

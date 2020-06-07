@@ -71755,6 +71755,11 @@ body .dashboard .ui.styled.accordion .row .title {
   color: #000;
 }
 
+body .dashboard .ui.styled.accordion .row .title > span:last-child {
+  float: right;
+  margin-top: 5px;
+}
+
 body .dashboard .ui.styled.accordion .row .title.active {
   color: #36539C;
 }

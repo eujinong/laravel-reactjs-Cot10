@@ -140,9 +140,7 @@ class Review extends Component {
                                 )
                               }
                             </span>
-                            <span className="ml-5">
-                              Title: {member.title}
-                            </span>
+                            <span>Title: {member.title}</span>
                           </Accordion.Title>
                           
                           <Accordion.Content active={activeIndex === id}>
