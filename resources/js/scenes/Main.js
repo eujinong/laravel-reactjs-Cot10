@@ -12,6 +12,7 @@ import Admin from './Admin';
 import ManagerCategory from './Manager/category';
 import ManagerContest from './Manager/contest';
 import ManagerCompleted from './Manager/completed';
+import ManagerDetail from './Manager/detail';
 import ManagerReview from './Manager/review';
 import Manager from './Manager';
 
@@ -38,6 +39,7 @@ class Main extends Component {
           <AuthManagerRoute path="/contest/categories" name="ManagerCategory" component={ManagerCategory} />
           <AuthManagerRoute path="/contest/contests" name="ManagerContest" component={ManagerContest} />
           <AuthManagerRoute path="/contest/completed" name="ManagerCompleted" component={ManagerCompleted} />
+          <AuthManagerRoute path="/contest/detail" name="ManagerDetail" component={ManagerDetail} />
           <AuthManagerRoute path="/contest/allreview" name="ManagerReview" component={ManagerReview} />
           <AuthManagerRoute path="/contest/activereview" name="ManagerReview" component={ManagerReview} />
           <AuthManagerRoute path="/contest" name="Manager" component={Manager} />

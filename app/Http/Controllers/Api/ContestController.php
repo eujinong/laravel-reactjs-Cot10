@@ -56,10 +56,18 @@ class ContestController extends Controller
    */
   public function show($id)
   {
+    $contest = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+                    ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
+                    ->where('contests.id', $id)
+                    ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
+                    ->get();
+
     $members = Participant::leftJoin('members', 'members.id', '=', 'participants.member_id')
                 ->where('contest_id', $id)
                 ->whereNull('group_code')
-                ->select('members.*', 
+                ->select('members.id', 'members.number',
+                        'participants.id as entry', 'participants.title',
+                        'participants.round_votes', 'participants.all_votes',
                         'participants.media1 as media[0]', 'participants.media2 as media[1]',
                         'participants.media3 as media[2]', 'participants.media4 as media[3]',
                         'participants.media5 as media[4]', 'participants.media6 as media[5]',
@@ -83,6 +91,7 @@ class ContestController extends Controller
     }
 
     return response()->json(array(
+      'contest' => $contest[0],
       'members' => $members
     ));
   }

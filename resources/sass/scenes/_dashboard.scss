@@ -110,6 +110,15 @@ body {
       }
     }
 
+    table {
+      a.detail-link {
+        cursor: pointer;
+        color: #1a0dab;
+        margin: 0 10px;
+        text-decoration: underline;
+      }
+    }
+
     .ui.styled.accordion {
       .row {
         margin: 0;
@@ -176,18 +185,18 @@ body {
       }
 
       div.mx-3 {
+        .process-link {
+          color: $primary;
+          text-decoration: underline;
+
+          &:hover {
+            cursor: pointer;
+          }
+        }
+
         .row {
           div {
             padding: 0 5px;
-
-            .process-link {
-              color: $primary;
-              text-decoration: underline;
-
-              &:hover {
-                cursor: pointer;
-              }
-            }
           }
         }
         

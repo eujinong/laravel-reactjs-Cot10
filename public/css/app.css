@@ -71746,6 +71746,13 @@ body .dashboard .ui.list .item .list {
   border: none;
 }
 
+body .dashboard table a.detail-link {
+  cursor: pointer;
+  color: #1a0dab;
+  margin: 0 10px;
+  text-decoration: underline;
+}
+
 body .dashboard .ui.styled.accordion .row {
   margin: 0;
 }
@@ -71803,17 +71810,17 @@ body .dashboard .contest img {
   width: 180px;
 }
 
-body .dashboard .contest div.mx-3 .row div {
-  padding: 0 5px;
-}
-
-body .dashboard .contest div.mx-3 .row div .process-link {
+body .dashboard .contest div.mx-3 .process-link {
   color: #1E1B52;
   text-decoration: underline;
 }
 
-body .dashboard .contest div.mx-3 .row div .process-link:hover {
+body .dashboard .contest div.mx-3 .process-link:hover {
   cursor: pointer;
+}
+
+body .dashboard .contest div.mx-3 .row div {
+  padding: 0 5px;
 }
 
 body .dashboard .contest div.mx-3:not(:first-child) {

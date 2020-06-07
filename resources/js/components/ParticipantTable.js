@@ -3,7 +3,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import React, { Component } from 'react';
-import { Button, CustomInput } from 'reactstrap';
 import {
   Table,
   Pagination,
@@ -12,7 +11,6 @@ import {
 import Select from 'react-select';
 
 import _ from 'lodash';
-import { Genders } from '../configs/data';
 
 class ParticipantTable extends Component {
   constructor(props) {
@@ -125,7 +123,7 @@ class ParticipantTable extends Component {
     } = this.state;
 
     return (
-      <Table striped sortable>
+      <Table celled>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell
@@ -140,31 +138,31 @@ class ParticipantTable extends Component {
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
-              sorted={column === 'name' ? direction : null}
-              onClick={this.handleSort.bind(this, 'name')}
+              sorted={column === 'title' ? direction : null}
+              onClick={this.handleSort.bind(this, 'title')}
             >
-              Name
+              Entry Title
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
-              sorted={column === 'gender' ? direction : null}
-              onClick={this.handleSort.bind(this, 'gender')}
+              sorted={column === 'votes' ? direction : null}
+              onClick={this.handleSort.bind(this, 'votes')}
             >
-              Gender
+              Votes
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
-              sorted={column === 'birthday' ? direction : null}
-              onClick={this.handleSort.bind(this, 'birthday')}
+              sorted={column === 't_votes' ? direction : null}
+              onClick={this.handleSort.bind(this, 't_votes')}
             >
-              Birthday
+              Total Votes
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
-              sorted={column === 'email' ? direction : null}
-              onClick={this.handleSort.bind(this, 'email')}
+              sorted={column === 'entry' ? direction : null}
+              onClick={this.handleSort.bind(this, 'entry')}
             >
-              Email
+              Entry ID
             </Table.HeaderCell>
             <Table.HeaderCell
               className="text-center"
@@ -174,8 +172,9 @@ class ParticipantTable extends Component {
               Text Number
             </Table.HeaderCell>
             <Table.HeaderCell className="text-center">
-              Media
+              Member ID
             </Table.HeaderCell>
+            <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -186,38 +185,16 @@ class ParticipantTable extends Component {
                   key={index}
                 >
                   <Table.Cell className="text-center">{index + 1}</Table.Cell>
-                  <Table.Cell className="text-center">001</Table.Cell>
-                  <Table.Cell className="text-center">
-                    {item.firstname} {item.lastname}
-                  </Table.Cell>
-                  <Table.Cell className="text-center">
-                    {item.gender && item.gender == 1 ? Genders[0].name : Genders[1].name}
-                  </Table.Cell>
-                  <Table.Cell className="text-center">{item.birthday}</Table.Cell>
-                  <Table.Cell className="text-center">{item.email}</Table.Cell>
+                  <Table.Cell className="text-center"></Table.Cell>
+                  <Table.Cell>{item.title}</Table.Cell>
+                  <Table.Cell className="text-center">{item.round_votes}</Table.Cell>
+                  <Table.Cell className="text-center">{item.all_votes}</Table.Cell>
+                  <Table.Cell className="text-center">{item.entry}</Table.Cell>
                   <Table.Cell className="text-center">{item.number}</Table.Cell>
+                  <Table.Cell className="text-center">{item.id}</Table.Cell>
                   <Table.Cell className="text-center">
-                    {
-                      item.files > 0 && (
-                        item.files == 1 ? (
-                          '1 File'
-                        ) : (
-                          item.files + ' Files'
-                        )
-                      )
-                    }
-                    {
-                      item.files > 0 && item.urls > 0 && (', ')
-                    }
-                    {
-                      item.urls > 0 && (
-                        item.urls == 1 ? (
-                          '1 URL'
-                        ) : (
-                          item.urls + ' URLs'
-                        )
-                      )
-                    }
+                    <a className="detail-link">Warning</a>
+                    <a className="detail-link">Delete</a>
                   </Table.Cell>
                 </Table.Row>
               ))
@@ -242,7 +219,7 @@ class ParticipantTable extends Component {
                 }}
               />
             </Table.HeaderCell>
-            <Table.HeaderCell colSpan="7">
+            <Table.HeaderCell colSpan="8">
               <Menu floated="right" pagination>
                 <Pagination
                   activePage={activePage}

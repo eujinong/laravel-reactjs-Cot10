@@ -182,6 +182,10 @@ class Contest extends Component {
     }
   }
 
+  handleDetail(id) {
+    this.props.history.push('/contest/detail', id);
+  }
+
   handleReviewAll(id) {
     this.props.history.push('/contest/allreview', {id, review: 'all'});
   }
@@ -850,7 +854,12 @@ class Contest extends Component {
                             <img src={Bitmaps.contest} />
                           </div>
                           <div className="mx-3 my-1">
-                            <h4>{item.name}</h4>
+                            <a
+                              className="process-link"
+                              onClick={this.handleDetail.bind(this, item.id)}
+                            >
+                              <h4>{item.name}</h4>
+                            </a>
                             <Row>
                               <Col sm="3" className="text-right">Major Category:</Col>
                               <Col sm="3">{item.major}</Col>
@@ -911,7 +920,7 @@ class Contest extends Component {
                   <hr />
                   {
                     process != '' && members.length > 0 && (
-                      <Row className="mt-3">
+                      <Row className="my-3">
                         <Col sm="4">
                           <Row>
                             <Col sm="8" className="text-right">
@@ -928,7 +937,7 @@ class Contest extends Component {
                           </Row>
                         </Col>
                         <Col sm="4">
-                        <Row>
+                          <Row>
                             <Col sm="8" className="text-right">
                               <Label className="mt-2" for="group">Re-Group table with</Label>
                             </Col>
@@ -942,7 +951,7 @@ class Contest extends Component {
                             </Col>
                           </Row>
                         </Col>
-                        <Col className="text-center" sm="4">
+                        <Col className="text-right" sm="4">
                           <Button color="warning">Declare the Winners</Button>
                         </Col>
                         <Col className="mt-2" sm="12">

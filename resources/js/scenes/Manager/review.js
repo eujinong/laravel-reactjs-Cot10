@@ -29,7 +29,7 @@ class Review extends Component {
     const params = this.props.location.state;
 
     if (params === undefined) {
-      this.props.history.push('contest/contests');
+      this.props.history.push('/contest/contests');
     } else {
       const data = await Api.post('contest-participants', params);
       const { response, body } = data;
