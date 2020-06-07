@@ -61,6 +61,8 @@ class Contest extends Component {
       messageStatus: false,
       successMessage: '',
       failMessage: '',
+      archive: 0,
+      group: 0
     }
 
     this.formikRef = React.createRef();
@@ -282,7 +284,8 @@ class Contest extends Component {
       majorcat, subcat, subfull,
       name, major, sub, start_date,
       goles, rules, endings, notes,
-      gole, rule, ending, note
+      gole, rule, ending, note,
+      archive, group
     } = this.state;
 
     return (
@@ -953,7 +956,7 @@ class Contest extends Component {
                                   type="text"
                                   onChange={value => {
                                     this.setState({
-                                      archive: value.currentTarget.value
+                                      group: value.currentTarget.value
                                     });
                                   }}
                                 />
@@ -967,6 +970,8 @@ class Contest extends Component {
                         <Col className="mt-2" sm="12">
                           <ParticipantTable
                             items={members}
+                            archive={archive}
+                            group={group}
                           />
                         </Col>
                       </Row>
