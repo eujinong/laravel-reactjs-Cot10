@@ -217,6 +217,17 @@ class ContestController extends Controller
     ], 200);
   }
 
+  public function getinfo($id)
+  {
+    $contest = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+                    ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
+                    ->where('contests.id', $id)
+                    ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
+                    ->get();
+
+    return $contest[0];
+  }
+
   public function getcontests(Request $request)
   {
     $data = $request->all();
@@ -238,15 +249,24 @@ class ContestController extends Controller
         array_push($sub, $cat->id);
       }
 
-      $contests = Contest::whereIn('category_id', $sub)
-                        ->where('status', 'open')
-                        ->orderBy('start_date')
-                        ->get();
+      $contests = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+                    ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
+                    ->whereIn('contests.category_id', $sub)
+                    ->where('contests.status', 'open')
+                    ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
+                    ->orderBy('start_date')
+                    ->get();
+
+      $participants = Participant::leftJoin('contests', 'contests.id', '=', 'participants.contest_id')
+                    ->where('contests.status', 'open')
+                    ->where('participants.member_id', $member_id)
+                    ->get();
     }
 
     return response()->json([
       'status' => 'success',
-      'contests' => $contests
+      'contests' => $contests,
+      'participants' => $participants
     ], 200);
   }
 }

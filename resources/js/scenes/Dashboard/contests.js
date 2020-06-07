@@ -5,7 +5,8 @@ import React, {
   Component, Fragment
 } from 'react';
 import {
-  Row, Col
+  Row, Col,
+  Button
 } from 'reactstrap';
 import {
   withRouter
@@ -22,7 +23,8 @@ class Contests extends Component {
     super(props);
 
     this.state = {
-      contests: []
+      contests: [],
+      participants: []
     }
   }
 
@@ -34,12 +36,17 @@ class Contests extends Component {
     switch (response.status) {
       case 200:
         this.setState({
-          contests: body.contests
+          contests: body.contests,
+          participants: body.participants
         });
         break;
       default:
         break;
     }
+  }
+
+  handleAttend(id) {
+    this.props.history.push('/contests/attend', id);
   }
 
   handleSignout() {
@@ -49,7 +56,7 @@ class Contests extends Component {
   }
 
   render() {
-    const { contests } = this.state;
+    const { contests, participants } = this.state;
     
     return (
       <Fragment>
@@ -75,11 +82,12 @@ class Contests extends Component {
                 {
                   contests.map((item, index) => (
                     <Col className="d-flex contest" sm="12" md="6" key={index}>
-                      <div className="mx-3 my-1">
+                      <div className="mx-3 my-2">
                         <img src={Bitmaps.contest} />
                       </div>
-                      <div className="mx-3 my-1">
+                      <div className="mx-3 my-2">
                         <h4>{item.name}</h4>
+                        <hr className="my-1" />
                         <Row>
                           <Col sm="6" className="text-right">Major Category:</Col>
                           <Col sm="6">{item.major}</Col>
@@ -93,8 +101,23 @@ class Contests extends Component {
                           <Col sm="6">{item.start_date}</Col>
                         </Row>
                         <Row>
-                          <Col sm="6" className="text-right"># of entries started/active:</Col>
-                          <Col sm="6"></Col>
+                          <Col className="text-center mt-2" sm="12">
+                            {
+                              participants.filter(obj => obj.contest_id == item.id).length > 0 ? (
+                                <span>
+                                  <i className="fa fa-check"></i> Accepted
+                                </span>
+                              ) : (
+                                <Button
+                                  color="success"
+                                  type="button"
+                                  onClick={this.handleAttend.bind(this, item.id)}
+                                >
+                                  <i className="fa fa-user" /> Accept Contest
+                                </Button>
+                              )
+                            }
+                          </Col>
                         </Row>
                       </div>
                     </Col>
