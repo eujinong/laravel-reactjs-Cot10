@@ -24,6 +24,7 @@ class Signup extends Component {
     super(props);
     this.state = {
       majorcat: [],
+      majorChecked: [],
       imagePreviewUrl: '',
       fileKey: 1,
       alertVisible: false,
@@ -74,13 +75,6 @@ class Signup extends Component {
     let newData = {};
     const { imagePreviewUrl } = this.state;
 
-    let major_ids = [];
-    if (values.major !== null) {
-      for (let i = 0; i < values.major.length; i++) {
-        major_ids.push(values.major[i].value)
-      }
-    }
-    
     newData = {
       profile_image: imagePreviewUrl || '',
       firstname: values.firstname,
@@ -97,7 +91,7 @@ class Signup extends Component {
       street: values.street,
       building: values.building,
       apartment: values.apartment,
-      major_ids
+      major_ids: values.major || []
     };
 
     const data = await Api.post('reg-member', newData);
@@ -109,11 +103,6 @@ class Signup extends Component {
           messageStatus: true,
           successMessage: 'Added Successfully!'
         });
-
-        setTimeout(() => {
-          this.setState({ alertVisible: false });
-          this.props.history.goBack();
-        }, 2000);
         break;
       case 406:
         if (body.message) {
@@ -141,6 +130,7 @@ class Signup extends Component {
   render() {
     const {
       majorcat,
+      majorChecked,
       imagePreviewUrl
     } = this.state;
 
@@ -688,27 +678,41 @@ class Signup extends Component {
                       </UncontrolledTooltip>
                     </Col>
                     <Col xs="6" sm="4">
-                      <FormGroup>
-                        <Select
-                          name="major"
-                          isMulti
-                          menuPlacement="auto"
-                          indicatorSeparator={null}
-                          options={majorcat}
-                          getOptionValue={option => option.value}
-                          getOptionLabel={option => option.label}
-                          value={values.major}
-                          onChange={(option) => {
-                            setFieldValue('major', option);
-                          }}
-                          onBlur={this.handleBlur}
-                        />
-                      </FormGroup>
-                      <Label>
+                      <Label className="mt-2">
                         Please check the following Areas of Interest in
                         which you would like us to notify you of contests created and/or starting soon.
                         You may update these anytime by reviewing your profile page.
                       </Label>
+                      <FormGroup>
+                        <div>
+                          {
+                            majorcat.map((item, index) => (
+                              <CustomInput
+                                key={index}
+                                name="major"
+                                type="checkbox"
+                                id={item.value}
+                                label={item.label}
+                                onClick={(option) => {
+                                  let { majorChecked } = this.state;
+
+                                  if (option.target.checked) {
+                                    majorChecked.push(item.value);
+                                  } else {
+                                    const id = majorChecked.indexOf(item.value);
+
+                                    if (id > -1) {
+                                      majorChecked.splice(id, 1);
+                                    }
+                                  }
+
+                                  setFieldValue('major', majorChecked);
+                                }}
+                              />
+                            ))
+                          }
+                        </div>
+                      </FormGroup>
                     </Col>
                   </Row>
                   <div className="w-100 d-flex justify-content-center my-3">

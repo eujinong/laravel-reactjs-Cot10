@@ -130,18 +130,18 @@ class MemberController extends Controller
       'apartment' => $data['apartment']
     ));
 
-    $major_ids = '';
-
     if (array_key_exists('major_ids', $data)) {
+      $major_ids = '';
+
       foreach ($data['major_ids'] as $id) {
         $major_ids .= $id . ',';
       }
-    }
 
-    Interest::create(array(
-      'member_id' => $member->id,
-      'major_ids' => substr($major_ids, 0, strlen($major_ids) - 1)
-    ));
+      Interest::create(array(
+        'member_id' => $member->id,
+        'major_ids' => substr($major_ids, 0, strlen($major_ids) - 1)
+      ));
+    }
 
     return response()->json([
       'status' => 'success'

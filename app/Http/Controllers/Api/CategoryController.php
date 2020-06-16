@@ -217,7 +217,7 @@ class CategoryController extends Controller
     $major = array();
     $sub = array();
 
-    if ($interests[0]->major_ids != '') {
+    if (sizeof($interests) > 0) {
       $ids = explode(',', $interests[0]->major_ids);
 
       $major = Category::whereIn('id', $ids)->get();
