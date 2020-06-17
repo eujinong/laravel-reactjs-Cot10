@@ -6,6 +6,7 @@ import {
   Container,
   Row, Col,
   Button,
+  Modal, ModalHeader, ModalBody, ModalFooter,
   Form, FormGroup, FormFeedback,
   Input, Label, CustomInput,
   UncontrolledAlert,
@@ -23,11 +24,11 @@ class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      modal: false,
       majorcat: [],
       majorChecked: [],
       imagePreviewUrl: '',
       fileKey: 1,
-      alertVisible: false,
       messageStatus: false,
       successMessage: '',
       failMessage: '',
@@ -72,8 +73,9 @@ class Signup extends Component {
   }
 
   async handleSubmit(values, bags) {
+    const { imagePreviewUrl, modal } = this.state;
+
     let newData = {};
-    const { imagePreviewUrl } = this.state;
 
     newData = {
       profile_image: imagePreviewUrl || '',
@@ -99,7 +101,7 @@ class Signup extends Component {
     switch (response.status) {
       case 200:
         this.setState({
-          alertVisible: true,
+          modal: !modal,
           messageStatus: true,
           successMessage: 'Added Successfully!'
         });
@@ -114,7 +116,7 @@ class Signup extends Component {
         break;
       case 422:
         this.setState({
-          alertVisible: true,
+          modal: !modal,
           messageStatus: false,
           failMessage: body.data && 
             (`${body.data.email !== undefined ? body.data.email : ''}`)
@@ -127,8 +129,27 @@ class Signup extends Component {
     bags.setSubmitting(false);
   }
 
+  handleToggle() {
+    const { modal } = this.state;
+
+    this.setState({
+      modal: !modal
+    });
+  }
+
+  handleLogin() {
+    const { modal } = this.state;
+
+    this.setState({
+      modal: !modal
+    });
+
+    this.props.history.push('/signin');
+  }
+
   render() {
     const {
+      modal,
       majorcat,
       majorChecked,
       imagePreviewUrl
@@ -163,17 +184,56 @@ class Signup extends Component {
             <img src={Bitmaps.logo} alt="Cot10" />
           </a>
         </div>
+
+        {
+          this.state.messageStatus ? (
+            <div>
+              <Modal
+                isOpen={modal}
+                toggle={this.handleToggle.bind(this)}
+              >
+                <ModalBody>
+                  <div className="w-100">
+                    <Alert color='success' isOpen={true}>{this.state.successMessage}</Alert>
+                  </div>
+                  <h3>Would you like to login now?</h3>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="success"
+                    onClick={this.handleLogin.bind(this)}
+                  >
+                    Login
+                  </Button>
+                </ModalFooter>
+              </Modal>
+            </div>
+          ) : (
+            <div>
+              <Modal
+                isOpen={modal}
+                toggle={this.handleToggle.bind(this)}
+              >
+                <ModalBody>
+                  <div className="w-100">
+                    <Alert color='warning' isOpen={true}>{this.state.failMessage}</Alert>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button
+                    color="secondary"
+                    onClick={this.handleToggle.bind(this)}
+                  >
+                    Close
+                  </Button>
+                </ModalFooter>
+              </Modal>
+            </div>
+          )
+        }
         
         <div className="dashboard">
           <Container>
-            <div className="w-100 mb-5">
-              <Alert color={this.state.messageStatus ? 'success' : 'warning'} isOpen={this.state.alertVisible}>
-                {
-                  this.state.messageStatus ? this.state.successMessage : this.state.failMessage
-                }
-              </Alert>
-            </div>
-
             <Formik
               ref={this.formikRef}
 
