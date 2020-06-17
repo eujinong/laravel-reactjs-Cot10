@@ -73,7 +73,8 @@ class CategoryController extends Controller
 
     $valid = Validator::make($data, [
       'parent_id' => 'required',
-      'name' => 'required|string|max:255'
+      'name' => 'required|string|max:255',
+      'active' => 'required'
     ]);
 
     if ($valid->fails()) {
@@ -97,7 +98,7 @@ class CategoryController extends Controller
       'parent_id' => $data['parent_id'],
       'name' => $data['name'],
       'short_name' => $short,
-      'active' => 0
+      'active' => $data['active']
     ));
 
     $cat = Category::where('parent_id', 0)

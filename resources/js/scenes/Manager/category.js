@@ -7,6 +7,7 @@ import {
 import {
   Row, Col,
   FormGroup, Alert,
+  CustomInput,
   Label, Input, Button
 } from 'reactstrap';
 import Select from 'react-select';
@@ -22,6 +23,7 @@ class Category extends Component {
     super(props);
 
     this.state = {
+      option: 'major',
       parent: [],
       major: [],
       sub: [],
@@ -89,6 +91,7 @@ class Category extends Component {
 
       params.parent_id = cat_parent ? cat_parent.value : 0;
       params.name = cat_name;
+      params.active = 1;
 
       const data = await Api.post('create-category', params);
       const { response, body } = data;
@@ -247,6 +250,7 @@ class Category extends Component {
 
   render() {
     const { 
+      option,
       major, sub, open, running,
       inactive, request_cat, current,
       parent, cat_parent, cat_name
@@ -271,25 +275,66 @@ class Category extends Component {
                 )
               }
 
-              <FormGroup row>
-                <Label for="parent" sm="4" className="text-right">Major Categories:</Label>
-                <Col sm="8">
-                  <Select
-                    classNamePrefix="react-select-lg"
-                    options={parent}
-                    getOptionValue={option => option.value}
-                    getOptionLabel={option => option.name}
-                    value={cat_parent}
-                    onChange={(option) => {
+              <FormGroup>
+                <div>
+                  <CustomInput
+                    type="radio"
+                    id="major"
+                    name="catOption"
+                    label="Major Category"
+                    inline
+                    defaultChecked
+                    onClick={() => {
                       this.setState({
-                        cat_parent: option
+                        option: 'major'
                       });
                     }}
                   />
-                </Col>
+                  <CustomInput
+                    type="radio"
+                    id="sub"
+                    name="catOption"
+                    label="Sub Category"
+                    inline
+                    onClick={() => {
+                      this.setState({
+                        option: 'sub'
+                      });
+                    }}
+                  />
+                </div>
               </FormGroup>
+
+              {
+                option == 'sub' && (
+                  <FormGroup row>
+                    <Label for="parent" sm="4" className="text-right">Major Categories:</Label>
+                    <Col sm="8">
+                      <Select
+                        classNamePrefix="react-select-lg"
+                        options={parent}
+                        getOptionValue={option => option.value}
+                        getOptionLabel={option => option.name}
+                        value={cat_parent}
+                        onChange={(option) => {
+                          this.setState({
+                            cat_parent: option
+                          });
+                        }}
+                      />
+                    </Col>
+                  </FormGroup>
+                )
+              }
               <FormGroup row>
-                <Label for="name" sm="4" className="text-right">Category Name:</Label>
+                <Label for="name" sm="4" className="text-right">
+                  {
+                    option == 'major' && 'Major Category Name:'
+                  }
+                  {
+                    option == 'sub' && 'Sub Category Name:'
+                  }
+                </Label>
                 <Col sm="8">
                   <Input
                     type="text"

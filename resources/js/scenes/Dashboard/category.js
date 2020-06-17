@@ -6,7 +6,7 @@ import {
 
 import {
   Row, Col,
-  FormGroup, Alert,
+  FormGroup, FormFeedback, Alert,
   Label, Input, Button
 } from 'reactstrap';
 import Select from 'react-select';
@@ -23,6 +23,8 @@ class Category extends Component {
     super(props);
 
     this.state = {
+      catError: false,
+      nameError: false,
       major: [],
       sub: [],
       cat_parent: null,
@@ -36,10 +38,6 @@ class Category extends Component {
     switch (response.status) {
       case 200:
         let parent = [];
-        parent.push({
-          name: 'No select',
-          value: 0
-        });
 
         for (let i in body.major) {
           if (body.major[i].active) {
@@ -65,12 +63,25 @@ class Category extends Component {
 
   async handleAddCategory() {
     const { cat_parent, cat_name } = this.state;
+
+    if (cat_parent === null) {
+      this.setState({
+        catError: true
+      });
+    }
+
+    if (cat_name == '') {
+      this.setState({
+        nameError: true
+      });
+    }
     
-    if (cat_name != '') {
+    if (cat_parent !== null && cat_name != '') {
       const params = [];
 
       params.parent_id = cat_parent ? cat_parent.value : 0;
       params.name = cat_name;
+      params.active = 0;
 
       const data = await Api.post('create-category', params);
       const { response, body } = data;
@@ -133,6 +144,7 @@ class Category extends Component {
 
   render() {
     const { 
+      catError, nameError,
       major, sub, 
       parent, cat_parent, cat_name
     } = this.state;
@@ -171,33 +183,42 @@ class Category extends Component {
                 <Label for="parent" sm="4" className="text-right">Major Categories:</Label>
                 <Col sm="8">
                   <Select
-                    classNamePrefix="react-select-lg"
+                    classNamePrefix={catError ? 'invalid react-select-lg' : 'react-select-lg'}
                     options={parent}
                     getOptionValue={option => option.value}
                     getOptionLabel={option => option.name}
                     value={cat_parent}
                     onChange={(option) => {
                       this.setState({
-                        cat_parent: option
+                        cat_parent: option,
+                        catError: false
                       });
                     }}
                   />
+                  {
+                    catError && <FormFeedback className="d-block">Major Category is required!</FormFeedback>
+                  }
                 </Col>
               </FormGroup>
               <FormGroup row>
                 <Label for="name" sm="4" className="text-right">Category Name:</Label>
                 <Col sm="8">
                   <Input
-                      type="text"
-                      sm="8"
-                      placeholder="Category Name"
-                      value={cat_name}
-                      onChange={(name) => {
-                        this.setState({
-                          cat_name: name.target.value
-                        });
-                      }}
-                    />
+                    className={nameError ? 'is-invalid' : ''}
+                    type="text"
+                    sm="8"
+                    placeholder="Category Name"
+                    value={cat_name}
+                    onChange={(name) => {
+                      this.setState({
+                        cat_name: name.target.value,
+                        nameError: false
+                      });
+                    }}
+                  />
+                  {
+                    nameError && <FormFeedback>Category Name is required!</FormFeedback>
+                  }
                 </Col>
               </FormGroup>
               <FormGroup className="text-center">
