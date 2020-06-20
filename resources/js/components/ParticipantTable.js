@@ -5,42 +5,113 @@
 import React, { Component } from 'react';
 import {
   Table,
-  Pagination,
-  Menu
 } from 'semantic-ui-react';
-import Select from 'react-select';
 
 import _ from 'lodash';
 
 class ParticipantTable extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      column: null,
+      data: [],
+      direction: null,
+    }
+  }
+
+  componentDidMount() {
+    const { items } = this.props;
+    this.setState({
+      data: items
+    });
+  }
+
+  handleSort(clickedColumn) {
+    const { column, data, direction } = this.state;
+
+    if (column !== clickedColumn) {
+      this.setState({
+        column: clickedColumn,
+        data: _.sortBy(data, [clickedColumn]),
+        direction: 'ascending'
+      });
+
+      return;
+    }
+
+    this.setState({
+      data: data.reverse(),
+      direction: direction === 'ascending' ? 'descending' : 'ascending'
+    });
   }
 
   render() {
     const {
-      items, archive, group
+      archive, group
     } = this.props;
 
+    const {
+      column,
+      direction,
+      data
+    } = this.state;
+
     return (
-      <Table celled>
+      <Table sortable celled>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell className="text-center" >Seq</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Group</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Entry Title</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Votes</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Total Votes</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Entry ID</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Text Number</Table.HeaderCell>
-            <Table.HeaderCell className="text-center">Member ID</Table.HeaderCell>
+            <Table.HeaderCell className="text-center">Seq</Table.HeaderCell>
+            <Table.HeaderCell className="text-center">New Seq</Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'title' ? direction : null}
+              onClick={this.handleSort.bind(this, 'title')}
+            >
+              Entry Title
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'round_votes' ? direction : null}
+              onClick={this.handleSort.bind(this, 'round_votes')}
+            >
+              Votes
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'all_votes' ? direction : null}
+              onClick={this.handleSort.bind(this, 'all_votes')}
+            >
+              Total Votes
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'entry' ? direction : null}
+              onClick={this.handleSort.bind(this, 'entry')}
+            >
+              Entry ID
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'number' ? direction : null}
+              onClick={this.handleSort.bind(this, 'number')}
+            >
+              Text Number
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className="text-center"
+              sorted={column === 'id' ? direction : null}
+              onClick={this.handleSort.bind(this, 'id')}
+            >
+              Member ID
+            </Table.HeaderCell>
             <Table.HeaderCell></Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {
-            items && items.length > 0 && (
-              items.map((item, index) => (
+            data && data.length > 0 && (
+              data.map((item, index) => (
                 <Table.Row
                   disabled={parseInt(item.all_votes) > archive ? false : true}
                   key={index}
