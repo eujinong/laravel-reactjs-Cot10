@@ -30,6 +30,13 @@ class ParticipantTable extends Component {
   handleSort(clickedColumn) {
     const { column, data, direction } = this.state;
 
+    for (var i in data) {
+      data[i].round_votes = parseInt(data[i].round_votes);
+      data[i].all_votes = parseInt(data[i].all_votes);
+      data[i].entry = parseInt(data[i].entry);
+      data[i].id = parseInt(data[i].id);
+    }
+
     if (column !== clickedColumn) {
       this.setState({
         column: clickedColumn,
@@ -127,11 +134,11 @@ class ParticipantTable extends Component {
                     }
                   </Table.Cell>
                   <Table.Cell>{item.title}</Table.Cell>
-                  <Table.Cell className="text-center">{parseInt(item.round_votes)}</Table.Cell>
-                  <Table.Cell className="text-center">{parseInt(item.all_votes)}</Table.Cell>
+                  <Table.Cell className="text-center">{item.round_votes}</Table.Cell>
+                  <Table.Cell className="text-center">{item.all_votes}</Table.Cell>
                   <Table.Cell className="text-center">{item.entry}</Table.Cell>
                   <Table.Cell className="text-center">{item.number}</Table.Cell>
-                  <Table.Cell className="text-center">{parseInt(item.id)}</Table.Cell>
+                  <Table.Cell className="text-center">{item.id}</Table.Cell>
                   <Table.Cell className="text-center">
                     <a className="detail-link">Warning</a>
                     <a className="detail-link">Delete</a>
