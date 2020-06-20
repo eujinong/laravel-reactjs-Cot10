@@ -127,11 +127,11 @@ class ParticipantTable extends Component {
                     }
                   </Table.Cell>
                   <Table.Cell>{item.title}</Table.Cell>
-                  <Table.Cell className="text-center">{item.round_votes}</Table.Cell>
-                  <Table.Cell className="text-center">{item.all_votes}</Table.Cell>
+                  <Table.Cell className="text-center">{parseInt(item.round_votes)}</Table.Cell>
+                  <Table.Cell className="text-center">{parseInt(item.all_votes)}</Table.Cell>
                   <Table.Cell className="text-center">{item.entry}</Table.Cell>
                   <Table.Cell className="text-center">{item.number}</Table.Cell>
-                  <Table.Cell className="text-center">{item.id}</Table.Cell>
+                  <Table.Cell className="text-center">{parseInt(item.id)}</Table.Cell>
                   <Table.Cell className="text-center">
                     <a className="detail-link">Warning</a>
                     <a className="detail-link">Delete</a>
