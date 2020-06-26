@@ -21,6 +21,7 @@ Route::namespace('Api')->group(function () {
 	Route::get('getConfig', 'AdminController@getConfig');
 
 	Route::get('get-interests', 'CategoryController@interests');
+	Route::post('add-interest', 'CategoryController@AddInterest');
 
 	Route::get('categories', 'CategoryController@index');
 	Route::post('create-category', 'CategoryController@store');
