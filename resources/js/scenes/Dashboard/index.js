@@ -29,6 +29,8 @@ class Dashboard extends Component {
     super(props);
 
     this.state = {
+      majorOrigin: [],
+      subOrigin: [],
       majorCat: [],
       subCat: [],
       major: [],
@@ -55,6 +57,8 @@ class Dashboard extends Component {
     switch (categories.response.status) {
       case 200:
         this.setState({
+          majorOrigin: categories.body.major,
+          subOrigin: categories.body.sub,
           majorCat: categories.body.major.filter(item => {
             return interests.body.major.findIndex(it => it.id == item.id) == -1
           }),
@@ -93,6 +97,36 @@ class Dashboard extends Component {
             return body.major.findIndex(it => it.id == item.id) == -1
           }),
           subCat: subCat.filter(item => {
+            return body.sub.findIndex(it => it.id == item.id) == -1
+          }),
+          major: body.major,
+          sub: body.sub
+        });
+        break;
+      default:
+        break;
+    }
+  }
+
+  async handleRemoveInterest(id) {
+    const { majorOrigin, subOrigin } = this.state;
+
+    const user = JSON.parse(localStorage.getItem('auth'));
+
+    const params = {
+      category_id: id,
+      member_id: user.user.member_info.id
+    };
+
+    const data = await Api.post('remove-interest', params);
+    const { response, body } = data;
+    switch (response.status) {
+      case 200:
+        this.setState({
+          majorCat: majorOrigin.filter(item => {
+            return body.major.findIndex(it => it.id == item.id) == -1
+          }),
+          subCat: subOrigin.filter(item => {
             return body.sub.findIndex(it => it.id == item.id) == -1
           }),
           major: body.major,
@@ -188,7 +222,19 @@ class Dashboard extends Component {
                           <List.Item key={index}>
                             <List.Icon className={item.active == 1 ? '' : 'text-danger'} name="minus" />
                             <List.Content>
-                              <List.Header className={item.active == 1 ? '' : 'text-danger'}>{item.name}</List.Header>
+                              <List.Header className={item.active == 1 ? '' : 'text-danger'}>
+                                {item.name}
+                                <Button
+                                  className="ml-2"
+                                  color="danger"
+                                  size="sm"
+                                  type="button"
+                                  onClick={this.handleRemoveInterest.bind(this, item.id)}
+                                >
+                                  <i className="fa fa-trash mr-1"></i>
+                                  Remove
+                                </Button>
+                              </List.Header>
                               {
                                 sub.filter(child => child.parent_id == item.id).length > 0 && (
                                   <List.List>

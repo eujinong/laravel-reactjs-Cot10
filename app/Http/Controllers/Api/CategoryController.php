@@ -233,7 +233,7 @@ class CategoryController extends Controller
     ], 200);
   }
 
-  public function AddInterest(Request $request)
+  public function addInterest(Request $request)
   {
     $data = $request->all();
 
@@ -264,6 +264,51 @@ class CategoryController extends Controller
     $major = Category::whereIn('id', $ids)->orderBy('name')->get();
 
     $sub = Category::whereIn('parent_id', $ids)->orderBy('name')->get();
+
+    return response()->json([
+      'status' => 'success',
+      'major' => $major,
+      'sub' => $sub
+    ], 200);
+  }
+
+  public function removeInterest(Request $request)
+  {
+    $data = $request->all();
+
+    $category_id = $data['category_id'];
+    $member_id = $data['member_id'];
+
+    $interests = Interest::where('member_id', $member_id)->get();
+
+    $idArr = explode(',', $interests[0]->major_ids);
+
+    $major = array();
+    $sub = array();
+
+    if (sizeof($idArr) == 1) {
+      Interest::where('member_id', $member_id)->delete();
+    } else {
+      $ids = '';
+      for ($i = 0; $i < sizeof($idArr); $i++) {
+        if ($idArr[$i] != $category_id) {
+          $ids .= $idArr[$i] . ',';
+        }
+      }
+
+      $ids = substr($ids, 0, strlen($ids) - 1);
+      
+      Interest::where('member_id', $member_id)
+              ->update(array(
+                'major_ids' => $ids
+              ));
+
+      $ids = explode(',', $ids);
+
+      $major = Category::whereIn('id', $ids)->orderBy('name')->get();
+
+      $sub = Category::whereIn('parent_id', $ids)->orderBy('name')->get();
+    }
 
     return response()->json([
       'status' => 'success',
