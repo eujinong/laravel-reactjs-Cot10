@@ -6,7 +6,7 @@ import {
   Container,
   Row, Col,
   Button,
-  Modal, ModalHeader, ModalBody, ModalFooter,
+  Modal, ModalBody, ModalFooter,
   Form, FormGroup, FormFeedback,
   Input, Label, CustomInput,
   UncontrolledAlert,
@@ -75,9 +75,7 @@ class Signup extends Component {
   async handleSubmit(values, bags) {
     const { imagePreviewUrl, modal } = this.state;
 
-    let newData = {};
-
-    newData = {
+    let newData = {
       profile_image: imagePreviewUrl || '',
       firstname: values.firstname,
       lastname: values.lastname,
@@ -85,10 +83,10 @@ class Signup extends Component {
       gender: values.gender,
       email: values.email,
       number: values.number,
-      country: values.country.name,
-      state: values.state.label,
-      county: values.county.name,
-      city: values.city.name,
+      country: values.country.countryCode,
+      state: values.state.value,
+      county: values.county.code,
+      city: values.city.code,
       zip_code: values.zip_code.code,
       street: values.street,
       building: values.building,
@@ -151,7 +149,6 @@ class Signup extends Component {
     const {
       modal,
       majorcat,
-      majorChecked,
       imagePreviewUrl
     } = this.state;
 
