@@ -84,7 +84,7 @@ class Contests extends Component {
           </a>
         </div>
 
-        <Menu type="member" />
+        <Menu />
 
         <div className="dashboard container">
           {

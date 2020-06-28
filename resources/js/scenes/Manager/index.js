@@ -20,8 +20,6 @@ class Dashboard extends Component {
     return (
       <Fragment>
         <TopBar type="contest" />
-
-        <Menu type="contest" />
         
         <div className="dashboard">
           

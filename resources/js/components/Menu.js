@@ -16,40 +16,19 @@ class Menu extends Component {
   }
 
   render() {
-    const {type} = this.props;
-    
     return (
       <div className="container menu">
-        {
-          type == 'contest' && (
-            <Nav>
-              <NavItem>
-                <NavLink tag={Link} to="/contest/categories">Categories</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} to="/contest/contests">Contests</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} to="/contest/completed">Completed</NavLink>
-              </NavItem>
-            </Nav>
-          )
-        }
-        {
-          type == 'member' && (
-            <Nav>
-              <NavItem>
-                <NavLink tag={Link} to="/dashboard">My Interests</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} to="/request-category">Request Category</NavLink>
-              </NavItem>
-              <NavItem>
-                <NavLink tag={Link} to="/contests">Contests</NavLink>
-              </NavItem>
-            </Nav>
-          )
-        }
+        <Nav>
+          <NavItem>
+            <NavLink tag={Link} to="/dashboard">My Interests</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink tag={Link} to="/request-category">Request Category</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink tag={Link} to="/contests">Contests</NavLink>
+          </NavItem>
+        </Nav>
       </div>
     );
   }

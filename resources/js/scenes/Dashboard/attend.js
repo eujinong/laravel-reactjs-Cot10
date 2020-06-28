@@ -198,7 +198,7 @@ class Attend extends Component {
           </a>
         </div>
 
-        <Menu type="member" />
+        <Menu />
 
         <div className="dashboard container">
           <Alert color="info">

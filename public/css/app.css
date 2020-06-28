@@ -71392,51 +71392,7 @@ body {
   text-decoration: none;
 }
 
-.tile-top-bar.top-header {
-  background: #ffdf00;
-  border-bottom: 2px solid #dc3545;
-  height: 58px;
-  padding: 4px 0;
-  text-align: center;
-}
-
-.tile-top-bar.top-header img {
-  height: 50px;
-}
-
-@media screen and (max-width: 1366px) {
-  .tile-top-bar.top-header img {
-    width: 180px;
-  }
-}
-
-@media screen and (max-width: 1280px) {
-  .tile-top-bar.top-header img {
-    width: 150px;
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .tile-top-bar.top-header {
-    padding: 12px 0;
-  }
-
-  .tile-top-bar.top-header img {
-    width: 120px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .tile-top-bar.top-header {
-    padding: 10px 0;
-  }
-
-  .tile-top-bar.top-header img {
-    width: 100px;
-  }
-}
-
-.dashboard-top-bar.top-header {
+.top-header {
   background: #00afca;
   position: relative;
   align-items: center;
@@ -71444,194 +71400,56 @@ body {
   justify-content: space-between;
 }
 
-@media (max-width: 991.98px) {
-  .dashboard-top-bar.top-header {
-    flex-wrap: wrap !important;
-  }
+.top-header .nav-item .nav-link {
+  font-size: 16px;
 }
 
-.dashboard-top-bar.top-header .nav-logo {
-  width: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 5px;
-}
-
-.dashboard-top-bar.top-header .nav-logo img {
-  width: 150px;
-}
-
-.dashboard-top-bar.top-header .navbar-toggler {
-  display: none;
-  position: absolute;
-  right: 20px;
-  top: 10px;
-}
-
-.dashboard-top-bar.top-header .navbar-toggler.toggle-opened {
-  transition: all 0.5s ease;
-}
-
-.dashboard-top-bar.top-header .navbar-toggler.toggle-opened > span {
-  opacity: 0;
-}
-
-.dashboard-top-bar.top-header .navbar-toggler.toggle-opened::before {
-  -webkit-transform: rotate(-45deg);
-          transform: rotate(-45deg);
-  -webkit-transform-origin: 96% 50%;
-          transform-origin: 96% 50%;
-}
-
-.dashboard-top-bar.top-header .navbar-toggler.toggle-opened::after {
-  -webkit-transform: rotate(45deg);
-          transform: rotate(45deg);
-  -webkit-transform-origin: 96% 50%;
-          transform-origin: 96% 50%;
-}
-
-@media (max-width: 991.98px) {
-  .dashboard-top-bar.top-header .navbar-toggler {
-    display: block;
-    background: transparent;
-    outline: none;
-    border: none;
-    width: 27px;
-    height: 27px;
-  }
-
-  .dashboard-top-bar.top-header .navbar-toggler::after,
-  .dashboard-top-bar.top-header .navbar-toggler::before,
-  .dashboard-top-bar.top-header .navbar-toggler > span {
-    transition: all 0.2s;
-    display: block;
-    content: "";
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    border-radius: 3px;
-    background-color: #FFFFFF;
-  }
-}
-
-@media (max-width: 991.98px) and (prefers-reduced-motion: reduce) {
-  .dashboard-top-bar.top-header .navbar-toggler::after,
-  .dashboard-top-bar.top-header .navbar-toggler::before,
-  .dashboard-top-bar.top-header .navbar-toggler > span {
-    transition: none;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .dashboard-top-bar.top-header .navbar-toggler::before {
-    top: 3px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .dashboard-top-bar.top-header .navbar-toggler::after {
-    bottom: 3px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .dashboard-top-bar.top-header .navbar-toggler > span {
-    top: 12px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .dashboard-top-bar.top-header {
-    z-index: 1000;
-    position: relative;
-  }
-
-  .dashboard-top-bar.top-header .navbar-collapse .nav {
-    padding: 30px 0;
-    position: relative;
-  }
-
-  .dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar {
-    display: block;
-  }
-
-  .dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar {
-    position: absolute;
-    right: 20px;
-    padding: 0;
-  }
-
-  .dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar .nav-item {
-    margin-right: 0px !important;
-  }
-}
-
-.dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar {
-  padding: 0;
-}
-
-.dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar .nav-item .nav-link {
+.top-header .nav-item .nav-link.active {
   color: #FFFFFF;
-  font-size: 18px;
-  font-weight: bolder;
+  font-weight: bold;
 }
 
-.dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar .nav-item .nav-link i {
-  color: #635FA3;
-  margin-right: 5px;
+.top-header.tile-top-bar {
+  background: #ffdf00;
+  border-bottom: 2px solid #dc3545;
+  height: 58px;
+  padding: 4px 0;
+  text-align: center;
 }
 
-.dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar .nav-item .nav-link.active {
-  color: #FFFFFF !important;
+.top-header.tile-top-bar img {
+  height: 50px;
 }
 
-.dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar .nav-item .nav-link.active i {
-  color: #00D994 !important;
+@media screen and (max-width: 1366px) {
+  .top-header.tile-top-bar img {
+    width: 180px;
+  }
 }
 
-.dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar > .nav-item {
-  margin-right: 34px;
+@media screen and (max-width: 1280px) {
+  .top-header.tile-top-bar img {
+    width: 150px;
+  }
 }
 
-.dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar .nav-item .nav-link {
-  padding: 8px 0;
-}
-
-.dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar .nav-item .nav-link .badge {
-  position: absolute;
-  top: 0;
-}
-
-.dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar .nav-item .notification {
-  width: 300px;
-}
-
-.dashboard-top-bar.top-header .navbar-collapse .nav .right-nav-bar .nav-item .notification .nav-link span {
-  white-space: pre-wrap;
-}
-
-@media (min-width: 992px) {
-  .dashboard-top-bar.top-header .navbar-collapse {
-    display: block;
+@media screen and (max-width: 1024px) {
+  .top-header.tile-top-bar {
+    padding: 12px 0;
   }
 
-  .dashboard-top-bar.top-header .navbar-collapse .nav {
-    justify-content: space-between;
+  .top-header.tile-top-bar img {
+    width: 120px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .top-header.tile-top-bar {
+    padding: 10px 0;
   }
 
-  .dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar {
-    align-items: center;
-  }
-
-  .dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar .nav-item {
-    margin-right: 2.5px;
-    margin-left: 2.5px;
-  }
-
-  .dashboard-top-bar.top-header .navbar-collapse .nav .left-nav-bar .nav-item .nav-link {
-    padding: 8px 20px;
+  .top-header.tile-top-bar img {
+    width: 100px;
   }
 }
 

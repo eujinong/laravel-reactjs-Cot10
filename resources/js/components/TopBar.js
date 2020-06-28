@@ -5,7 +5,7 @@ import {
   NavLink as Link
 } from 'react-router-dom';
 import {
-  Nav, NavbarBrand
+  Nav, NavItem, NavLink, NavbarBrand
 } from 'reactstrap';
 
 import RightBar from './RightBar';
@@ -24,6 +24,38 @@ class TopBar extends Component {
         <NavbarBrand className="nav-logo" tag={Link} to={'/' + type}>
           <img src={Bitmaps.logo} alt="Logo" />
         </NavbarBrand>
+
+        {
+          type == 'web' && (
+            <Nav>
+              <NavItem>
+                <NavLink tag={Link} to="/web/settings">Settings</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/web/categories">Categories</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/web/contests">Contests</NavLink>
+              </NavItem>
+            </Nav>
+          )
+        }
+
+        {
+          type == 'contest' && (
+            <Nav>
+              <NavItem>
+                <NavLink tag={Link} to="/contest/categories">Categories</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/contest/contests">Contests</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} to="/contest/completed">Completed</NavLink>
+              </NavItem>
+            </Nav>
+          )
+        }
 
         <RightBar type={type} />
       </Nav>
