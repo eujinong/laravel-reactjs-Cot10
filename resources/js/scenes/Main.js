@@ -9,6 +9,7 @@ import {
 
 import AdminCategory from './Admin/category';
 import AdminContest from './Admin/contest';
+import AdminDetail from './Admin/detail';
 import Admin from './Admin';
 
 import ManagerCategory from './Manager/category';
@@ -39,6 +40,7 @@ class Main extends Component {
         <Switch>
           <AuthAdminRoute path="/web/categories" name="Admin" component={AdminCategory} />
           <AuthAdminRoute path="/web/contests" name="Admin" component={AdminContest} />
+          <AuthAdminRoute path="/web/detail" name="Admin" component={AdminDetail} />
           <AuthAdminRoute path="/web/settings" name="Admin" component={Admin} />
           <AuthAdminRoute path="/web" name="Admin" component={Admin} />
           

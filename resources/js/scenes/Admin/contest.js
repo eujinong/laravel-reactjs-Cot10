@@ -7,7 +7,7 @@ import {
   Row, Col,
   Button,
   FormGroup,
-  Input, Label
+  Label
 } from 'reactstrap';
 import Select from 'react-select';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
@@ -16,7 +16,6 @@ import { Sort } from '../../configs/data';
 
 import Api from '../../apis/app';
 
-import ParticipantTable from '../../components/ParticipantTable';
 import TopBar from '../../components/TopBar';
 
 import Bitmaps from '../../theme/Bitmaps';
@@ -31,8 +30,6 @@ class Contest extends Component {
       starting: [],
       initrunning: [],
       running: [],
-      members: [],
-      process: '',
       status: 'starting',
       show: 0,
       sort: 'starting',
@@ -40,9 +37,7 @@ class Contest extends Component {
       alertVisible: false,
       messageStatus: false,
       successMessage: '',
-      failMessage: '',
-      archive: 0,
-      group: 0
+      failMessage: ''
     }
 
     this.formikRef = React.createRef();
@@ -51,7 +46,7 @@ class Contest extends Component {
   async componentDidMount() {
     const contests = await Api.get('all-contests');
     switch (contests.response.status) {
-      case 200:console.log(contests.body);
+      case 200:
         this.setState({
           parts: contests.body.participants,
           initstarting: contests.body.contests.filter(item => item.status == 'open'),
@@ -82,30 +77,8 @@ class Contest extends Component {
     }
   }
 
-  async handleProcess(id) {
-    const detail = await Api.get(`contest/${id}`);
-    switch (detail.response.status) {
-      case 200:
-        this.setState({
-          process: id,
-          members: detail.body.members
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
   handleDetail(id) {
-    this.props.history.push('/contest/detail', id);
-  }
-
-  handleReviewAll(id) {
-    this.props.history.push('/contest/allreview', {id, review: 'all'});
-  }
-
-  handleReviewActive(id) {
-    this.props.history.push('/contest/activereview', {id, review: 'active'});
+    this.props.history.push('/web/detail', {id, review: 'all'});
   }
 
   render() { 
@@ -113,10 +86,8 @@ class Contest extends Component {
       parts,
       initstarting, starting,
       initrunning, running,
-      members,
-      process, status, show, sort,
-      majorcat,
-      archive, group
+      status, show, sort,
+      majorcat
     } = this.state;
 
     return (
@@ -262,7 +233,6 @@ class Contest extends Component {
               </Row>
             </Col>
           </Row>
-          <hr />
           {
             status == 'starting' && (
               starting.length > 0 && (
@@ -312,67 +282,39 @@ class Contest extends Component {
                   <Row>
                     {
                       running.map((item, index) => (
-                        <Col className="d-flex contest" sm="12" key={index}>
+                        <Col className="d-flex contest" sm="6" key={index}>
                           <div className="mx-3 my-1">
                             <img src={Bitmaps.contest} />
                           </div>
                           <div className="mx-3 my-1">
-                            <a
-                              className="process-link"
-                              onClick={this.handleDetail.bind(this, item.id)}
-                            >
-                              <h4>{item.name}</h4>
-                            </a>
-                            <Row>
-                              <Col sm="3" className="text-right">Major Category:</Col>
-                              <Col sm="3">{item.major}</Col>
-                              <Col sm="3" className="text-right">Current Round:</Col>
-                              <Col sm="3">0</Col>
-                            </Row>
-                            <Row>
-                              <Col sm="3" className="text-right">Sub Category:</Col>
-                              <Col sm="3">{item.sub}</Col>
-                              <Col sm="3" className="text-right">Review Entries:</Col>
-                              <Col sm="3">
-                                <a
-                                  className="process-link mr-2"
-                                  onClick={this.handleReviewAll.bind(this, item.id)}
-                                >
-                                  All
-                                </a>
+                            {
+                              parts.filter(part => part.contest_id == item.id).length > 0 ? (
                                 <a
                                   className="process-link"
-                                  onClick={this.handleReviewActive.bind(this, item.id)}
+                                  onClick={this.handleDetail.bind(this, item.id)}
                                 >
-                                  Active
+                                  <h4 className="mb-2">{item.name}</h4>
                                 </a>
-                              </Col>
+                              ) : (
+                                <h4 className="mb-2">{item.name}</h4>
+                              )
+                            }
+                            <Row>
+                              <Col sm="6" className="text-right">Major Category:</Col>
+                              <Col sm="6">{item.major}</Col>
                             </Row>
                             <Row>
-                              <Col sm="3" className="text-right">Vote Before:</Col>
-                              <Col sm="3">{item.start_date}</Col>
-                              <Col sm="3" className="text-right">
-                                <a
-                                  className="process-link"
-                                  onClick={this.handleProcess.bind(this, item.id)}
-                                >
-                                  Process End of Round
-                                </a>
-                              </Col>
-                              <Col sm="3"></Col>
+                              <Col sm="6" className="text-right">Sub Category:</Col>
+                              <Col sm="6">{item.sub}</Col>
                             </Row>
                             <Row>
-                              <Col sm="3" className="text-right"># of entries started/active:</Col>
-                              <Col sm="3">
+                              <Col sm="6" className="text-right"># of entries started/active:</Col>
+                              <Col sm="6">
                                 {
-                                parts.filter(part => part.contest_id == item.id).length > 0
-                                  ? parts.filter(part => part.contest_id == item.id)[0]['parts']
-                                  : 0
+                                  parts.filter(part => part.contest_id == item.id).length > 0
+                                    ? parts.filter(part => part.contest_id == item.id)[0]['parts']
+                                    : 0
                                 }
-                              </Col>
-                              <Col sm="3" className="text-right">Message:</Col>
-                              <Col sm="3">
-                                Still In
                               </Col>
                             </Row>
                           </div>
@@ -380,63 +322,6 @@ class Contest extends Component {
                       ))
                     }
                   </Row>
-                  <hr />
-                  {
-                    process != '' && members.length > 0 && (
-                      <Row className="my-3">
-                        <Col sm="4">
-                          <Row>
-                            <Col sm="8" className="text-right">
-                              <Label className="mt-2" for="votes">Archive Entries with less than</Label>
-                            </Col>
-                            <Col sm="4">
-                              <FormGroup>
-                                <Input
-                                  name="archive"
-                                  type="text"
-                                  onChange={value => {
-                                    this.setState({
-                                      archive: value.currentTarget.value
-                                    });
-                                  }}
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col sm="4">
-                          <Row>
-                            <Col sm="8" className="text-right">
-                              <Label className="mt-2" for="group">Re-Group table with</Label>
-                            </Col>
-                            <Col sm="4">
-                              <FormGroup>
-                                <Input
-                                  name="group"
-                                  type="text"
-                                  onChange={value => {
-                                    this.setState({
-                                      group: value.currentTarget.value
-                                    });
-                                  }}
-                                />
-                              </FormGroup>
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col className="text-right" sm="4">
-                          <Button color="warning">Declare the Winners</Button>
-                        </Col>
-                        <Col className="mt-2" sm="12">
-                          <ParticipantTable
-                            items={members}
-                            archive={archive}
-                            group={group}
-                          />
-                        </Col>
-                      </Row>
-                    )
-                  }
                 </Fragment>
               )
             )
