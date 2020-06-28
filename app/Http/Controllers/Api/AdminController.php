@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Option;
+use App\Contest;
+use App\Participant;
+
+use DB;
 
 use JWTAuth;
 use Illuminate\Http\Request;
@@ -65,6 +69,27 @@ class AdminController extends Controller
   public function destroy($id)
   {
     
+  }
+
+  public function contests()
+  {
+    $participants = Participant::leftJoin('contests', 'contests.id', '=', 'participants.contest_id')
+                      ->select(DB::raw('COUNT(participants.id) as parts'), 'participants.contest_id')
+                      ->groupBy('participants.contest_id')
+                      ->get();
+    
+    $contests = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+                      ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
+                      ->where('status', '!=', 'close')
+                      ->select('contests.*', 'sub.parent_id', 'major.name AS major', 'sub.name AS sub')
+                      ->orderBy('contests.start_date')
+                      ->get();
+
+    return response()->json([
+      'status' => 'success',
+      'participants' => $participants,
+      'contests' => $contests
+    ], 200);
   }
 
   public function getConfig()
