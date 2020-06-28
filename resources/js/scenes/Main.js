@@ -18,7 +18,8 @@ import Manager from './Manager';
 
 import AttendContest from './Dashboard/attend';
 import ReqCategory from './Dashboard/category';
-import Contests from './Dashboard/contests'
+import Contests from './Dashboard/contests';
+import Account from './Dashboard/account';
 import Dashboard from './Dashboard';
 
 import history from '../history';
@@ -47,6 +48,7 @@ class Main extends Component {
           <UserRoute path="/contests/attend" name="AttendContest" component={AttendContest} />
           <UserRoute path="/request-category" name="ReqCategory" component={ReqCategory} />
           <UserRoute path="/contests" name="contests" component={Contests} />
+          <UserRoute path="/account" name="account" component={Account} />
           <UserRoute path="/" name="Dashboard" component={Dashboard} />
         </Switch>
       </Router>

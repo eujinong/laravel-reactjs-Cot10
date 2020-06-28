@@ -33,6 +33,9 @@ Route::namespace('Api')->group(function () {
 	Route::post('reg-user', 'UserController@store');
 	Route::post('reg-member', 'MemberController@store');
 	Route::post('reg-participant', 'ParticipantController@store');
+
+	Route::get('get-account', 'MemberController@account');
+	Route::put('account/{id}', 'MemberController@update');
 	
 	Route::group(['middleware' => ['jwt.verify']], function () {
 		// Admin Config

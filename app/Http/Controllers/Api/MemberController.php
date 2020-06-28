@@ -157,7 +157,108 @@ class MemberController extends Controller
    */
   public function update(Request $request, $id)
   {
+    $data = $request->all();
+
+    $validMember = Validator::make($data, [
+      'firstname' => 'required|string|max:255',
+      'lastname' => 'required|string|max:255',
+      'gender' => 'required|integer',
+      'number' => 'required|string|max:255',
+      'country' => 'required|string|max:255',
+      'state' => 'required|string|max:255',
+      'county' => 'required|string|max:255',
+      'city' => 'required|string|max:255',
+      'zip_code' => 'required|string|max:255',
+      'street' => 'required|string|max:255',
+    ]);
+
+    if ($validMember->fails()) {
+      return response()->json(
+        [
+          'status' => 'fail',
+          'data' => $validMember->errors()
+        ],
+        422
+      );
+    }
+
+    $data['profile_image'] = "";
     
+    $base64_image = $request->input('profile_image');
+                  
+    if ($base64_image != '' && preg_match('/^data:image\/(\w+);base64,/', $base64_image)) {
+      $current = Member::where('id', $id)->first();
+
+      $pos  = strpos($base64_image, ';');
+      $type = explode(':', substr($base64_image, 0, $pos))[1];
+
+      if (substr($type, 0, 5) == 'image') {
+        $filename = $data['firstname'] . '_' . $data['birthday'];
+
+        $type = str_replace('image/', '.', $type);
+
+        $size = (int) (strlen(rtrim($base64_image, '=')) * 3 / 4);
+
+        if ($size < 2100000) {
+          $image = substr($base64_image, strpos($base64_image, ',') + 1);
+          $image = base64_decode($image);
+          
+          Storage::disk('local')->delete(str_replace('photos/', '', $current->profile_image));
+          Storage::disk('local')->put($filename . $type, $image);
+  
+          $data['profile_image'] = "files/" . $filename . $type;
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'File size must be less than 2MB.'
+            ],
+            406
+          );
+        }
+      } else {
+        return response()->json(
+          [
+            'status' => 'error',
+            'message' => 'File type is not image.'
+          ],
+          406
+        );
+      }
+    }
+
+    Member::where('id', $id)->update(array(
+      'firstname' => $data['firstname'],
+      'lastname' => $data['lastname'],
+      'profile_image' => $data['profile_image'],
+      'gender' => $data['gender'],
+      'number' => $data['number'],
+      'email' => $data['email'],
+      'country' => $data['country'],
+      'state' => $data['state'],
+      'county' => $data['county'],
+      'city' => $data['city'],
+      'zip_code' => $data['zip_code'],
+      'street' => $data['street'],
+      'building' => $data['building'],
+      'apartment' => $data['apartment']
+    ));
+
+    if (array_key_exists('major_ids', $data)) {
+      $major_ids = '';
+
+      foreach ($data['major_ids'] as $mid) {
+        $major_ids .= $mid . ',';
+      }
+
+      Interest::where('member_id', $id)->update(array(
+        'major_ids' => substr($major_ids, 0, strlen($major_ids) - 1)
+      ));
+    }
+
+    return response()->json([
+      'status' => 'success'
+    ], 200);
   }
 
   /**
@@ -169,6 +270,23 @@ class MemberController extends Controller
   public function destroy($id)
   {
     
+  }
+
+  public function account(Request $request)
+  {
+    $data = $request->all();
+
+    $member_id = $data['member_id'];
+
+    $member = Member::leftJoin('interests', 'interests.member_id', '=', 'members.id')
+                  ->where('members.id', $member_id)
+                  ->select('members.*', 'interests.major_ids')
+                  ->get();
+
+    return response()->json([
+      'member' => $member[0],
+      'status' => 'success'
+    ], 200);
   }
 
   public function invite_accept(Request $request)

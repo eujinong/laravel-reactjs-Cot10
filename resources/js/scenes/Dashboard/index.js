@@ -72,6 +72,10 @@ class Dashboard extends Component {
     }
   }
 
+  handleAccount() {
+    this.props.history.push('/account');
+  }
+
   async handleSignout() {
     await this.props.logout();
 
@@ -155,7 +159,14 @@ class Dashboard extends Component {
             style={{float:"right",cursor:"pointer"}}
             onClick={this.handleSignout.bind(this)}
           >
-            <i className="fa fa-user"></i> Sign Out
+            <i className="fa fa-logout"></i> Sign Out
+          </a>
+          <a
+            className="mt-3 mr-5"
+            style={{float:"right",cursor:"pointer"}}
+            onClick={this.handleAccount.bind(this)}
+          >
+            <i className="fa fa-user"></i> Account
           </a>
         </div>
 
