@@ -16,7 +16,6 @@ import { List } from 'semantic-ui-react'
 import Api from '../../apis/app';
 
 import TopBar from '../../components/TopBar';
-import Menu from '../../components/Menu';
 
 class Category extends Component {
   constructor(props) {
@@ -29,11 +28,7 @@ class Category extends Component {
       sub: [],
       open: [],
       running: [],
-      inactive: [],
-      current: 0,
-      request_id: '',
       cat_parent: null,
-      request_cat: null,
       cat_name: ''
     }
   }
@@ -60,23 +55,13 @@ class Category extends Component {
           }
         }
 
-        let inactive = body.major.filter(item => item.active == 0);
-        inactive = inactive.concat(body.sub.filter(item => item.active == 0));
-      
         this.setState({
           major: body.major,
           sub: body.sub,
           open: body.open,
           running: body.running,
-          parent,
-          inactive
+          parent
         });
-
-        if (inactive.length > 0) {
-          this.setState({
-            request_id: inactive[this.state.current].id
-          });
-        }
         break;
       default:
         break;
@@ -114,15 +99,6 @@ class Category extends Component {
             }
           }
 
-          let inactive = body.major.filter(item => item.active == 0);
-          inactive = inactive.concat(body.sub.filter(item => item.active == 0));
-
-          if (inactive.length > 0) {
-            this.setState({
-              request_id: inactive[this.state.current].id
-            });
-          }
-
           this.setState({
             alertVisible: true,
             messageStatus: true,
@@ -132,9 +108,6 @@ class Category extends Component {
             open: body.open,
             running: body.running,
             parent,
-            inactive,
-            current: 0,
-            request_cat: null,
             cat_parent: null,
             cat_name: ''
           });
@@ -160,99 +133,10 @@ class Category extends Component {
     }
   }
 
-  async handleApproveCategory() {
-    const { request_cat, request_id } = this.state;
-    
-    const params = [];
-
-    params.parent_id = request_cat ? request_cat.value : 0;
-
-    const data = await Api.put(`category/${request_id}`, params);
-    const { response, body } = data;
-    switch (response.status) {
-      case 200:
-        let parent = [];
-        parent.push({
-          name: 'No select',
-          value: 0
-        });
-
-        for (let i in body.major) {
-          if (body.major[i].active) {
-            let cat = {
-              name: body.major[i].name,
-              value: body.major[i].id
-            }
-
-            parent.push(cat);
-          }
-        }
-
-        let inactive = body.major.filter(item => item.active == 0);
-        inactive = inactive.concat(body.sub.filter(item => item.active == 0));
-
-        this.setState({
-          major: body.major,
-          sub: body.sub,
-          open: body.open,
-          running: body.running,
-          parent,
-          inactive,
-          current: 0,
-          request_cat: null
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  async handleDeleteCategory(id) {
-    const data = await Api.delete(`category/${id}`);
-    const { response, body } = data;
-    switch (response.status) {
-      case 200:
-        let parent = [];
-        parent.push({
-          name: 'No select',
-          value: 0
-        });
-
-        for (let i in body.major) {
-          if (body.major[i].active) {
-            let cat = {
-              name: body.major[i].name,
-              value: body.major[i].id
-            }
-
-            parent.push(cat);
-          }
-        }
-
-        let inactive = body.major.filter(item => item.active == 0);
-        inactive = inactive.concat(body.sub.filter(item => item.active == 0));
-
-        this.setState({
-          major: body.major,
-          sub: body.sub,
-          open: body.open,
-          running: body.running,
-          parent,
-          inactive,
-          current: 0,
-          request_cat: null
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
   render() {
     const { 
       option,
       major, sub, open, running,
-      inactive, request_cat, current,
       parent, cat_parent, cat_name
     } = this.state;
 
@@ -359,6 +243,7 @@ class Category extends Component {
             </Col>
           </Row>
           <Row>
+            <Col sm="3"></Col>
             <Col sm="6">
               {
                 major && major.length > 0 && (
@@ -370,13 +255,6 @@ class Category extends Component {
                           <List.Content>
                             <List.Header className={item.active == 1 ? '' : 'text-danger'}>
                               <span>{item.name}</span>
-                              {
-                                sub.filter(child => child.parent_id == item.id).length == 0 && (
-                                  <a onClick={this.handleDeleteCategory.bind(this, item.id)}>
-                                    <i className="fa fa-trash ml-3"></i>
-                                  </a>
-                                )
-                              }
                             </List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
@@ -410,9 +288,6 @@ class Category extends Component {
                                               </span>
                                               <span> Running Contests</span>
                                             )
-                                            <a onClick={this.handleDeleteCategory.bind(this, subitem.id)}>
-                                              <i className="fa fa-trash ml-3 text-danger"></i>
-                                            </a>
                                           </List.Header>
                                         </List.Content>
                                       </List.Item>
@@ -426,83 +301,6 @@ class Category extends Component {
                       ))
                     }
                   </List>
-                )
-              }
-            </Col>
-            <Col sm="6">
-              {
-                inactive.length > 0 && (
-                  <Fragment>
-                    <h3 className="text-center">Category Requests for Approval</h3>
-                    {
-                      inactive.map((item, index) => (
-                        <div className={index == current ? "requests active" : "requests"} key={index}>
-                          {
-                            item.parent_id == 0 ? (
-                              <h4 className="my-4">Major Category</h4>
-                            ) : (
-                              <h4 className="my-4">Sub Category</h4>
-                            )
-                          }
-                          <h5>Suggestion {index + 1}</h5>
-                          <h5 className="mb-3">Category Name: {item.name}</h5>
-                        </div>
-                      ))
-                    }
-                    <Select
-                      classNamePrefix="react-select-lg"
-                      options={parent}
-                      getOptionValue={option => option.value}
-                      getOptionLabel={option => option.name}
-                      value={request_cat}
-                      onChange={(option) => {
-                        this.setState({
-                          request_cat: option
-                        });
-                      }}
-                    />
-                    <div className="d-flex text-center mt-3">
-                      <Col sm="4" className="pt-2">
-                        <a
-                          className="prev"
-                          onClick={() => {
-                            let val = current > 0 ? current - 1 : 0;
-
-                            this.setState({
-                              current: val,
-                              request_id: inactive[val].id
-                            })
-                          }}
-                        >
-                          Prev
-                        </a>
-                      </Col>
-                      <Col sm="4" className="pt-2">
-                        <a
-                          className="next"
-                          onClick={() => {
-                            let val = current < inactive.length - 1 ? current + 1 : inactive.length - 1;
-
-                            this.setState({
-                              current: val,
-                              request_id: inactive[val].id
-                            })
-                          }}
-                        >
-                          Next
-                        </a>
-                      </Col>
-                      <Col sm="4">
-                        <Button
-                          className="btn-success"
-                          type="button"
-                          onClick={this.handleApproveCategory.bind(this)}
-                        >
-                          Save
-                        </Button>
-                      </Col>
-                    </div>
-                  </Fragment>
                 )
               }
             </Col>
