@@ -7,6 +7,8 @@ import {
   AuthAdminRoute, AuthManagerRoute, UserRoute
 } from '../components/PrivateRoutes';
 
+import AdminCategory from './Admin/category';
+import AdminContest from './Admin/contest';
 import Admin from './Admin';
 
 import ManagerCategory from './Manager/category';
@@ -35,6 +37,9 @@ class Main extends Component {
     return (
       <Router history={history}>
         <Switch>
+          <AuthAdminRoute path="/web/categories" name="Admin" component={AdminCategory} />
+          <AuthAdminRoute path="/web/contests" name="Admin" component={AdminContest} />
+          <AuthAdminRoute path="/web/settings" name="Admin" component={Admin} />
           <AuthAdminRoute path="/web" name="Admin" component={Admin} />
           
           <AuthManagerRoute path="/contest/categories" name="ManagerCategory" component={ManagerCategory} />
