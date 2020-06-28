@@ -61,20 +61,18 @@ class Dashboard extends Component {
     const { options } = this.state;
     const { formikRef } = this;
 
-    if (options.length > 0) {
-      const values = options;
-
-      formikRef.current.setValues({
-        welcome: values.welcome
-      });
-    }
+    formikRef.current.setValues({
+      'welcome': options.welcome,
+      'guide': options.guide || ''
+    });
   }
 
   async handleSubmit(values, bags) {
     let newData = {};
 
     newData = {
-      welcome: values.welcome
+      welcome: values.welcome,
+      guide: values.guide
     }
 
     const data = await Api.post('setConfig', newData);
@@ -118,7 +116,8 @@ class Dashboard extends Component {
               ref={this.formikRef}
 
               initialValues={{
-                welcome: ''
+                welcome: '',
+                guide: ''
               }}
 
               onSubmit={this.handleSubmit.bind(this)}
@@ -149,9 +148,23 @@ class Dashboard extends Component {
                           value={values.welcome}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          invalid={!!errors.name && touched.name}
                         />
-                        <FormFeedback>{errors.welcome}</FormFeedback>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm="4" className="text-right">
+                      <Label className="mt-2" for="welcome">Guide:</Label>
+                    </Col>
+                    <Col sm="8">
+                      <FormGroup>
+                        <Input
+                          name="guide"
+                          type="text"
+                          value={values.guide}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
                       </FormGroup>
                     </Col>
                   </Row>
