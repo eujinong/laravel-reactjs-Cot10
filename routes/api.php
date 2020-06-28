@@ -18,6 +18,8 @@ Route::namespace('Api')->group(function () {
 	Route::post('forgot', 'ForgotPasswordController@forgot');
 	Route::post('reset/{token}', 'ForgotPasswordController@reset');
 
+	Route::get('getConfig', 'AdminController@getConfig');
+
 	Route::get('get-interests', 'CategoryController@interests');
 	Route::post('add-interest', 'CategoryController@addInterest');
 	Route::post('remove-interest', 'CategoryController@removeInterest');
@@ -38,7 +40,6 @@ Route::namespace('Api')->group(function () {
 	Route::group(['middleware' => ['jwt.verify']], function () {
 		// Admin Config
 		Route::get('all-contests', 'AdminController@contests');
-		Route::get('getConfig', 'AdminController@getConfig');
 		Route::post('setConfig', 'AdminController@setConfig');
 
 		// Category APIs
