@@ -11,7 +11,6 @@ import { Accordion } from 'semantic-ui-react';
 import Bitmaps from '../../theme/Bitmaps';
 
 import TopBar from '../../components/TopBar';
-import Menu from '../../components/Menu';
 
 import Api from '../../apis/app';
 

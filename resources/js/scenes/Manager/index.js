@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom';
 
 import TopBar from '../../components/TopBar';
-import Menu from '../../components/Menu';
 
 class Dashboard extends Component {
   constructor(props) {

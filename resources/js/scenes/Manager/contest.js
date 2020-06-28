@@ -23,7 +23,6 @@ import Api from '../../apis/app';
 
 import ParticipantTable from '../../components/ParticipantTable';
 import TopBar from '../../components/TopBar';
-import Menu from '../../components/Menu';
 
 import Bitmaps from '../../theme/Bitmaps';
 

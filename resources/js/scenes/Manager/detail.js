@@ -9,7 +9,6 @@ import {
 } from 'reactstrap';
 
 import TopBar from '../../components/TopBar';
-import Menu from '../../components/Menu';
 
 import ParticipantTable from '../../components/ParticipantTable';
 import Bitmaps from '../../theme/Bitmaps';
