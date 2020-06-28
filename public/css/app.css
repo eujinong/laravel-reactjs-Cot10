@@ -71400,11 +71400,11 @@ body {
   justify-content: space-between;
 }
 
-.top-header .nav-item .nav-link {
-  font-size: 16px;
+.top-header .nav .nav-item .nav-link {
+  font-size: 20px;
 }
 
-.top-header .nav-item .nav-link.active {
+.top-header .nav .nav-item .nav-link.active {
   color: #FFFFFF;
   font-weight: bold;
 }
