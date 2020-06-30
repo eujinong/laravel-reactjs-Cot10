@@ -252,34 +252,17 @@ class ContestController extends Controller
 
     $member_id = $data['member_id'];
 
-    $interests = Interest::where('member_id', $member_id)->get();
-
-    $contests = array();
-
-    if ($interests[0]->major_ids != '') {
-      $sub = array();
-
-      $ids = explode(',', $interests[0]->major_ids);
-
-      $cats = Category::whereIn('parent_id', $ids)->get();
-
-      foreach ($cats as $cat) {
-        array_push($sub, $cat->id);
-      }
-
-      $contests = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+    $contests = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
                     ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
-                    ->whereIn('contests.category_id', $sub)
                     ->where('contests.status', 'open')
                     ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
                     ->orderBy('start_date')
                     ->get();
 
-      $participants = Participant::leftJoin('contests', 'contests.id', '=', 'participants.contest_id')
+    $participants = Participant::leftJoin('contests', 'contests.id', '=', 'participants.contest_id')
                     ->where('contests.status', 'open')
                     ->where('participants.member_id', $member_id)
                     ->get();
-    }
 
     return response()->json([
       'status' => 'success',
