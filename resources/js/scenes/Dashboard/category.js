@@ -60,7 +60,8 @@ class Category extends Component {
         this.setState({
           major: body.major,
           sub: body.sub,
-          parent
+          parent,
+          isOpen
         });
         break;
       default:
@@ -95,10 +96,7 @@ class Category extends Component {
       switch (response.status) {
         case 200:
           let parent = [];
-          parent.push({
-            name: 'No select',
-            value: 0
-          });
+          let isOpen = [];
 
           for (let i in body.major) {
             if (body.major[i].active) {
@@ -109,6 +107,8 @@ class Category extends Component {
   
               parent.push(cat);
             }
+
+            isOpen.push(false);
           }
 
           this.setState({
@@ -119,7 +119,8 @@ class Category extends Component {
             sub: body.sub,
             parent,
             cat_parent: null,
-            cat_name: ''
+            cat_name: '',
+            isOpen
           });
 
           setTimeout(() => {
