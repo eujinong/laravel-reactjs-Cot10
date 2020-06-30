@@ -7,6 +7,7 @@ import {
 import {
   Row, Col,
   FormGroup, FormFeedback, Alert,
+  CustomInput, Collapse,
   Label, Input, Button
 } from 'reactstrap';
 import Select from 'react-select';
@@ -23,12 +24,14 @@ class Category extends Component {
     super(props);
 
     this.state = {
+      option: 'major',
       catError: false,
       nameError: false,
       major: [],
       sub: [],
       cat_parent: null,
-      cat_name: ''
+      cat_name: '',
+      isOpen: []
     }
   }
 
@@ -38,6 +41,7 @@ class Category extends Component {
     switch (response.status) {
       case 200:
         let parent = [];
+        let isOpen = [];
 
         for (let i in body.major) {
           if (body.major[i].active) {
@@ -48,6 +52,8 @@ class Category extends Component {
 
             parent.push(cat);
           }
+
+          isOpen.push(false);
         }
       
         this.setState({
@@ -76,7 +82,7 @@ class Category extends Component {
       });
     }
     
-    if (cat_parent !== null && cat_name != '') {
+    if (cat_name != '') {
       const params = [];
 
       params.parent_id = cat_parent ? cat_parent.value : 0;
@@ -148,9 +154,11 @@ class Category extends Component {
 
   render() {
     const { 
+      option,
       catError, nameError,
       major, sub, 
-      parent, cat_parent, cat_name
+      parent, cat_parent, cat_name,
+      isOpen
     } = this.state;
 
     return (
@@ -190,29 +198,76 @@ class Category extends Component {
                 )
               }
 
-              <FormGroup row>
-                <Label for="parent" sm="4" className="text-right">Major Categories:</Label>
-                <Col sm="8">
-                  <Select
-                    classNamePrefix={catError ? 'invalid react-select-lg' : 'react-select-lg'}
-                    options={parent}
-                    getOptionValue={option => option.value}
-                    getOptionLabel={option => option.name}
-                    value={cat_parent}
-                    onChange={(option) => {
+              <FormGroup>
+                <div>
+                  <CustomInput
+                    type="radio"
+                    id="major"
+                    name="catOption"
+                    label="Major Category"
+                    inline
+                    defaultChecked
+                    onClick={() => {
                       this.setState({
-                        cat_parent: option,
-                        catError: false
+                        option: 'major',
+                        catError: false,
+                        nameError: false
                       });
                     }}
                   />
-                  {
-                    catError && <FormFeedback className="d-block">Major Category is required!</FormFeedback>
-                  }
-                </Col>
+                  <CustomInput
+                    type="radio"
+                    id="sub"
+                    name="catOption"
+                    label="Sub Category"
+                    inline
+                    onClick={() => {
+                      this.setState({
+                        option: 'sub',
+                        cat_name: '',
+                        catError: false,
+                        nameError: false
+                      });
+                    }}
+                  />
+                </div>
               </FormGroup>
+
+              {
+                option == 'sub' && (
+                  <FormGroup row>
+                    <Label for="parent" sm="4" className="text-right">Major Categories:</Label>
+                    <Col sm="8">
+                      <Select
+                        classNamePrefix={catError ? 'invalid react-select-lg' : 'react-select-lg'}
+                        options={parent}
+                        getOptionValue={option => option.value}
+                        getOptionLabel={option => option.name}
+                        value={cat_parent}
+                        onChange={(option) => {
+                          this.setState({
+                            cat_parent: option,
+                            catError: false
+                          });
+                        }}
+                      />
+                      {
+                        catError && <FormFeedback className="d-block">Major Category is required!</FormFeedback>
+                      }
+                    </Col>
+                  </FormGroup>
+                )
+              }
+
               <FormGroup row>
-                <Label for="name" sm="4" className="text-right">Category Name:</Label>
+                <Label for="name" sm="4" className="text-right">
+                  {
+                    option == 'major' && 'Major Category Name:'
+                  }
+                  {
+                    option == 'sub' && 'Sub Category Name:'
+                  }
+                </Label>
                 <Col sm="8">
                   <Input
                     className={nameError ? 'is-invalid' : ''}
@@ -249,23 +304,44 @@ class Category extends Component {
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
-                          <List.Icon className={item.active == 1 ? '' : 'text-danger'} name="minus" />
+                          <List.Icon
+                            className={item.active == 1 ? '' : 'text-danger'}
+                            name={isOpen[index] ? 'minus' : 'plus'}
+                          />
                           <List.Content>
-                            <List.Header className={item.active == 1 ? '' : 'text-danger'}>{item.name}</List.Header>
+                            <List.Header className={item.active == 1 ? '' : 'text-danger'}>
+                              <a
+                                onClick={() => {
+                                  let { isOpen } = this.state;
+
+                                  isOpen[index] = !isOpen[index];
+                                  
+                                  this.setState({
+                                    isOpen
+                                  });
+                                }}
+                              >
+                                {item.name}
+                              </a>
+                            </List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
-                                <List.List>
-                                  {
-                                    sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
-                                      <List.Item key={key}>
-                                        <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
-                                        <List.Content>
-                                          <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>{subitem.name}</List.Header>
-                                        </List.Content>
-                                      </List.Item>
-                                    ))
-                                  }
-                                </List.List>
+                                <Collapse isOpen={isOpen[index]}>
+                                  <List.List>
+                                    {
+                                      sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
+                                        <List.Item key={key}>
+                                          <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
+                                          <List.Content>
+                                            <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>
+                                              {subitem.name}
+                                            </List.Header>
+                                          </List.Content>
+                                        </List.Item>
+                                      ))
+                                    }
+                                  </List.List>
+                                </Collapse>
                               )
                             }
                           </List.Content>
