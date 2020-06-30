@@ -5,10 +5,10 @@ import {
 } from 'react-router-dom';
 
 import {
-  Row, Col, Button
+  Row, Col, Collapse, Button
 } from 'reactstrap';
 import Select from 'react-select';
-import { List } from 'semantic-ui-react'
+import { List } from 'semantic-ui-react';
 
 import Api from '../../apis/app';
 
@@ -27,7 +27,8 @@ class Category extends Component {
       inactive: [],
       current: 0,
       request_id: '',
-      request_cat: null
+      request_cat: null,
+      isOpen: []
     }
   }
 
@@ -42,6 +43,8 @@ class Category extends Component {
           value: 0
         });
 
+        let isOpen = [];
+
         for (let i in body.major) {
           if (body.major[i].active) {
             let cat = {
@@ -51,6 +54,8 @@ class Category extends Component {
 
             parent.push(cat);
           }
+
+          isOpen.push(false);
         }
 
         let inactive = body.major.filter(item => item.active == 0);
@@ -62,7 +67,8 @@ class Category extends Component {
           open: body.open,
           running: body.running,
           parent,
-          inactive
+          inactive,
+          isOpen
         });
 
         if (inactive.length > 0) {
@@ -168,7 +174,7 @@ class Category extends Component {
     const {
       major, sub, open, running,
       inactive, request_cat, current,
-      parent
+      parent, isOpen
     } = this.state;
 
     return (
@@ -184,10 +190,25 @@ class Category extends Component {
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
-                          <List.Icon className={item.active == 1 ? '' : 'text-danger'} name="minus" />
+                          <List.Icon
+                            className={item.active == 1 ? '' : 'text-danger'}
+                            name={isOpen[index] ? 'minus' : 'plus'}
+                          />
                           <List.Content>
                             <List.Header className={item.active == 1 ? '' : 'text-danger'}>
-                              <span>{item.name}</span>
+                              <a
+                                onClick={() => {
+                                  let { isOpen } = this.state;
+
+                                  isOpen[index] = !isOpen[index];
+
+                                  this.setState({
+                                    isOpen
+                                  });
+                                }}
+                              >
+                                {item.name}
+                              </a>
                               {
                                 sub.filter(child => child.parent_id == item.id).length == 0 && (
                                   <a onClick={this.handleDeleteCategory.bind(this, item.id)}>
@@ -198,45 +219,47 @@ class Category extends Component {
                             </List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
-                                <List.List>
-                                  {
-                                    sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
-                                      <List.Item key={key}>
-                                        <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
-                                        <List.Content>
-                                          <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>
-                                            <h5>{subitem.name}</h5>
-                                            (
-                                              <span className="text-danger">
-                                              {
-                                                open.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
-                                                  open.filter(item => item.category_id == subitem.id)[0].open
-                                                ) : (
-                                                  0
-                                                )
-                                              }
-                                              </span>
-                                              <span> Open Contests, </span>
-                                              <span className="text-danger">
-                                              {
-                                                running.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
-                                                  running.filter(item => item.category_id == subitem.id)[0].running
-                                                ) : (
-                                                  0
-                                                )
-                                              }
-                                              </span>
-                                              <span> Running Contests</span>
-                                            )
-                                            <a onClick={this.handleDeleteCategory.bind(this, subitem.id)}>
-                                              <i className="fa fa-trash ml-3 text-danger"></i>
-                                            </a>
-                                          </List.Header>
-                                        </List.Content>
-                                      </List.Item>
-                                    ))
-                                  }
-                                </List.List>
+                                <Collapse isOpen={isOpen[index]}>
+                                  <List.List>
+                                    {
+                                      sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
+                                        <List.Item key={key}>
+                                          <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
+                                          <List.Content>
+                                            <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>
+                                              <h5>{subitem.name}</h5>
+                                              (
+                                                <span className="text-danger">
+                                                {
+                                                  open.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
+                                                    open.filter(item => item.category_id == subitem.id)[0].open
+                                                  ) : (
+                                                    0
+                                                  )
+                                                }
+                                                </span>
+                                                <span> Open Contests, </span>
+                                                <span className="text-danger">
+                                                {
+                                                  running.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
+                                                    running.filter(item => item.category_id == subitem.id)[0].running
+                                                  ) : (
+                                                    0
+                                                  )
+                                                }
+                                                </span>
+                                                <span> Running Contests</span>
+                                              )
+                                              <a onClick={this.handleDeleteCategory.bind(this, subitem.id)}>
+                                                <i className="fa fa-trash ml-3 text-danger"></i>
+                                              </a>
+                                            </List.Header>
+                                          </List.Content>
+                                        </List.Item>
+                                      ))
+                                    }
+                                  </List.List>
+                                </Collapse>
                               )
                             }
                           </List.Content>
