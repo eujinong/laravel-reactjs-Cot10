@@ -27,6 +27,7 @@ class Category extends Component {
       option: 'major',
       catError: false,
       nameError: false,
+      parent: [],
       major: [],
       sub: [],
       cat_parent: null,
@@ -315,7 +316,7 @@ class Category extends Component {
                                   let { isOpen } = this.state;
 
                                   isOpen[index] = !isOpen[index];
-                                  
+
                                   this.setState({
                                     isOpen
                                   });
