@@ -6,8 +6,8 @@ import {
 
 import {
   Row, Col,
-  FormGroup, Alert,
-  CustomInput,
+  FormGroup, FormFeedback, Alert,
+  CustomInput, Collapse,
   Label, Input, Button
 } from 'reactstrap';
 import Select from 'react-select';
@@ -23,13 +23,16 @@ class Category extends Component {
 
     this.state = {
       option: 'major',
+      catError: false,
+      nameError: false,
       parent: [],
       major: [],
       sub: [],
       open: [],
       running: [],
       cat_parent: null,
-      cat_name: ''
+      cat_name: '',
+      isOpen: []
     }
   }
 
@@ -39,11 +42,8 @@ class Category extends Component {
     switch (response.status) {
       case 200:
         let parent = [];
-        parent.push({
-          name: 'No select',
-          value: 0
-        });
-
+        let isOpen = [];
+        
         for (let i in body.major) {
           if (body.major[i].active) {
             let cat = {
@@ -53,6 +53,8 @@ class Category extends Component {
 
             parent.push(cat);
           }
+
+          isOpen.push(false);
         }
 
         this.setState({
@@ -60,7 +62,8 @@ class Category extends Component {
           sub: body.sub,
           open: body.open,
           running: body.running,
-          parent
+          parent,
+          isOpen
         });
         break;
       default:
@@ -70,23 +73,32 @@ class Category extends Component {
 
   async handleAddCategory() {
     const { cat_parent, cat_name } = this.state;
+
+    if (cat_parent === null) {
+      this.setState({
+        catError: true
+      });
+    }
+
+    if (cat_name == '') {
+      this.setState({
+        nameError: true
+      });
+    }
     
     if (cat_name != '') {
       const params = [];
 
       params.parent_id = cat_parent ? cat_parent.value : 0;
       params.name = cat_name;
-      params.active = 1;
+      params.active = 0;
 
       const data = await Api.post('create-category', params);
       const { response, body } = data;
       switch (response.status) {
         case 200:
           let parent = [];
-          parent.push({
-            name: 'No select',
-            value: 0
-          });
+          let isOpen = [];
 
           for (let i in body.major) {
             if (body.major[i].active) {
@@ -97,6 +109,8 @@ class Category extends Component {
   
               parent.push(cat);
             }
+
+            isOpen.push(false);
           }
 
           this.setState({
@@ -105,11 +119,10 @@ class Category extends Component {
             message: body.message,
             major: body.major,
             sub: body.sub,
-            open: body.open,
-            running: body.running,
             parent,
             cat_parent: null,
-            cat_name: ''
+            cat_name: '',
+            isOpen
           });
 
           setTimeout(() => {
@@ -136,8 +149,10 @@ class Category extends Component {
   render() {
     const { 
       option,
+      catError, nameError,
       major, sub, open, running,
-      parent, cat_parent, cat_name
+      parent, cat_parent, cat_name,
+      isOpen
     } = this.state;
 
     return (
@@ -146,7 +161,7 @@ class Category extends Component {
         
         <div className="dashboard container">
           <Row>
-            <Col sm="12" md={{ size: 6, offset: 3 }}>
+            <Col sm="6">
               {
                 this.state.alertVisible && (
                   <div className="w-100 mb-5">
@@ -241,9 +256,6 @@ class Category extends Component {
                 </Button>
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col sm="3"></Col>
             <Col sm="6">
               {
                 major && major.length > 0 && (
@@ -251,49 +263,66 @@ class Category extends Component {
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
-                          <List.Icon className={item.active == 1 ? '' : 'text-danger'} name="minus" />
+                          <List.Icon
+                            className={item.active == 1 ? '' : 'text-danger'}
+                            name={isOpen[index] ? 'minus' : 'plus'}
+                          />
                           <List.Content>
                             <List.Header className={item.active == 1 ? '' : 'text-danger'}>
-                              <span>{item.name}</span>
+                              <a
+                                onClick={() => {
+                                  let { isOpen } = this.state;
+
+                                  isOpen[index] = !isOpen[index];
+
+                                  this.setState({
+                                    isOpen
+                                  });
+                                }}
+                              >
+                                {item.name}
+                              </a>
                             </List.Header>
                             {
                               sub.filter(child => child.parent_id == item.id).length > 0 && (
-                                <List.List>
-                                  {
-                                    sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
-                                      <List.Item key={key}>
-                                        <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
-                                        <List.Content>
-                                          <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>
-                                            <h5>{subitem.name}</h5>
-                                            (
-                                              <span className="text-danger">
-                                              {
-                                                open.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
-                                                  open.filter(item => item.category_id == subitem.id)[0].open
-                                                ) : (
-                                                  0
-                                                )
-                                              }
-                                              </span>
-                                              <span> Open Contests, </span>
-                                              <span className="text-danger">
-                                              {
-                                                running.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
-                                                  running.filter(item => item.category_id == subitem.id)[0].running
-                                                ) : (
-                                                  0
-                                                )
-                                              }
-                                              </span>
-                                              <span> Running Contests</span>
-                                            )
-                                          </List.Header>
-                                        </List.Content>
-                                      </List.Item>
-                                    ))
-                                  }
-                                </List.List>
+                                <Collapse isOpen={isOpen[index]}>
+                                  <List.List>
+                                    {
+                                      sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
+                                        <List.Item key={key}>
+                                          <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
+                                          <List.Content>
+                                            <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>
+                                              <h5>{subitem.name}</h5>
+                                              (
+                                                <span className="text-danger">
+                                                {
+                                                  open.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
+                                                    open.filter(item => item.category_id == subitem.id)[0].open
+                                                  ) : (
+                                                    0
+                                                  )
+                                                }
+                                                </span>
+                                                <span> Open Contests, </span>
+                                                <span className="text-danger">
+                                                {
+                                                  running.filter(item => item.category_id == subitem.id).length > 0 ? (                                                  
+                                                    running.filter(item => item.category_id == subitem.id)[0].running
+                                                  ) : (
+                                                    0
+                                                  )
+                                                }
+                                                </span>
+                                                <span> Running Contests</span>
+                                              )
+                                            </List.Header>
+                                          </List.Content>
+                                        </List.Item>
+                                      ))
+                                    }
+                                  </List.List>
+                                </Collapse>
                               )
                             }
                           </List.Content>
