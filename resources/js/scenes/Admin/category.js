@@ -55,7 +55,7 @@ class Category extends Component {
             parent.push(cat);
           }
 
-          isOpen.push(false);
+          isOpen.push(true);
         }
 
         let inactive = body.major.filter(item => item.active == 0);
@@ -186,13 +186,22 @@ class Category extends Component {
             <Col sm="6">
               {
                 major && major.length > 0 && (
-                  <List>
+                  <List className="cat">
                     {
                       major.map((item, index) => (
                         <List.Item key={index}>
                           <List.Icon
                             className={item.active == 1 ? '' : 'text-danger'}
                             name={isOpen[index] ? 'minus' : 'plus'}
+                            onClick={() => {
+                              let { isOpen } = this.state;
+
+                              isOpen[index] = !isOpen[index];
+
+                              this.setState({
+                                isOpen
+                              });
+                            }}
                           />
                           <List.Content>
                             <List.Header className={item.active == 1 ? '' : 'text-danger'}>

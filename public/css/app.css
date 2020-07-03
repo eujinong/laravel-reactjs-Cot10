@@ -71552,15 +71552,24 @@ body .dashboard .ui.list {
   padding: 10px;
 }
 
+body .dashboard .ui.list.cat {
+  max-height: calc(100vh - 220px);
+  overflow-y: scroll;
+}
+
+body .dashboard .ui.list.cat > .item > .icon {
+  cursor: pointer;
+}
+
 body .dashboard .ui.list .item {
   margin: 10px;
 }
 
-body .dashboard .ui.list .item .header {
+body .dashboard .ui.list .item .content .header {
   font-size: 16px;
 }
 
-body .dashboard .ui.list .item .list {
+body .dashboard .ui.list .item .content .list {
   border: none;
 }
 

@@ -97,15 +97,28 @@ body {
       background-color: $silver;
       padding: 10px;
 
+      &.cat {
+        max-height: calc(100vh - 220px);
+        overflow-y: scroll;
+
+        &>.item {
+          &>.icon {
+            cursor: pointer;
+          }
+        }
+      }
+
       .item {
         margin: 10px;
 
-        .header {
-          font-size: 16px;
-        }
+        .content {
+          .header {
+            font-size: 16px;
+          }
 
-        .list {
-          border: none;
+          .list {
+            border: none;
+          }
         }
       }
     }
