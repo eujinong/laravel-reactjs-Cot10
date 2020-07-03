@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
+use App\Contest;
 use App\Participant;
 
 class ParticipantController extends Controller
@@ -130,6 +131,13 @@ class ParticipantController extends Controller
     $contest_id = $data['id'];
     $review = $data['review'];
 
+    $contest = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+                      ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
+                      ->leftJoin('users', 'users.id', '=', 'contests.creator_id')
+                      ->where('contests.id', $contest_id)
+                      ->select('contests.*', 'major.name AS major', 'sub.name AS sub', 'users.username', 'users.email')
+                      ->get();
+
     $participants = Participant::leftJoin('members', 'members.id', '=', 'participants.member_id')
                           ->where('participants.contest_id', $contest_id);
 
@@ -147,6 +155,10 @@ class ParticipantController extends Controller
                                 ->orderBy('participants.all_votes', 'DESC')
                                 ->get();
 
-    return $participants;
+    return response()->json([
+      'status' => 'success',
+      'contest' => $contest[0],
+      'parts' => $participants
+    ], 200);
   }
 }

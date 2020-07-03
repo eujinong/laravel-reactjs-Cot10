@@ -4,7 +4,8 @@ import {
 } from 'react-router-dom';
 
 import {
-  Container, Row, Col
+  Container, Row, Col,
+  Alert
 } from 'reactstrap';
 import { Accordion } from 'semantic-ui-react';
 
@@ -19,6 +20,7 @@ class Detail extends Component {
     super(props);
 
     this.state = {
+      contest: [],
       parts: [],
       activeIndex: ''
     }
@@ -35,7 +37,8 @@ class Detail extends Component {
       switch (response.status) {
         case 200:
           this.setState({
-            parts: body
+            contest: body.contest,
+            parts: body.parts
           });
           break;
         default:
@@ -54,6 +57,7 @@ class Detail extends Component {
 
   render() {
     const { 
+      contest,
       parts,
       activeIndex
     } = this.state;
@@ -86,88 +90,143 @@ class Detail extends Component {
         <div className="dashboard">
           <Container>
             <Row>
-              <Col sm="12" className="mt-3">
-                <Accordion fluid styled>
+              <Col sm="12">
+                <Alert color="info">
+                  <Row className="my-3">
+                    <Col sm="6"><h4>Major: {contest.major}</h4></Col>
+                    <Col sm="6"><h4>Sub: {contest.sub}</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="6"><h4>Creator Name: {contest.username}</h4></Col>
+                    <Col sm="6"><h4>Creator Email: {contest.email}</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="6"><h4>Start Date: {contest.start_date}</h4></Col>
+                    <Col sm="6"><h4>Round Days: {contest.round_days} days</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12"><h4>Title: {contest.name}</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12">
+                      <h4>Gole:</h4>
+                      <p className="pl-4">{contest.gole}</p>
+                    </Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12">
+                      <h4>Rule:</h4>
+                      <p className="pl-4">{contest.rule}</p>
+                    </Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12">
+                      <h4>Ending:</h4>
+                      <p className="pl-4">{contest.ending}</p>
+                    </Col>
+                  </Row>
                   {
-                    parts.map((member, id) => (
-                      <Fragment key={id}>
-                        <Row>
-                          <Accordion.Title
-                            className="col-sm-12"
-                            active={activeIndex === id}
-                            index={id}
-                            onClick={this.handleClick.bind(this)}
-                          >
-                            <span className="mr-5">
-                              {
-                                activeIndex === id ? (
-                                  <i className="fa fa-minus"></i>
-                                ) : (
-                                  <i className="fa fa-plus"></i>
-                                )
-                              }
-                            </span>
-                            <img
-                              src={
-                                member.profile_image 
-                                  ? '../' + member.profile_image 
-                                  : (member.gender == 1 ? Bitmaps.maleAvatar : Bitmaps.femaleAvatar)
-                                } 
-                              className="table-avatar mr-4"
-                            />
-                            <span>
-                              {
-                                votes.length > 1 && (
-                                  <span className="text-warning">
-                                    <i className="fa fa-medal mr-1"></i>
-                                    # {votes.indexOf(member.all_votes) + 1}
-                                  </span>
-                                )
-                              }
-                            </span>
-                            <span className="ml-3">{member.firstname} {member.lastname}</span>
-                            <span> , {member.gender == 1 ? 'Male' : 'Female'}, </span>
-                            <span className="mr-2">Votes:</span>
-                            <span className="mr-2">
-                              {member.all_votes}
-                            </span>
-                            <span>Title: {member.title}</span>
-                          </Accordion.Title>
-                          
-                          <Accordion.Content active={activeIndex === id}>
-                            <div className="ml-5">
-                              {
-                                media[id].map((obj, i) => (
-                                  obj.substring(0, 5) == 'files' ? (
-                                    <a
-                                      className="mb-2"
-                                      key={i}
-                                      href={'../' + obj}
-                                      target="_blank"
-                                    >
-                                      <i className="fa fa-file mr-1 pt-1"></i> {obj.split("/")[1]}
-                                    </a>
-                                  ) : (
-                                    <a
-                                      className="mb-2"
-                                      key={i} 
-                                      href={obj.substring(0, 4) == 'http' ? obj : 'http://' + obj}
-                                      target="_blank"
-                                    >
-                                      {obj}
-                                    </a>
-                                  )
-                                ))
-                              }
-                            </div>
-                          </Accordion.Content>
-                        </Row>
-                      </Fragment>
-                    ))
+                    contest && contest.note && (
+                      <Row className="mb-3">
+                        <Col sm="12">
+                          <h4>Note:</h4>
+                          <p className="pl-4">{contest.note}</p>
+                        </Col>
+                      </Row>
+                    )
                   }
-                </Accordion>
+                  
+                </Alert>
               </Col>
             </Row>
+
+            {
+              parts && parts.length > 0 && (
+                <Row>
+                  <Col sm="12" className="my-3">
+                    <Accordion fluid styled>
+                      {
+                        parts.map((member, id) => (
+                          <Fragment key={id}>
+                            <Row>
+                              <Accordion.Title
+                                className="col-sm-12"
+                                active={activeIndex === id}
+                                index={id}
+                                onClick={this.handleClick.bind(this)}
+                              >
+                                <span className="mr-5">
+                                  {
+                                    activeIndex === id ? (
+                                      <i className="fa fa-minus"></i>
+                                    ) : (
+                                      <i className="fa fa-plus"></i>
+                                    )
+                                  }
+                                </span>
+                                <img
+                                  src={
+                                    member.profile_image 
+                                      ? '../' + member.profile_image 
+                                      : (member.gender == 1 ? Bitmaps.maleAvatar : Bitmaps.femaleAvatar)
+                                    } 
+                                  className="table-avatar mr-4"
+                                />
+                                <span>
+                                  {
+                                    votes.length > 1 && (
+                                      <span className="text-warning">
+                                        <i className="fa fa-medal mr-1"></i>
+                                        # {votes.indexOf(member.all_votes) + 1}
+                                      </span>
+                                    )
+                                  }
+                                </span>
+                                <span className="ml-3">{member.firstname} {member.lastname}</span>
+                                <span> , {member.gender == 1 ? 'Male' : 'Female'}, </span>
+                                <span className="mr-2">Votes:</span>
+                                <span className="mr-2">
+                                  {member.all_votes}
+                                </span>
+                                <span>Title: {member.title}</span>
+                              </Accordion.Title>
+                              
+                              <Accordion.Content active={activeIndex === id}>
+                                <div className="ml-5">
+                                  {
+                                    media[id].map((obj, i) => (
+                                      obj.substring(0, 5) == 'files' ? (
+                                        <a
+                                          className="mb-2"
+                                          key={i}
+                                          href={'../' + obj}
+                                          target="_blank"
+                                        >
+                                          <i className="fa fa-file mr-1 pt-1"></i> {obj.split("/")[1]}
+                                        </a>
+                                      ) : (
+                                        <a
+                                          className="mb-2"
+                                          key={i} 
+                                          href={obj.substring(0, 4) == 'http' ? obj : 'http://' + obj}
+                                          target="_blank"
+                                        >
+                                          {obj}
+                                        </a>
+                                      )
+                                    ))
+                                  }
+                                </div>
+                              </Accordion.Content>
+                            </Row>
+                          </Fragment>
+                        ))
+                      }
+                    </Accordion>
+                  </Col>
+                </Row>
+              )
+            }
           </Container>
         </div>
       </Fragment>

@@ -244,7 +244,12 @@ class Contest extends Component {
                           <img src={Bitmaps.contest} />
                         </div>
                         <div className="mx-3 my-1">
-                          <h4>{item.name}</h4>
+                          <a
+                            className="process-link"
+                            onClick={this.handleDetail.bind(this, item.id)}
+                          >
+                            <h4 className="mb-2">{item.name}</h4>
+                          </a>
                           <Row>
                             <Col sm="6" className="text-right">Major Category:</Col>
                             <Col sm="6">{item.major}</Col>
@@ -287,18 +292,12 @@ class Contest extends Component {
                             <img src={Bitmaps.contest} />
                           </div>
                           <div className="mx-3 my-1">
-                            {
-                              parts.filter(part => part.contest_id == item.id).length > 0 ? (
-                                <a
-                                  className="process-link"
-                                  onClick={this.handleDetail.bind(this, item.id)}
-                                >
-                                  <h4 className="mb-2">{item.name}</h4>
-                                </a>
-                              ) : (
-                                <h4 className="mb-2">{item.name}</h4>
-                              )
-                            }
+                            <a
+                              className="process-link"
+                              onClick={this.handleDetail.bind(this, item.id)}
+                            >
+                              <h4 className="mb-2">{item.name}</h4>
+                            </a>
                             <Row>
                               <Col sm="6" className="text-right">Major Category:</Col>
                               <Col sm="6">{item.major}</Col>
