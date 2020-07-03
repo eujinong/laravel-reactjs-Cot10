@@ -41,14 +41,14 @@ class RightBar extends Component {
           <DropdownMenu right>
             <DropdownItem>
               <NavItem>
-                <NavLink tag={Link} to="/profile">
+                <NavLink tag={Link} to="profile">
                   <i className="fa fa-user" /> Profile
                 </NavLink>
               </NavItem>
             </DropdownItem>
             <DropdownItem>
                 <NavItem>
-                  <NavLink tag={Link} to="/reset">
+                  <NavLink tag={Link} to="reset">
                     <i className="fa fa-key" /> Change Password
                   </NavLink>
                 </NavItem>
