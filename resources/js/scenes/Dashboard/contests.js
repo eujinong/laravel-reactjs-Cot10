@@ -45,6 +45,10 @@ class Contests extends Component {
     }
   }
 
+  handleEntry(id) {
+    this.props.history.push('/contests/entry', id);
+  }
+
   handleAttend(id) {
     this.props.history.push('/contests/attend', id);
   }
@@ -97,7 +101,18 @@ class Contests extends Component {
                         <img src={Bitmaps.contest} />
                       </div>
                       <div className="mx-3 my-2">
-                        <h4>{item.name}</h4>
+                        <span style={{fontSize:"20px"}}>{item.name}</span>
+                        {
+                          participants.filter(obj => obj.contest_id == item.id).length > 0 && (
+                            <a
+                              className="mt-1"
+                              style={{cursor:"pointer",float:"right",textDecoration:"underline"}}
+                              onClick={this.handleEntry.bind(this, item.id)}
+                            >
+                              View Entry
+                            </a>
+                          )
+                        }
                         <hr className="my-1" />
                         <Row>
                           <Col sm="6" className="text-right">Major Category:</Col>
