@@ -45,7 +45,7 @@ class Category extends Component {
         let isOpen = [];
         
         for (let i in body.major) {
-          if (body.major[i].active) {
+          if (body.major[i].active == 1) {
             let cat = {
               name: body.major[i].name,
               value: body.major[i].id
@@ -101,7 +101,7 @@ class Category extends Component {
           let isOpen = [];
 
           for (let i in body.major) {
-            if (body.major[i].active) {
+            if (body.major[i].active == 1) {
               let cat = {
                 name: body.major[i].name,
                 value: body.major[i].id
