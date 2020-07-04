@@ -135,13 +135,10 @@ class CategoryController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update($id)
   {
-    $data = $request->all();
-    
     Category::where('id', $id)
             ->update(array(
-              'parent_id' => $data['parent_id'],
               'active' => 1
             ));
 
