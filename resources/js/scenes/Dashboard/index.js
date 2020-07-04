@@ -181,43 +181,47 @@ class Dashboard extends Component {
                     <List>
                       {
                         majorCat.map((item, index) => (
-                          <List.Item key={index}>
-                            <List.Icon className={item.active == 1 ? 'pt-1' : 'text-danger pt-1'} name="minus" />
-                            <List.Content>
-                              <List.Header className={item.active == 1 ? '' : 'text-danger'}>
-                                {item.name}
+                          item.active == 1 && (
+                            <List.Item key={index}>
+                              <List.Icon className={item.active == 1 ? 'pt-1' : 'text-danger pt-1'} name="minus" />
+                              <List.Content>
+                                <List.Header className={item.active == 1 ? '' : 'text-danger'}>
+                                  {item.name}
+                                  {
+                                    item.active == 1 && (
+                                      <Button
+                                        className="ml-2"
+                                        color="info"
+                                        size="sm"
+                                        type="button"
+                                        onClick={this.handleAddInterest.bind(this, item.id)}
+                                      >
+                                        Add to my Interests
+                                      </Button>
+                                    )
+                                  }
+                                </List.Header>
                                 {
-                                  item.active == 1 && (
-                                    <Button
-                                      className="ml-2"
-                                      color="info"
-                                      size="sm"
-                                      type="button"
-                                      onClick={this.handleAddInterest.bind(this, item.id)}
-                                    >
-                                      Add to my Interests
-                                    </Button>
+                                  subCat.filter(child => child.parent_id == item.id).length > 0 && (
+                                    <List.List>
+                                      {
+                                        subCat.filter(child => child.parent_id == item.id).map((subitem, key) => (
+                                          subitem.active == 1 && (
+                                            <List.Item key={key}>
+                                              <List.Icon name="minus" />
+                                              <List.Content>
+                                                <List.Header>{subitem.name}</List.Header>
+                                              </List.Content>
+                                            </List.Item>
+                                          )
+                                        ))
+                                      }
+                                    </List.List>
                                   )
                                 }
-                              </List.Header>
-                              {
-                                subCat.filter(child => child.parent_id == item.id).length > 0 && (
-                                  <List.List>
-                                    {
-                                      subCat.filter(child => child.parent_id == item.id).map((subitem, key) => (
-                                        <List.Item key={key}>
-                                          <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
-                                          <List.Content>
-                                            <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>{subitem.name}</List.Header>
-                                          </List.Content>
-                                        </List.Item>
-                                      ))
-                                    }
-                                  </List.List>
-                                )
-                              }
-                            </List.Content>
-                          </List.Item>
+                              </List.Content>
+                            </List.Item>
+                          )
                         ))
                       }
                     </List>
@@ -251,12 +255,14 @@ class Dashboard extends Component {
                                   <List.List>
                                     {
                                       sub.filter(child => child.parent_id == item.id).map((subitem, key) => (
-                                        <List.Item key={key}>
-                                          <List.Icon className={subitem.active == 1 ? '' : 'text-danger'} name="minus" />
-                                          <List.Content>
-                                            <List.Header className={subitem.active == 1 ? '' : 'text-danger'}>{subitem.name}</List.Header>
-                                          </List.Content>
-                                        </List.Item>
+                                        subitem.active == 1 && (
+                                          <List.Item key={key}>
+                                            <List.Icon name="minus" />
+                                            <List.Content>
+                                              <List.Header>{subitem.name}</List.Header>
+                                            </List.Content>
+                                          </List.Item>
+                                        )
                                       ))
                                     }
                                   </List.List>
