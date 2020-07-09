@@ -14,20 +14,21 @@ class Participant extends Model
     protected $fillable = [
       'member_id',
       'contest_id',
-      'title',
       'group_code',
       'round_votes',
       'all_votes',
       'vote_to',
-      'media1',
-      'media2',
-      'media3',
-      'media4',
-      'media5',
-      'media6',
-      'media7',
-      'media8',
-      'media9',
-      'media10'
+      'title',
+      'photo_url',
+      'photo_title',
+      'short_desc',
+      'photo_url2',
+      'photo_title2',
+      'long_desc',
+      'link',
+      'link_desc',
+      'photo_url3',
+      'photo_title3',
+      'summary'
     ];
 }

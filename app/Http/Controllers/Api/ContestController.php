@@ -235,15 +235,29 @@ class ContestController extends Controller
     ], 200);
   }
 
-  public function getinfo($id)
+  public function getinfo(Request $request)
   {
+    $data = $request->all();
+
+    $contest_id = $data['contest_id'];
+    $member_id = $data['member_id'];
+
     $contest = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
                     ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
-                    ->where('contests.id', $id)
-                    ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
+                    ->leftJoin('users', 'users.id', '=', 'contests.creator_id')
+                    ->where('contests.id', $contest_id)
+                    ->select('contests.*', 'major.name AS major', 'sub.name AS sub', 'users.username', 'users.email')
                     ->get();
 
-    return $contest[0];
+    $participant = Participant::where('contest_id', $contest_id)
+                    ->where('member_id', $member_id)
+                    ->get();
+
+    return response()->json([
+      'status' => 'success',
+      'contest' => $contest[0],
+      'part' => $participant
+    ], 200);
   }
 
   public function getcontests(Request $request)

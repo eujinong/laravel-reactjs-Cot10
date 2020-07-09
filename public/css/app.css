@@ -70551,20 +70551,16 @@ body {
 }
 
 .image-preview {
-  margin-top: 30px;
+  margin-bottom: 20px;
+  text-align: center;
   width: 100%;
-}
-
-.image-preview.is_image {
-  max-width: 100px;
 }
 
 .image-preview.is_image img {
   -o-object-fit: cover;
      object-fit: cover;
-  width: 100px;
-  height: 100px;
-  border-radius: 100px;
+  width: 200px;
+  height: 200px;
 }
 
 .reg-member .row .col-sm-4 {

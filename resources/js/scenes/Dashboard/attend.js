@@ -5,11 +5,12 @@ import React, {
   Component, Fragment
 } from 'react';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 import {
   Row, Col,
-  Form, FormGroup,
-  CustomInput, Input, Label, Button,
-  Alert
+  Form, FormGroup, FormFeedback,
+  Input, Button,
+  UncontrolledAlert,
 } from 'reactstrap';
 import {
   withRouter
@@ -28,13 +29,8 @@ class Attend extends Component {
     this.state = {
       member_id: '',
       contest_id: '',
-      major: '',
-      sub: '',
-      name: '',
-      title: '',
-      files: [null, null, null, null, null, null, null, null, null, null],
-      uploads: [null, null, null, null, null, null, null, null, null, null],
-      urls: [null, null, null, null, null, null, null, null, null, null]
+      photoUrl: ['', '', ''],
+      filename: ['', '', '']
     };
 
     this.formikRef = React.createRef();
@@ -51,66 +47,54 @@ class Attend extends Component {
         member_id: user.user.member_info.id,
         contest_id
       });
-
-      const data = await Api.get(`get-contest/${contest_id}`);
-      const { response, body } = data;
-      switch (response.status) {
-        case 200:
-          this.setState({
-            major: body.major,
-            sub: body.sub,
-            name: body.name
-          });
-          break;
-        default:
-          break;
-      }
     }
+  }
+
+  fileUpload(id, e) {
+    e.preventDefault();
+    const reader = new FileReader();
+
+    let file = e.target.files[0];
+
+    reader.onloadend = () => {
+      const { photoUrl, filename } = this.state;
+
+      photoUrl[id] = reader.result;
+      filename[id] = file.name;
+
+      this.setState({
+        photoUrl,
+        filename
+      });
+    };
+
+    reader.readAsDataURL(file);
   }
 
   async handleSubmit(values, bags) {
     const {
       member_id,
       contest_id,
-      title,
-      files,
-      uploads,
-      urls
+      photoUrl,
+      filename
     } = this.state;
-
-    let fNull = 0;
-    let uNull = 0;
-    for (let i = 0; i < 10; i++) {
-      if (files[i] === null) {
-        fNull++;
-      }
-
-      if (urls[i] === null) {
-        uNull++;
-      }
-    }
-    
-    if (fNull == 10 && uNull == 10) {
-      bags.setStatus({
-        color: 'danger',
-        children: 'You have to upload at least 1 media to demonstrate your idea.'
-      });
-
-      bags.setErrors('error');
-
-      bags.setSubmitting(false);
-      return;
-    }
     
     let newData = {};
 
     newData = {
       member_id,
       contest_id,
-      title,
-      files,
-      uploads,
-      urls
+      photoUrl,
+      filename,
+      title: values.title,
+      photo_title: values.photo_title,
+      short_desc: values.short_desc,
+      photo_title2: values.photo_title2,
+      long_desc: values.long_desc,
+      link: values.link,
+      link_desc: values.link_desc,
+      photo_title3: values.photo_title3,
+      summary: values.summary
     };
 
     const data = await Api.post('reg-participant', newData);
@@ -135,26 +119,6 @@ class Attend extends Component {
     bags.setSubmitting(false);
   }
 
-  fileUpload(e, index) {
-    e.preventDefault();
-    
-    const reader = new FileReader();
-
-    let { uploads } = this.state;
-
-    let file = e.target.files[0];
-
-    reader.onloadend = () => {
-      uploads[index] = reader.result;
-
-      this.setState({
-        uploads
-      });
-    };
-
-    reader.readAsDataURL(file);
-  }
-
   handleAccount() {
     this.props.history.push('/account');
   }
@@ -166,15 +130,17 @@ class Attend extends Component {
   }
 
   render() {
-    const {
-      major,
-      sub,
-      name,
-      files,
-      urls
-    } = this.state;
+    const { photoUrl } = this.state;
 
-    const media = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let $photo = [];
+
+    for (let i = 0; i < 3; i++) {
+      if (photoUrl[i]) {
+        $photo.push(<img src={photoUrl[i]} />);
+      } else {
+        $photo.push(<img src={Bitmaps.entry} alt="Cot10" />);
+      }
+    }
 
     return (
       <Fragment>
@@ -201,111 +167,209 @@ class Attend extends Component {
         <Menu />
 
         <div className="dashboard container">
-          <Alert color="info">
-            <h3>
-              <span className="mr-3">Major: {major},</span>
-              <span className="mr-5">Sub: {sub}</span>
-              <span>Title: "{name}"</span>
-            </h3>
-          </Alert>
-
           <Formik
             ref={this.formikRef}
+
+            initialValues={{
+              title: '',
+              photo_title: '',
+              short_desc: '',
+              long_desc: '',
+              link: '',
+              link_desc: '',
+              summary: ''
+            }}
+
+            validationSchema={
+              Yup.object().shape({
+                title: Yup.string().required('This field is required!'),
+                photo_title: Yup.string().required('This field is required!'),
+                short_desc: Yup.string().required('This field is required!'),
+                long_desc: Yup.string().required('This field is required!'),
+                summary: Yup.string().required('This field is required!')
+              })
+            }
 
             onSubmit={this.handleSubmit.bind(this)}
 
             render = {({
+              values,
+              errors,
               status,
+              touched,
+              setFieldValue,
+              handleBlur,
+              handleChange,
               handleSubmit,
               isSubmitting
             }) => (
               <Form onSubmit={handleSubmit}>
                 {status && <UncontrolledAlert {...status} />}
                 <Row>
-                  <Col sm="12">
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
                     <FormGroup>
-                      <Label>Title</Label>
                       <Input
                         type="text"
                         name="title"
-                        onChange={value => {
-                          this.setState({
-                            title: value.currentTarget.value
-                          });
-                        }}
+                        placeholder="Title"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.title && touched.title}
+                      />
+                      <FormFeedback>{errors.title}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <div className={photoUrl[0] ? 'image-preview is_image' : 'image-preview'}>
+                        {$photo[0]}
+                      </div>
+                      <Input
+                        ref="file"
+                        type="file"
+                        key={this.state.fileKey}
+                        multiple={false}
+                        onChange={this.fileUpload.bind(this, 0)}
                       />
                     </FormGroup>
                   </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="text"
+                        name="photo_title"
+                        placeholder="Photo Title"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.photo_title && touched.photo_title}
+                      />
+                      <FormFeedback>{errors.photo_title}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="textarea"
+                        name="short_desc"
+                        placeholder="Short Description"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.short_desc && touched.short_desc}
+                      />
+                      <FormFeedback>{errors.short_desc}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <div className={photoUrl[1] ? 'image-preview is_image' : 'image-preview'}>
+                        {$photo[1]}
+                      </div>
+                      <Input
+                        ref="file2"
+                        type="file"
+                        key={this.state.fileKey}
+                        multiple={false}
+                        onChange={this.fileUpload.bind(this, 1)}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="text"
+                        name="photo_title2"
+                        placeholder="Photo Title 2"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="textarea"
+                        name="long_desc"
+                        placeholder="Long Description"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.long_desc && touched.long_desc}
+                      />
+                      <FormFeedback>{errors.long_desc}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="text"
+                        name="link"
+                        placeholder="Potential Link"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.link && touched.link}
+                      />
+                      <FormFeedback>{errors.link}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="textarea"
+                        name="link_desc"
+                        placeholder="Link Description"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.link_desc && touched.link_desc}
+                      />
+                      <FormFeedback>{errors.link_desc}</FormFeedback>
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <div className={photoUrl[2] ? 'image-preview is_image' : 'image-preview'}>
+                        {$photo[2]}
+                      </div>
+                      <Input
+                        ref="file3"
+                        type="file"
+                        key={this.state.fileKey}
+                        multiple={false}
+                        onChange={this.fileUpload.bind(this, 2)}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="text"
+                        name="photo_title3"
+                        placeholder="Photo Title 3"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col sm="12" md={{ size: 6, offset: 3 }}>
+                    <FormGroup>
+                      <Input
+                        type="textarea"
+                        name="summary"
+                        placeholder="Summary"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        invalid={!!errors.summary && touched.summary}
+                      />
+                      <FormFeedback>{errors.summary}</FormFeedback>
+                    </FormGroup>
+                  </Col>
                 </Row>
-                {
-                  media.map(index => (
-                    <Row key={index}>
-                      <Col sm="6">
-                        <FormGroup>
-                          <Label>File {index + 1}</Label>
-                          <CustomInput
-                            type="file"
-                            id={"file" + (index + 1)}
-                            name={"file" + (index + 1)}
-                            label={files[index]}
-                            disabled={files[index] == '' ? true : false}
-                            onChange={(file) => {
-                              files[index] = file.target.value.replace(/C:\\fakepath\\/, '');
-
-                              if (files[index] == '') {
-                                files[index] = null;
-                                urls[index] = null;
-                              } else {
-                                urls[index] = '';
-                              }
-
-                              this.setState({
-                                files,
-                                urls
-                              });
-
-                              this.fileUpload.bind(this)(file, index);
-                            }}
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col sm="6">
-                        <FormGroup>
-                          <Label>URL {index + 1}</Label>
-                          <Input
-                            type="text"
-                            placeholder={"URL " + (index + 1)}
-                            value={urls[index] == null ? '' : urls[index]}
-                            disabled={urls[index] == '' ? true : false}
-                            onChange={(url) => {
-                              urls[index] = url.target.value;
-
-                              if (urls[index] == '') {
-                                files[index] = null;
-                                urls[index] = null;
-                              } else {
-                                files[index] = '';
-                              }
-
-                              this.setState({
-                                files,
-                                urls
-                              });
-                            }}
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                  ))
-                }
-                <div className="w-100 d-flex justify-content-end mb-5">
+                <div className="w-100 d-flex justify-content-center mb-5">
                   <Button
                     className="mr-5"
                     disabled={isSubmitting}
                     type="submit"
-                    color="primary"
+                    color="success"
                   >
-                    Accept Contest
+                    <i className="fa fa-users"></i> VOTE AS BEST
                   </Button>
                 </div>
               </Form>

@@ -17,7 +17,6 @@ class CreateParticipantsTable extends Migration
             $table->bigIncrements('id');
             $table->integer('member_id');
             $table->integer('contest_id');
-            $table->string('title');
             $table->integer('group_code')->nullable();
 
             $table->integer('round_votes');
@@ -25,16 +24,18 @@ class CreateParticipantsTable extends Migration
 
             $table->string('vote_to', 200);
 
-            $table->string('media1')->nullable();
-            $table->string('media2')->nullable();
-            $table->string('media3')->nullable();
-            $table->string('media4')->nullable();
-            $table->string('media5')->nullable();
-            $table->string('media6')->nullable();
-            $table->string('media7')->nullable();
-            $table->string('media8')->nullable();
-            $table->string('media9')->nullable();
-            $table->string('media10')->nullable();
+            $table->string('title');
+            $table->string('photo_url');
+            $table->string('photo_title');
+            $table->string('short_desc');
+            $table->string('photo_url2')->nullable();
+            $table->string('photo_title2')->nullable();
+            $table->string('long_desc');
+            $table->string('link')->nullable();
+            $table->string('link_desc')->nullable();
+            $table->string('photo_url3')->nullable();
+            $table->string('photo_title3')->nullable();
+            $table->string('summary');
 
             $table->timestamps();
         });

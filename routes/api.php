@@ -27,7 +27,7 @@ Route::namespace('Api')->group(function () {
 	Route::get('categories', 'CategoryController@index');
 	Route::post('create-category', 'CategoryController@store');
 
-	Route::get('get-contest/{id}', 'ContestController@getinfo');
+	Route::get('get-contest', 'ContestController@getinfo');
 	Route::get('get-contests', 'ContestController@getcontests');
 
 	Route::post('reg-user', 'UserController@store');

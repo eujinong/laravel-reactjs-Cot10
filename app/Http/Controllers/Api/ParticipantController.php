@@ -42,58 +42,68 @@ class ParticipantController extends Controller
   public function store(Request $request)
   {
     $data = $request->all();
+
+    for ($i = 0; $i < 3; $i++) {
+      $data['photo'][$i] = '';
+
+      if (!is_null($data['photoUrl'][$i]) && preg_match('/^data:image\/(\w+);base64,/', $data['photoUrl'][$i])) {
+        $pos  = strpos($data['photoUrl'][$i], ';');
+        $type = explode(':', substr($data['photoUrl'][$i], 0, $pos))[1];
+
+        if (substr($type, 0, 5) == 'image') {
+          $filename = explode('.', $data['filename'][$i])[0] . '_' . date('YmdHis');
+  
+          $type = str_replace('image/', '.', $type);
+  
+          $size = (int) (strlen(rtrim($data['photoUrl'][$i], '=')) * 3 / 4);
+  
+          if ($size < 3200000) {
+            $image = substr($data['photoUrl'][$i], strpos($data['photoUrl'][$i], ',') + 1);
+            $image = base64_decode($image);
+            
+            Storage::disk('local')->put($filename . $type, $image);
     
-    $files = $data['files'];
-    $uploads = $data['uploads'];
-    $urls = $data['urls'];
-
-    $media = array();
-
-    for ($i = 0; $i < 10; $i++) {
-      $media[$i] = '';
-
-      if ($uploads[$i] != '' && !is_null($uploads[$i])) {
-        $filename = $files[$i];
-
-        $file_path = Storage::disk('local')->path('');
-        $file_name = explode('.', $filename)[0];
-        $file_ext = explode('.', $filename)[1];
-
-        if (count(glob($file_path . "$file_name*.$file_ext")) > 0) {
-          $filename = $file_name . '_' . count(glob($file_path . "$file_name*.$file_ext")) . '.' . $file_ext;
+            $data['photo'][$i] = "files/" . $filename . $type;
+          } else {
+            return response()->json(
+              [
+                'status' => 'error',
+                'message' => 'File size must be less than 3MB.'
+              ],
+              406
+            );
+          }
+        } else {
+          return response()->json(
+            [
+              'status' => 'error',
+              'message' => 'File type is not image.'
+            ],
+            406
+          );
         }
-        
-        $file = substr($uploads[$i], strpos($uploads[$i], ',') + 1);
-        $file = base64_decode($file);
-        
-        Storage::disk('local')->put($filename, $file);
-
-        $media[$i] = "files/" . $filename;
-      }
-
-      if ($urls[$i] != '' && !is_null($urls[$i])) {
-        $media[$i] = $urls[$i];
       }
     }
     
     Participant::create(array(
       'member_id' => $data['member_id'],
       'contest_id' => $data['contest_id'],
-      'title' => $data['title'],
       'group_code' => NULL,
       'round_votes' => 0,
       'all_votes' => 0,
       'vote_to' => '',
-      'media1' => $media[0],
-      'media2' => $media[1],
-      'media3' => $media[2],
-      'media4' => $media[3],
-      'media5' => $media[4],
-      'media6' => $media[5],
-      'media7' => $media[6],
-      'media8' => $media[7],
-      'media9' => $media[8],
-      'media10' => $media[9]
+      'title' => $data['title'],
+      'photo_url' => $data['photo'][0],
+      'photo_title' => $data['photo_title'],
+      'short_desc' => $data['short_desc'],
+      'photo_url2' => $data['photo'][1],
+      'photo_title2' => $data['photo_title2'],
+      'long_desc' => $data['long_desc'],
+      'link' => $data['link'],
+      'link_desc' => $data['link_desc'],
+      'photo_url3' => $data['photo'][2],
+      'photo_title3' => $data['photo_title3'],
+      'summary' => $data['summary']
     ));
 
     return response()->json([
