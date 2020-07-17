@@ -23,8 +23,10 @@ class Contests extends Component {
     super(props);
 
     this.state = {
-      contests: [],
-      participants: []
+      starting: [],
+      running: [],
+      participants: [],
+      status: 'starting',
     }
   }
 
@@ -36,7 +38,8 @@ class Contests extends Component {
     switch (response.status) {
       case 200:
         this.setState({
-          contests: body.contests,
+          starting: body.starting,
+          running: body.running,
           participants: body.participants
         });
         break;
@@ -47,6 +50,10 @@ class Contests extends Component {
 
   handleView(id) {
     this.props.history.push('/contests/view', id);
+  }
+
+  handleOverview(id) {
+    this.props.history.push('/contests/overview', id);
   }
 
   handleAccount() {
@@ -60,7 +67,11 @@ class Contests extends Component {
   }
 
   render() {
-    const { contests, participants } = this.state;
+    const { 
+      starting, running,
+      participants,
+      status
+    } = this.state;
     
     return (
       <Fragment>
@@ -87,11 +98,40 @@ class Contests extends Component {
         <Menu />
 
         <div className="dashboard container">
+          <Row>
+            <Col className="panel px-5" sm="12" md="6">
+              <Button
+                className={status == 'starting' ? 'active' : ''}
+                outline
+                color="info"
+                onClick={() => 
+                  this.setState({
+                    status: 'starting'
+                  })
+                }
+              >
+                Contests Starting Soon
+              </Button>
+              <Button
+                className={status == 'running' ? 'active' : ''}
+                outline
+                color="info"
+                onClick={() => 
+                  this.setState({
+                    status: 'running'
+                  })
+                }
+              >
+                Contests Running
+              </Button>
+            </Col>
+          </Row>
+
           {
-            contests.length > 0 && (
+            status == 'starting' && starting.length > 0 && (
               <Row>
                 {
-                  contests.map((item, index) => (
+                  starting.map((item, index) => (
                     <Col className="d-flex contest" sm="12" md="6" key={index}>
                       <div className="mx-3 my-2">
                         <img src={Bitmaps.contest} />
@@ -132,6 +172,45 @@ class Contests extends Component {
                                 </Button>
                               )
                             }
+                          </Col>
+                        </Row>
+                      </div>
+                    </Col>
+                  ))
+                }
+              </Row>
+            )
+          }
+
+          {
+            status == 'running' && running.length > 0 && (
+              <Row>
+                {
+                  running.map((item, index) => (
+                    <Col className="d-flex contest" sm="12" md="6" key={index}>
+                      <div className="mx-3 my-2">
+                        <img src={Bitmaps.contest} />
+                      </div>
+                      <div className="mx-3 my-2">
+                        <span style={{fontSize:"20px"}}>{item.name}</span>
+                        <hr className="my-1" />
+                        <Row>
+                          <Col sm="6" className="text-right">Major Category:</Col>
+                          <Col sm="6">{item.major}</Col>
+                        </Row>
+                        <Row>
+                          <Col sm="6" className="text-right">Sub Category:</Col>
+                          <Col sm="6">{item.sub}</Col>
+                        </Row>
+                        <Row>
+                          <Col className="text-center mt-2" sm="12">
+                            <Button
+                              color="success"
+                              type="button"
+                              onClick={this.handleOverview.bind(this, item.id)}
+                            >
+                              <i className="fa fa-users" /> Overview
+                            </Button>
                           </Col>
                         </Row>
                       </div>

@@ -32,6 +32,9 @@ Route::namespace('Api')->group(function () {
 
 	Route::post('reg-user', 'UserController@store');
 	Route::post('reg-member', 'MemberController@store');
+
+	Route::get('participants', 'ParticipantController@index');
+	Route::get('participant/{id}', 'ParticipantController@show');
 	Route::post('reg-participant', 'ParticipantController@store');
 	Route::post('update-participant', 'ParticipantController@update');
 

@@ -266,9 +266,24 @@ class ContestController extends Controller
 
     $member_id = $data['member_id'];
 
-    $contests = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+    $starting = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
                     ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
                     ->where('contests.status', 'open')
+                    ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
+                    ->orderBy('start_date')
+                    ->get();
+
+    $myContests = array();
+
+    $parts = Participant::where('member_id', $member_id)->get();
+    foreach($parts as $part) {
+      array_push($myContests, $part->contest_id);
+    }
+
+    $running = Contest::leftJoin('categories AS sub', 'sub.id', '=', 'contests.category_id')
+                    ->leftJoin('categories AS major', 'major.id', '=', 'sub.parent_id')
+                    ->where('contests.status', 'running')
+                    ->whereIn('contests.id', $myContests)
                     ->select('contests.*', 'major.name AS major', 'sub.name AS sub')
                     ->orderBy('start_date')
                     ->get();
@@ -280,7 +295,8 @@ class ContestController extends Controller
 
     return response()->json([
       'status' => 'success',
-      'contests' => $contests,
+      'starting' => $starting,
+      'running' => $running,
       'participants' => $participants
     ], 200);
   }

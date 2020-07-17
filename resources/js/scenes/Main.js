@@ -20,6 +20,8 @@ import ManagerReview from './Manager/review';
 import Manager from './Manager';
 
 import ViewContest from './Dashboard/view';
+import OverviewContest from './Dashboard/overview';
+import FullviewContest from './Dashboard/fullview';
 import AttendContest from './Dashboard/attend';
 import ReqCategory from './Dashboard/category';
 import Contests from './Dashboard/contests';
@@ -54,6 +56,8 @@ class Main extends Component {
           <AuthManagerRoute path="/contest" name="Manager" component={Manager} />
           
           <UserRoute path="/contests/view" name="ViewContest" component={ViewContest} />
+          <UserRoute path="/contests/overview" name="OverviewContest" component={OverviewContest} />
+          <UserRoute path="/contests/fullview" name="FullviewContest" component={FullviewContest} />
           <UserRoute path="/contests/attend" name="AttendContest" component={AttendContest} />
           <UserRoute path="/request-category" name="ReqCategory" component={ReqCategory} />
           <UserRoute path="/contests" name="contests" component={Contests} />

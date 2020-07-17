@@ -19,7 +19,12 @@ class ParticipantController extends Controller
    */
   public function index()
   {
+    $participants = Participant::get();
 
+    return response()->json([
+      'status' => 'success',
+      'parts' => $participants
+    ], 200);
   }
 
   /**
@@ -30,7 +35,12 @@ class ParticipantController extends Controller
    */
   public function show($id)
   {
-    
+    $participant = Participant::find($id);
+
+    return response()->json([
+      'status' => 'success',
+      'part' => $participant
+    ], 200);
   }
 
   /**

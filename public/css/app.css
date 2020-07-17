@@ -71650,6 +71650,29 @@ body .dashboard .contest div.mx-3:not(:first-child) {
   width: 100%;
 }
 
+body .dashboard .participant {
+  background: #ededed;
+  padding: 5px 0;
+}
+
+body .dashboard .participant > div {
+  background: white;
+  margin: 10px 15px 15px;
+}
+
+body .dashboard .participant > div img {
+  border: 5px solid #d9d9d9;
+  border-radius: 10px;
+  height: 200px;
+  padding: 5px;
+  width: 200px;
+}
+
+body .dashboard .participant > div button {
+  bottom: 5px;
+  position: absolute;
+}
+
 body .dashboard .form-group .field {
   width: 100%;
 }
