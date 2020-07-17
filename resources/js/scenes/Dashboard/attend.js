@@ -89,11 +89,11 @@ class Attend extends Component {
       title: values.title,
       photo_title: values.photo_title,
       short_desc: values.short_desc,
-      photo_title2: values.photo_title2,
+      photo_title2: values.photo_title2 || '',
       long_desc: values.long_desc,
       link: values.link,
       link_desc: values.link_desc,
-      photo_title3: values.photo_title3,
+      photo_title3: values.photo_title3 || '',
       summary: values.summary
     };
 
@@ -369,7 +369,7 @@ class Attend extends Component {
                     type="submit"
                     color="success"
                   >
-                    <i className="fa fa-users"></i> VOTE AS BEST
+                    <i className="fa fa-save"></i> SAVE
                   </Button>
                 </div>
               </Form>
