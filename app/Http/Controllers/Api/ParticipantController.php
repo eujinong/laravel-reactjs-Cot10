@@ -118,9 +118,81 @@ class ParticipantController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request)
   {
+    $data = $request->all();
+
+    $part = Participant::where('member_id', $data['member_id'])
+                      ->where('contest_id', $data['contest_id'])
+                      ->get();
     
+    $data['photo'][0] = $part[0]->photo_url;
+    $data['photo'][1] = $part[0]->photo_url2;
+    $data['photo'][2] = $part[0]->photo_url3;
+
+    for ($i = 0; $i < 3; $i++) {
+      if (!is_null($data['photoUrl'][$i]) && preg_match('/^data:image\/(\w+);base64,/', $data['photoUrl'][$i])) {
+        if ($data['photo'][$i] != 'files/' . $data['filename'][$i]) {
+          $pos  = strpos($data['photoUrl'][$i], ';');
+          $type = explode(':', substr($data['photoUrl'][$i], 0, $pos))[1];
+
+          if (substr($type, 0, 5) == 'image') {
+            $filename = explode('.', $data['filename'][$i])[0] . '_' . date('YmdHis');
+    
+            $type = str_replace('image/', '.', $type);
+    
+            $size = (int) (strlen(rtrim($data['photoUrl'][$i], '=')) * 3 / 4);
+    
+            if ($size < 3200000) {
+              $image = substr($data['photoUrl'][$i], strpos($data['photoUrl'][$i], ',') + 1);
+              $image = base64_decode($image);
+              
+              Storage::disk('local')->delete(str_replace('files/', '', $data['photo'][$i]));
+              Storage::disk('local')->put($filename . $type, $image);
+      
+              $data['photo'][$i] = "files/" . $filename . $type;
+            } else {
+              return response()->json(
+                [
+                  'status' => 'error',
+                  'message' => 'File size must be less than 3MB.'
+                ],
+                406
+              );
+            }
+          } else {
+            return response()->json(
+              [
+                'status' => 'error',
+                'message' => 'File type is not image.'
+              ],
+              406
+            );
+          }
+        }
+      }
+    }
+
+    Participant::where('member_id', $data['member_id'])
+              ->where('contest_id', $data['contest_id'])
+              ->update(array(
+                'title' => $data['title'],
+                'photo_url' => $data['photo'][0],
+                'photo_title' => $data['photo_title'],
+                'short_desc' => $data['short_desc'],
+                'photo_url2' => $data['photo'][1],
+                'photo_title2' => $data['photo_title2'],
+                'long_desc' => $data['long_desc'],
+                'link' => $data['link'],
+                'link_desc' => $data['link_desc'],
+                'photo_url3' => $data['photo'][2],
+                'photo_title3' => $data['photo_title3'],
+                'summary' => $data['summary']
+              ));
+
+    return response()->json([
+      'status' => 'success'
+    ], 200);
   }
 
   /**
