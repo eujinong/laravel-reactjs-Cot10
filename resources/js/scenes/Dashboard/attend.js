@@ -7,10 +7,10 @@ import React, {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {
-  Row, Col,
+  Container, Row, Col,
   Form, FormGroup, FormFeedback,
   Input, Button,
-  UncontrolledAlert,
+  Alert, UncontrolledAlert,
 } from 'reactstrap';
 import {
   withRouter
@@ -29,6 +29,7 @@ class Attend extends Component {
     this.state = {
       member_id: '',
       contest_id: '',
+      contest: [],
       photoUrl: ['', '', ''],
       filename: ['', '', '']
     };
@@ -47,6 +48,23 @@ class Attend extends Component {
         member_id: user.user.member_info.id,
         contest_id
       });
+
+      const params = {
+        member_id: user.user.member_info.id,
+        contest_id
+      }
+      
+      const data = await Api.get('get-contest', params);
+      const { response, body } = data;
+      switch (response.status) {
+        case 200:
+          this.setState({
+            contest: body.contest
+          });
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -130,7 +148,7 @@ class Attend extends Component {
   }
 
   render() {
-    const { photoUrl } = this.state;
+    const { contest, photoUrl } = this.state;
 
     let $photo = [];
 
@@ -167,6 +185,58 @@ class Attend extends Component {
         <Menu />
 
         <div className="dashboard container">
+        <Container>
+            <Row>
+              <Col sm="12">
+                <Alert color="info">
+                  <Row className="mb-3">
+                    <Col sm="12"><h4>Title: {contest.name}</h4></Col>
+                  </Row>
+                  <Row className="my-3">
+                    <Col sm="6"><h4>Major Category: {contest.major}</h4></Col>
+                    <Col sm="6"><h4>Sub Category: {contest.sub}</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="6"><h4>Creator Name: {contest.username}</h4></Col>
+                    <Col sm="6"><h4>Creator Email: {contest.email}</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="6"><h4>Start Date: {contest.start_date}</h4></Col>
+                    <Col sm="6"><h4>Round Days: {contest.round_days} days</h4></Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12">
+                      <h4>Gole:</h4>
+                      <p className="pl-4">{contest.gole}</p>
+                    </Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12">
+                      <h4>Rule:</h4>
+                      <p className="pl-4">{contest.rule}</p>
+                    </Col>
+                  </Row>
+                  <Row className="mb-3">
+                    <Col sm="12">
+                      <h4>Ending:</h4>
+                      <p className="pl-4">{contest.ending}</p>
+                    </Col>
+                  </Row>
+                  {
+                    contest && contest.note && (
+                      <Row className="mb-3">
+                        <Col sm="12">
+                          <h4>Note:</h4>
+                          <p className="pl-4">{contest.note}</p>
+                        </Col>
+                      </Row>
+                    )
+                  }
+                  
+                </Alert>
+              </Col>
+            </Row>
+          </Container>
           <Formik
             ref={this.formikRef}
 
