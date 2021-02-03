@@ -11,7 +11,7 @@
         "php": "^7.1.3",
         "fideloper/proxy": "^4.0",
         "laravel/cashier": "^9.3",
-        "laravel/framework": "6.1.*",
+        "laravel/framework": "6.20.*",
         "laravel/tinker": "^1.0",
         "twilio/sdk": "^5.31",
         "tymon/jwt-auth": "dev-develop"
