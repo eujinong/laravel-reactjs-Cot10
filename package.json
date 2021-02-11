@@ -35,7 +35,7 @@
         "@progress/kendo-react-pdf": "^3.12.0",
         "@progress/kendo-react-popup": "^3.12.0",
         "@progress/kendo-theme-default": "^4.14.0",
-        "apexcharts": "^3.16.1",
+        "apexcharts": "^3.24.0",
         "axios": "^0.18",
         "bootstrap": "^4.0.0",
         "card-react": "^1.2.7",
